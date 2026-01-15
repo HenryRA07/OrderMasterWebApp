@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Toma de Pedidos - OrderMaster</title>
+    <style>
+        body { margin: 0; font-family: 'Inter', sans-serif; display: flex; background-color: #f8f9fa; }
+        .sidebar { width: 250px; background-color: #0a0a0a; height: 100vh; color: white; padding: 20px; position: fixed; }
+        .sidebar-logo { color: #d4af37; font-weight: bold; font-size: 1.5rem; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        .nav-item { padding: 12px; border-radius: 8px; margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #718096; }
+        .nav-item.active { background-color: #d4af37; color: #0a0a0a; font-weight: bold; }
+
+        .main-content { margin-left: 250px; width: calc(100% - 600px); padding: 40px; }
+        .order-summary-panel { width: 350px; background: white; height: 100vh; position: fixed; right: 0; border-left: 1px solid #e2e8f0; padding: 25px; box-sizing: border-box; }
+
+        /* Grid de Productos */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
+        .product-card { background: white; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.2s; }
+        .product-card:hover { border-color: #d4af37; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .product-price { color: #d4af37; font-weight: bold; font-size: 1.2rem; }
+
+        /* Pedidos Pendientes (Sección Inferior) */
+        .pending-section { margin-top: 50px; border-top: 2px solid #e2e8f0; padding-top: 30px; }
+        .pending-orders-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .pending-card { background: #fff; padding: 15px; border-radius: 8px; border-left: 4px solid #d4af37; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        .btn-confirm { background-color: #0a0a0a !important; border: none !important; color: white !important; width: 100%; padding: 12px !important; font-weight: bold !important; margin-top: 20px; }
+        .success-modal { text-align: center; padding: 20px; }
+        .success-icon { font-size: 4rem; color: #28a745; margin-bottom: 15px; }
+    </style>
+</h:head>
+<h:body>
+    <div class="sidebar">
+        <div class="sidebar-logo"><i class="pi pi-fire"></i> OrderMaster</div>
+        <a href="#" class="nav-item active"><i class="pi pi-list"></i> Tomar Pedidos</a>
+        <div style="position: absolute; bottom: 30px; width: calc(100% - 40px);">
+            <p:commandLink action="index?faces-redirect=true" styleClass="nav-item">
+                <i class="pi pi-sign-out"></i> Salir
+            </p:commandLink>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1 style="font-size: 1.8rem; font-weight: bold;">Toma de Pedidos</h1>
+
+        <p:selectOneButton value="Todos" style="margin-bottom: 25px;">
+            <f:selectItem itemLabel="Todos" itemValue="Todos" />
+            <f:selectItem itemLabel="Mixto" itemValue="Mixto" />
+            <f:selectItem itemLabel="Almuerzo" itemValue="Almuerzo" />
+        </p:selectOneButton>
+
+        <div class="product-grid">
+            <p:commandLink update=":formModal" oncomplete="PF('dlgCantidad').show()">
+                <div class="product-card">
+                    <p style="font-weight: bold; margin: 0;">Pollo a la plancha</p>
+                    <p style="font-size: 0.8rem; color: #718096;">Pechuga con ensalada fresca</p>
+                    <div class="product-price">$12,500</div>
+                </div>
+            </p:commandLink>
+        </div>
+
+        <div class="pending-section">
+            <h2 style="font-size: 1.3rem; font-weight: bold; color: #4a5568;">Mis Pedidos Pendientes</h2>
+            <div class="pending-orders-grid">
+                <div class="pending-card">
+                    <div>
+                        <strong>ORD-005</strong> <span style="margin-left: 10px; color: #718096;">15:45 PM</span>
+                        <div style="font-size: 0.9rem;">2x Pollo a la plancha, 1x Coca Cola</div>
+                    </div>
+                    <p:commandButton icon="pi pi-pencil" value="Editar" styleClass="ui-button-flat" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="order-summary-panel">
+        <h2 style="font-size: 1.4rem; font-weight: bold; display: flex; align-items: center; gap: 10px;">
+            <i class="pi pi-shopping-cart" style="color:#d4af37"></i> Resumen del Pedido
+        </h2>
+        <p:separator />
+
+        <div style="height: calc(100vh - 300px); overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <span>1x Arroz con camarones</span>
+                <span style="font-weight: bold;">$12,000</span>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid #e2e8f0; padding-top: 20px;">
+            <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                <span>Total:</span>
+                <span style="color: #d4af37;">$12,000</span>
+            </div>
+            <p:commandButton value="Confirmar Pedido"
+                             oncomplete="PF('dlgExito').show()"
+                             styleClass="btn-confirm" />
+        </div>
+    </div>
+
+    <p:dialog header="Añadir al Pedido" widgetVar="dlgCantidad" modal="true" responsive="true" width="400">
+        <h:form id="formModal">
+            <div class="ui-fluid">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h3>Pollo a la plancha</h3>
+                    <p:spinner value="1" min="1" max="20" />
+                </div>
+                <p:inputTextarea placeholder="Observaciones (ej. sin sal, bien cocido)" rows="3" />
+                <p:commandButton value="Añadir" styleClass="btn-confirm" oncomplete="PF('dlgCantidad').hide()" />
+            </div>
+        </h:form>
+    </p:dialog>
+
+    <p:dialog widgetVar="dlgExito" modal="true" closable="false" showHeader="false" width="350">
+        <div class="success-modal">
+            <i class="pi pi-check-circle success-icon"></i>
+            <h3>Pedido confirmado con éxito</h3>
+            <p:commandButton value="Aceptar" onclick="PF('dlgExito').hide()" styleClass="btn-black" style="width: 100px" />
+        </div>
+    </p:dialog>
+</h:body>
+</html>

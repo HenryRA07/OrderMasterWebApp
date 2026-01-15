@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Login - OrderMaster</title>
+    <style>
+        /* --- RESET Y ESTRUCTURA BASE --- */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Inter', sans-serif;
+            overflow: hidden; /* Evita scrollbars innecesarios */
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        /* --- LADO IZQUIERDO (BRANDING) --- */
+        .left-panel {
+            flex: 1;
+            background-color: #0A0A0A; /* Negro Profundo Shaman */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .brand-icon {
+            font-size: 4rem;
+            color: #D4AF37; /* Dorado Shaman */
+            margin-bottom: 1rem;
+        }
+
+        .brand-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-subtitle {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0.5rem 0 1.5rem 0;
+        }
+
+        .brand-desc {
+            color: #A0AEC0; /* Gris suave para texto secundario */
+            max-width: 450px;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        /* --- LADO DERECHO (LOGIN FORM) --- */
+        .right-panel {
+            flex: 1;
+            background-color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-header h2 {
+            font-size: 1.8rem;
+            color: #1A202C;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .login-header p {
+            color: #718096;
+            margin: 0;
+        }
+
+        /* --- PERSONALIZACIÓN DE PRIMEFACES --- */
+        .custom-input-wrapper {
+            margin-bottom: 1.5rem;
+        }
+
+        .custom-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #4A5568;
+        }
+
+        /* Forzar inputs al 100% del ancho */
+        .ui-inputtext, .ui-password, .ui-selectonemenu {
+            width: 100% !important;
+            box-sizing: border-box !important; /* Importante para que el padding no rompa el ancho */
+        }
+
+        /* Ajuste específico para el SelectOneMenu de PrimeFaces */
+        .ui-selectonemenu {
+            display: flex !important;
+            align-items: center;
+        }
+
+        .ui-selectonemenu-label {
+            width: 100% !important;
+        }
+
+        /* Estilo del Botón Negro */
+        .btn-login.ui-button {
+            width: 100%;
+            background-color: #0A0A0A !important;
+            border: 1px solid #0A0A0A !important;
+            color: #ffffff !important;
+            padding: 0.8rem 0;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-login.ui-button:hover {
+            background-color: #2D3748 !important; /* Un gris muy oscuro para el hover */
+            border-color: #2D3748 !important;
+        }
+    </style>
+</h:head>
+
+<h:body>
+
+    <div class="main-container">
+
+        <div class="left-panel">
+            <img style="padding-bottom: 45px; height: 300px" src="images/logo_ShamanBlack.png"/>
+
+            <h1 class="brand-title">OrderMaster</h1>
+            <h2 class="brand-subtitle">Asadero ShamanBlack</h2>
+
+            <p class="brand-desc">
+                Sistema integral de gestión de pedidos para tu restaurante.
+                Controla operaciones, menú y ventas en un solo lugar.
+            </p>
+        </div>
+
+        <div class="right-panel">
+            <div class="login-wrapper">
+
+                <div class="login-header">
+                    <h2>Acceso al Sistema</h2>
+                    <p>Ingrese sus credenciales para continuar</p>
+                </div>
+
+                <h:form id="loginForm">
+
+                    <div class="custom-input-wrapper">
+                        <p:outputLabel for="rol" value="Rol de Usuario" styleClass="custom-label"/>
+                        <p:selectOneMenu id="rol" value="#{loginBean.rolSeleccionado}" style="width: 100%;">
+                            <f:selectItem itemLabel="Admin" itemValue="admin"/>
+                            <f:selectItem itemLabel="Mesero" itemValue="mesero"/>
+                            <f:selectItem itemLabel="Cocina" itemValue="cocina"/>
+                            <f:selectItem itemLabel="Caja" itemValue="caja"/>
+                        </p:selectOneMenu>
+                    </div>
+
+                    <div class="custom-input-wrapper">
+                        <p:outputLabel for="pass" value="Contraseña" styleClass="custom-label"/>
+                        <p:password id="pass" value="#{loginBean.password}"
+                                    placeholder="Ingrese su contraseña"
+                                    toggleMask="true"
+                                    redisplay="true"/>
+                    </div>
+
+                    <p:commandButton value="ENTRAR" action="#{loginBean.login}"
+                                     styleClass="btn-login"
+                                     update="@form"/>
+                </h:form>
+
+            </div>
+        </div>
+
+    </div>
+
+</h:body>
+</html>

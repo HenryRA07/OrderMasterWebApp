@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+  <title>Menú Diario - OrderMaster</title>
+  <style>
+    body { margin: 0; font-family: 'Inter', sans-serif; display: flex; background-color: #f8f9fa; }
+
+    /* Sidebar (Mismo estilo que Gestión de Usuarios) */
+    .sidebar { width: 250px; background-color: #0a0a0a; height: 100vh; color: white; padding: 20px; position: fixed; }
+    .sidebar-logo { color: #d4af37; font-weight: bold; font-size: 1.5rem; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+    .nav-item { padding: 12px; border-radius: 8px; margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #718096; }
+    .nav-item.active { background-color: #d4af37; color: #0a0a0a; font-weight: bold; }
+
+    /* Layout Principal */
+    .main-content { margin-left: 250px; width: calc(100% - 250px); padding: 40px; }
+    .header-title { font-size: 1.8rem; font-weight: bold; color: #1a202c; margin-bottom: 30px; }
+
+    .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: start; }
+    .card-custom { background: white; border-radius: 12px; padding: 25px; border: 1px solid #e2e8f0; }
+    .full-width { grid-column: 1 / span 2; margin-top: 25px; }
+
+    /* Chips del Catálogo (Platillos Anteriores) */
+    .catalog-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+    .chip-item {
+      padding: 8px 15px; border: 1px solid #d4af37; border-radius: 20px;
+      cursor: pointer; background: white; transition: 0.3s; font-size: 0.9rem;
+    }
+    .chip-item:hover { background-color: #fef9e7; }
+    .chip-price { color: #d4af37; font-weight: bold; margin-left: 5px; }
+
+    /* Botones */
+    .btn-black { background-color: #0a0a0a !important; border: none !important; color: white !important; width: 100%; padding: 10px !important; }
+    .ui-button-flat.ui-button-danger { color: #e53e3e !important; }
+  </style>
+</h:head>
+<h:body>
+  <div class="sidebar">
+    <div class="sidebar-logo"><i class="pi pi-fire"></i> OrderMaster</div>
+    <a href="usuario.xhtml" class="nav-item"><i class="pi pi-users"></i> Usuarios</a>
+    <a href="#" class="nav-item active"><i class="pi pi-calendar"></i> Menú Diario</a>
+    <div style="position: absolute; bottom: 30px; width: calc(100% - 40px);">
+      <p:commandLink action="index?faces-redirect=true" styleClass="nav-item">
+        <i class="pi pi-sign-out"></i> Salir
+      </p:commandLink>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h1 class="header-title">Menú diario: Jueves, 15/01/2026</h1>
+
+    <div class="grid-container">
+      <h:form id="formCrear">
+        <div class="card-custom">
+          <p style="font-weight: bold; margin-bottom: 20px;">Crear Menú Diario</p>
+
+          <p:selectOneButton value="#{menuBean.tipo}" style="margin-bottom: 20px;">
+            <f:selectItem itemLabel="Mixto" itemValue="Mixto" />
+            <f:selectItem itemLabel="Desayuno" itemValue="Desayuno" />
+            <f:selectItem itemLabel="Almuerzo" itemValue="Almuerzo" />
+            <f:selectItem itemLabel="Merienda" itemValue="Merienda" />
+          </p:selectOneButton>
+
+          <div class="ui-fluid">
+            <div style="margin-bottom: 15px;">
+              <p:outputLabel value="Nombre del Platillo" />
+              <p:inputText placeholder="Ej: Pollo a la plancha" />
+            </div>
+            <div style="margin-bottom: 15px;">
+              <p:outputLabel value="Precio" />
+              <p:inputNumber symbol="$" placeholder="0.00" />
+            </div>
+            <div style="margin-bottom: 15px;">
+              <p:outputLabel value="Descripción" />
+              <p:inputTextarea rows="3" placeholder="Descripción breve del platillo" />
+            </div>
+          </div>
+          <p:commandButton value="+ Agregar Platillo" styleClass="btn-black" />
+        </div>
+      </h:form>
+
+      <div class="card-custom">
+        <p style="font-weight: bold; margin-bottom: 20px;">Menú Actual del Día</p>
+        <p:dataTable var="p" value="#{menuBean.menuActual}" emptyMessage="No hay platillos agregados.">
+          <p:column headerText="Platillo">
+            <h:outputText value="Pollo a la plancha" style="font-weight:bold" /><br/>
+            <small>Pechuga de pollo con ensalada</small>
+          </p:column>
+          <p:column headerText="Precio" width="80">
+            <h:outputText value="$8.50" style="color:#d4af37; font-weight:bold" />
+          </p:column>
+          <p:column headerText="Acciones" width="80">
+            <p:commandButton icon="pi pi-pencil" styleClass="ui-button-flat ui-button-plain" />
+            <p:commandButton icon="pi pi-trash" styleClass="ui-button-flat ui-button-danger" />
+          </p:column>
+        </p:dataTable>
+      </div>
+
+      <div class="card-custom full-width">
+        <p style="font-weight: bold;">Platillos Creados Anteriormente</p>
+        <p style="color: #718096; font-size: 0.85rem;">Seleccione un platillo para añadirlo directamente al menú actual.</p>
+
+        <div class="catalog-container">
+          <div class="chip-item">Pollo a la plancha <span class="chip-price">$8.50</span></div>
+          <div class="chip-item">Bandeja Paisa <span class="chip-price">$12.00</span></div>
+          <div class="chip-item">Huevos Pericos <span class="chip-price">$5.00</span></div>
+          <div class="chip-item">Arepa con Queso <span class="chip-price">$3.50</span></div>
+          <div class="chip-item">Empanadas <span class="chip-price">$1.50</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</h:body>
+</html>

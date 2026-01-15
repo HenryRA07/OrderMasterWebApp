@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Caja y Facturación - OrderMaster</title>
+    <style>
+        body { margin: 0; font-family: 'Inter', sans-serif; display: flex; background-color: #f8f9fa; }
+
+        /* Sidebar */
+        .sidebar { width: 250px; background-color: #0a0a0a; height: 100vh; color: white; padding: 20px; position: fixed; }
+        .sidebar-logo { color: #d4af37; font-weight: bold; font-size: 1.5rem; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        .nav-item { padding: 12px; border-radius: 8px; margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #718096; }
+        .nav-item.active { background-color: #d4af37; color: #0a0a0a; font-weight: bold; }
+
+        .main-content { margin-left: 250px; width: calc(100% - 250px); padding: 40px; }
+
+        /* Grid de Pedidos por Cobrar */
+        .billing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
+        .bill-card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; padding: 20px; }
+
+        .bill-header { border-bottom: 1px solid #edf2f7; padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; }
+        .total-badge { font-size: 1.4rem; font-weight: bold; color: #d4af37; }
+
+        /* Modal de Pago */
+        .payment-modal { padding: 10px; }
+        .payment-option { border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+        .payment-option:hover { border-color: #d4af37; }
+        .payment-option.selected { border-color: #d4af37; background: #fffdf5; }
+
+        .btn-pay { background-color: #0a0a0a !important; color: white !important; border: none !important; width: 100%; padding: 12px !important; font-weight: bold !important; }
+        .vuelto-container { background: #f0fff4; border: 1px solid #c6f6d5; padding: 15px; border-radius: 8px; text-align: center; margin-top: 15px; }
+    </style>
+</h:head>
+<h:body>
+    <div class="sidebar">
+        <div class="sidebar-logo"><i class="pi pi-fire"></i> OrderMaster</div>
+        <a href="#" class="nav-item active"><i class="pi pi-wallet"></i> Cobros</a>
+        <div style="position: absolute; bottom: 30px; width: calc(100% - 40px);">
+            <p:commandLink action="index?faces-redirect=true" styleClass="nav-item">
+                <i class="pi pi-sign-out"></i> Salir
+            </p:commandLink>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1 style="font-size: 1.8rem; font-weight: bold; margin-bottom: 30px;">Pedidos listos para Cobro</h1>
+
+        <div class="billing-grid">
+            <div class="bill-card">
+                <div class="bill-header">
+                    <div>
+                        <strong>ORD-001</strong> <br/>
+                        <small>Mesero: Juan Pérez</small>
+                    </div>
+                    <span style="color: #38a169; font-weight: bold; font-size: 0.8rem;">COMPLETADO</span>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>2x Pollo a la plancha</span>
+                        <span>$17.00</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>1x Ensalada César</span>
+                        <span>$6.50</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #cbd5e0; padding-top: 15px;">
+                    <span>Total a Pagar:</span>
+                    <span class="total-badge">$23.50</span>
+                </div>
+
+                <p:commandButton value="Cobrar Ahora" icon="pi pi-money-bill"
+                                 oncomplete="PF('dlgPago').show()"
+                                 styleClass="btn-pay" style="margin-top: 20px;"/>
+            </div>
+        </div>
+    </div>
+
+    <p:dialog header="Finalizar Pago - ORD-001" widgetVar="dlgPago" modal="true" width="450" responsive="true">
+        <h:form id="formPago">
+            <div class="payment-modal">
+                <p:outputLabel value="Método de Pago:" style="font-weight: bold;"/>
+                <p:selectOneButton value="Efectivo" style="margin: 15px 0;">
+                    <f:selectItem itemLabel="Efectivo" itemValue="Efectivo" />
+                    <f:selectItem itemLabel="Tarjeta" itemValue="Tarjeta" />
+                </p:selectOneButton>
+
+                <div class="ui-fluid">
+                    <p:outputLabel value="Efectivo Recibido:" />
+                    <p:inputNumber symbol="$" value="30.00" style="font-size: 1.5rem;">
+                        <p:ajax event="keyup" update="vueltoPanel" />
+                    </p:inputNumber>
+                </div>
+
+                <h:panelGroup id="vueltoPanel">
+                    <div class="vuelto-container">
+                        <small>Vuelto (Cambio):</small><br/>
+                        <strong style="font-size: 1.8rem; color: #2f855a;">$6.50</strong>
+                    </div>
+                </h:panelGroup>
+
+                <p:commandButton value="Generar Comprobante" icon="pi pi-file-pdf"
+                action="#{cajaBean.confirmarPago}"
+                oncomplete="PF('dlgPago').hide(); PF('dlgExitoCaja').show()"
+                styleClass="btn-pay" style="margin-top: 20px; background:#d4af37 !important; color:#0a0a0a !important;"/>
+            </div>
+        </h:form>
+    </p:dialog>
+
+    <p:dialog widgetVar="dlgExitoCaja" modal="true" closable="false" showHeader="false" width="300">
+        <div style="text-align: center; padding: 20px;">
+            <i class="pi pi-check-circle" style="font-size: 3rem; color: #38a169;"></i>
+            <h3>Pago Exitoso</h3>
+            <p>El comprobante se ha enviado a impresión.</p>
+            <p:commandButton value="Cerrar" onclick="PF('dlgExitoCaja').hide()" styleClass="btn-pay" />
+        </div>
+    </p:dialog>
+</h:body>
+</html>

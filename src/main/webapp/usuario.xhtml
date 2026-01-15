@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Gestión de Usuarios - OrderMaster</title>
+    <style>
+        body { margin: 0; font-family: 'Inter', sans-serif; display: flex; background-color: #f8f9fa; }
+
+        /* Sidebar Estilo Henry */
+        .sidebar {
+            width: 250px; background-color: #0a0a0a; height: 100vh;
+            color: white; padding: 20px; position: fixed;
+        }
+        .sidebar-logo { color: #d4af37; font-weight: bold; font-size: 1.5rem; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        .nav-item {
+            padding: 12px; border-radius: 8px; margin-bottom: 5px; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; text-decoration: none; color: #718096;
+        }
+        .nav-item.active { background-color: #d4af37; color: #0a0a0a; font-weight: bold; }
+        .nav-item:hover:not(.active) { background-color: rgba(255,255,255,0.05); }
+
+        /* Contenedor Principal */
+        .main-content { margin-left: 250px; width: calc(100% - 250px); padding: 40px; }
+        .card-custom { background: white; border-radius: 12px; padding: 25px; border: 1px solid #e2e8f0; margin-bottom: 30px; }
+        .section-title { font-size: 1.5rem; font-weight: bold; color: #1a202c; margin-bottom: 25px; }
+
+        /* Botones Personalizados */
+        .btn-black { background-color: #0a0a0a !important; border: none !important; color: white !important; }
+        .btn-gold { background-color: #d4af37 !important; border: none !important; color: #0a0a0a !important; font-weight: bold !important; }
+
+        /* Estilos de Tabla */
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; }
+        .status-active { background-color: #e6fffa; color: #38a169; }
+        .status-inactive { background-color: #fff5f5; color: #e53e3e; }
+    </style>
+</h:head>
+<h:body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <i class="pi pi-fire"></i> OrderMaster
+        </div>
+        <a href="#" class="nav-item active"><i class="pi pi-users"></i> Usuarios</a>
+        <a href="menuDiario.xhtml" class="nav-item"><i class="pi pi-calendar"></i> Menú Diario</a>
+        <div style="position: absolute; bottom: 30px; width: calc(100% - 40px);">
+            <p:commandLink action="index?faces-redirect=true" styleClass="nav-item">
+                <i class="pi pi-sign-out"></i> Salir
+            </p:commandLink>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="section-title">Gestión de Usuarios [cite: 206, 257]</h1>
+
+        <h:form id="formRegistro">
+            <div class="card-custom">
+                <p style="margin-top: 0; font-weight: bold; color: #4a5568;">Registrar Nuevo Usuario</p>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12 ui-md-3">
+                        <p:outputLabel value="Nombres" for="nom"/>
+                        <p:inputText id="nom" placeholder="Nombres" />
+                    </div>
+                    <div class="ui-g-12 ui-md-3">
+                        <p:outputLabel value="Apellidos" for="ape"/>
+                        <p:inputText id="ape" placeholder="Apellidos" />
+                    </div>
+                    <div class="ui-g-12 ui-md-3">
+                        <p:outputLabel value="Rol" for="rol"/>
+                        <p:selectOneMenu id="rol">
+                            <f:selectItem itemLabel="Mesero" itemValue="mesero" />
+                            <f:selectItem itemLabel="Cocina" itemValue="cocina" />
+                            <f:selectItem itemLabel="Caja" itemValue="caja" />
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-g-12 ui-md-3">
+                        <p:outputLabel value="Correo" for="mail"/>
+                        <p:inputText id="mail" placeholder="correo@ejemplo.com" />
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 20px; align-items: flex-end;">
+                    <div style="flex-grow: 1;">
+                        <p:outputLabel value="Generar Contraseña" />
+                        <p:inputText placeholder="Contraseña generada automáticamente" readonly="true" />
+                    </div>
+                    <p:commandButton value="Generar" icon="pi pi-key" styleClass="btn-black" />
+                    <p:commandButton value="Guardar Usuario" icon="pi pi-save" styleClass="btn-gold" />
+                </div>
+            </div>
+        </h:form>
+
+        <div class="card-custom">
+            <p style="margin-top: 0; font-weight: bold; color: #4a5568;">Usuarios del Sistema</p>
+            <p:dataTable var="user" value="#{userBean.listaUsuarios}" reflow="true">
+                <p:column headerText="Nombre Completo">
+                    <h:outputText value="Carlos Rodríguez" />
+                </p:column>
+                <p:column headerText="Rol">
+                    <h:outputText value="Mesero" />
+                </p:column>
+                <p:column headerText="Correo">
+                    <h:outputText value="carlos@shamanblack.com" />
+                </p:column>
+                <p:column headerText="Estado">
+                    <span class="status-badge status-active">Activo</span>
+                </p:column>
+                <p:column headerText="Acción">
+                    <p:commandLink value="Desactivar" style="color: #e53e3e; text-decoration: none; font-weight: bold;" />
+                </p:column>
+            </p:dataTable>
+        </div>
+    </div>
+</h:body>
+</html>
