@@ -42,16 +42,14 @@
             </p:commandLink>
         </div>
     </div>
-
     <div class="main-content">
         <h1 style="font-size: 1.8rem; font-weight: bold;">Toma de Pedidos</h1>
-
-        <p:selectOneButton value="Todos" style="margin-bottom: 25px;">
-            <f:selectItem itemLabel="Todos" itemValue="Todos" />
-            <f:selectItem itemLabel="Mixto" itemValue="Mixto" />
+        <p:selectOneButton value="Almuerzo" style="margin-bottom: 25px;">
+            <f:selectItem itemLabel="Desayuno" itemValue="Desayuno" />
             <f:selectItem itemLabel="Almuerzo" itemValue="Almuerzo" />
+            <f:selectItem itemLabel="Cena" itemValue="Cena" />
+            <f:selectItem itemLabel="Bebidas" itemValue="Bebidas" />
         </p:selectOneButton>
-
         <div class="product-grid">
             <p:commandLink update=":formModal" oncomplete="PF('dlgCantidad').show()">
                 <div class="product-card">
@@ -61,7 +59,6 @@
                 </div>
             </p:commandLink>
         </div>
-
         <div class="pending-section">
             <h2 style="font-size: 1.3rem; font-weight: bold; color: #4a5568;">Mis Pedidos Pendientes</h2>
             <div class="pending-orders-grid">
@@ -70,36 +67,39 @@
                         <strong>ORD-005</strong> <span style="margin-left: 10px; color: #718096;">15:45 PM</span>
                         <div style="font-size: 0.9rem;">2x Pollo a la plancha, 1x Coca Cola</div>
                     </div>
-                    <p:commandButton icon="pi pi-pencil" value="Editar" styleClass="ui-button-flat" />
+                    <p:commandButton icon="pi pi-pencil"
+                                     value="Editar"
+                                     styleClass="ui-button-flat"
+                                     oncomplete="PF('dlgEditarPedido').show()" />
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="order-summary-panel">
-        <h2 style="font-size: 1.4rem; font-weight: bold; display: flex; align-items: center; gap: 10px;">
-            <i class="pi pi-shopping-cart" style="color:#d4af37"></i> Resumen del Pedido
-        </h2>
-        <p:separator />
-
-        <div style="height: calc(100vh - 300px); overflow-y: auto;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                <span>1x Arroz con camarones</span>
-                <span style="font-weight: bold;">$12,000</span>
+    <h:form id="formResumen">
+        <div class="order-summary-panel">
+            <h2 style="font-size: 1.4rem; font-weight: bold; display: flex; align-items: center; gap: 10px;">
+                <i class="pi pi-shopping-cart" style="color:#d4af37"></i> Resumen del Pedido
+            </h2>
+            <p:separator />
+            <div style="height: calc(100vh - 300px); overflow-y: auto;">
+                <h:panelGroup id="panelResumen">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <span>1x Pollo a la plancha</span>
+                        <span style="font-weight: bold;">$12,500</span>
+                    </div>
+                </h:panelGroup>
+            </div>
+            <div style="border-top: 1px solid #e2e8f0; padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                    <span>Total:</span>
+                    <span style="color: #d4af37;">$12,000</span>
+                </div>
+                <p:commandButton value="Confirmar Pedido"
+                                 oncomplete="PF('dlgExito').show()"
+                                 styleClass="btn-confirm" />
             </div>
         </div>
-
-        <div style="border-top: 1px solid #e2e8f0; padding-top: 20px;">
-            <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
-                <span>Total:</span>
-                <span style="color: #d4af37;">$12,000</span>
-            </div>
-            <p:commandButton value="Confirmar Pedido"
-                             oncomplete="PF('dlgExito').show()"
-                             styleClass="btn-confirm" />
-        </div>
-    </div>
-
+    </h:form>
     <p:dialog header="Añadir al Pedido" widgetVar="dlgCantidad" modal="true" responsive="true" width="400">
         <h:form id="formModal">
             <div class="ui-fluid">
@@ -107,17 +107,46 @@
                     <h3>Pollo a la plancha</h3>
                     <p:spinner value="1" min="1" max="20" />
                 </div>
-                <p:inputTextarea placeholder="Observaciones (ej. sin sal, bien cocido)" rows="3" />
-                <p:commandButton value="Añadir" styleClass="btn-confirm" oncomplete="PF('dlgCantidad').hide()" />
+                <div style="margin-bottom: 15px;">
+                    <p:inputTextarea
+                            placeholder="Observaciones (ej. sin sal, bien cocido)"
+                            rows="3" />
+                </div>
+                <p:commandButton value="Añadir"
+                                 styleClass="btn-confirm"
+                                 update="formResumen:panelResumen"
+                                 oncomplete="PF('dlgCantidad').hide()" />
             </div>
         </h:form>
     </p:dialog>
-
     <p:dialog widgetVar="dlgExito" modal="true" closable="false" showHeader="false" width="350">
         <div class="success-modal">
             <i class="pi pi-check-circle success-icon"></i>
             <h3>Pedido confirmado con éxito</h3>
             <p:commandButton value="Aceptar" onclick="PF('dlgExito').hide()" styleClass="btn-black" style="width: 100px" />
+        </div>
+    </p:dialog>
+    <p:dialog header="Editar Pedido"
+              widgetVar="dlgEditarPedido"
+              modal="true"
+              width="450"
+              responsive="true">
+        <div class="ui-fluid">
+            <h4>Pedido ORD-005</h4>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span>2x Pollo a la plancha</span>
+                <p:commandButton icon="pi pi-trash"
+                                 styleClass="ui-button-danger ui-button-flat" />
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span>1x Coca Cola</span>
+                <p:commandButton icon="pi pi-trash"
+                                 styleClass="ui-button-danger ui-button-flat" />
+            </div>
+            <p:separator />
+            <p:commandButton value="Guardar Cambios"
+                             styleClass="btn-confirm"
+                             oncomplete="PF('dlgEditarPedido').hide()" />
         </div>
     </p:dialog>
 </h:body>
