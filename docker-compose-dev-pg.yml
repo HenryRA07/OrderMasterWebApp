@@ -1,0 +1,67 @@
+services:
+  # Base de datos PostgreSQL
+  ordermaster-pg-db:
+    image: postgres:${POSTGRES_VERSION}
+    restart: unless-stopped
+    container_name: ordermaster-pg-db-container
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PWD}
+    ports:
+      - ${DB_PGSQL_PORT_PUBLIC}:5434
+    volumes:
+      - ordermaster-pg-data:/var/lib/postgresql/data
+      #- ./init_db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      ordermaster-pg-network:
+        ipv4_address: 173.21.0.241
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5 # Número de intentos antes de marcar como no saludable
+      start_period: 30s #Espera inicial antes de comenzar a comprobar(Dar tiempo a PostgreSQL inicie)
+  ordermaster-pg-adminer-bd:
+      image: adminer
+      container_name: ordermaster-pg-adminer-bd-container
+      restart: unless-stopped
+    #  restart: always
+      ports:
+        - 8081:8080
+      depends_on:
+        - ordermaster-pg-db
+      networks:
+        ordermaster-pg-network:
+          ipv4_address: 173.21.0.243
+  ordermaster-pg-pgadmin4-db:
+    container_name: ordermaster-pgadmin4-container
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "ordermaster@postgres.org"
+      PGADMIN_DEFAULT_PASSWORD: "ordermaster2026"
+    ports:
+      - 16543:80
+    depends_on:
+      - ordermaster-pg-db
+    networks:
+      ordermaster-pg-network:
+        ipv4_address: 173.21.0.252
+networks:
+  ordermaster-pg-network:
+    driver: bridge
+    #driver_opts:
+    #    parent: eth0
+    ipam:
+      driver: default
+      config:
+        - subnet: 173.21.0.0/24
+volumes:
+  ordermaster-pg-data:
+    name: ordermaster-pg-data-local
+    driver: local
+    driver_opts:
+      type: none
+      device: ${LOCAL_DATA_DIR_BD}
+      o: bind

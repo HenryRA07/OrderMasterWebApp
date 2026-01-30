@@ -1,0 +1,12 @@
+## VARIABLES DE ENTORNO PARA POSTGRES
+POSTGRES_VERSION=16.3-alpine
+DB_PGSQL_PORT_PUBLIC=5434
+LOCAL_DATA_DIR_BD=/home/franzludena/BaseDatos/ordermaster-app
+
+## VARIABLES DE ENTORNO COMUNES
+DB_NAME=ordermaster
+DB_USER=ordermasteruser
+DB_PWD=orderUser2026
+
+#DRIVER_JDBC_DIR=target/lib/postgresql-42.7.3.jar
+DRIVER_JDBC_DIR=target/lib/*.jar
