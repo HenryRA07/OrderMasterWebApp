@@ -1,4 +1,4 @@
-package edu.unl.cc.jakarta.hello;
+package edu.unl.cc.ordermaster.jakarta.hello;
 
 public class Hello {
 
