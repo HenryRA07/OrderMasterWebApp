@@ -1,27 +1,34 @@
-/**
- * @author FrancisEngine(Francisco Chamba)
- */
 package edu.unl.cc.ordermaster.domain.security;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+
+@Entity
 public class Role implements java.io.Serializable{
 
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // Validaciones a nivel de vista y modelo
     @NotNull
     @NotEmpty
+    @Column(unique = true, nullable = false, length = 50)
     private String name;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "role_permission",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
     private Set<Permission> permissions;
 
     public Role() {
@@ -33,14 +40,14 @@ public class Role implements java.io.Serializable{
         this.id = id;
         this.setName(name);
     }
+
     public void add(Permission permission){
-        if(permission !=null){
-            if(!getPermissions().contains(permission)){
+        if (permission != null) {
+            if (!getPermissions().contains(permission)){
                 this.permissions.add(permission);
             }
         }
     }
-
 
     public Long getId() {
         return id;
@@ -87,4 +94,3 @@ public class Role implements java.io.Serializable{
         return sb.toString();
     }
 }
-

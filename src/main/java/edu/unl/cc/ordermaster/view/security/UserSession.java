@@ -1,10 +1,8 @@
-/**
- * @author FrancisEngine(Francisco Chamba)
- */
 package edu.unl.cc.ordermaster.view.security;
 
 import edu.unl.cc.ordermaster.business.SecurityFacade;
 import edu.unl.cc.ordermaster.domain.security.ActionType;
+import edu.unl.cc.ordermaster.domain.security.Role;
 import edu.unl.cc.ordermaster.domain.security.User;
 import edu.unl.cc.ordermaster.exception.EntityNotFoundException;
 import jakarta.enterprise.context.SessionScoped;
@@ -12,11 +10,10 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.validation.constraints.NotNull;
 
-import javax.management.relation.Role;
+
 import java.io.Serial;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 @Named
 @SessionScoped
@@ -36,7 +33,7 @@ public class UserSession implements java.io.Serializable{
         logger.info("User logged in: " + user.getName());
         this.user = user;
         Set<Role> roles = securityFacade.findRolesWithPermissionByUser(this.user.getId());
-        //user.setRoles(roles);
+        user.setRoles(roles);
     }
 
     public boolean hasPermissionForPage(String pagePath) {
@@ -65,5 +62,3 @@ public class UserSession implements java.io.Serializable{
     }
 
 }
-
-

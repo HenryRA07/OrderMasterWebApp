@@ -1,14 +1,11 @@
-/**
- * @author FrancisEngine(Francisco Chamba)
- */
 package edu.unl.cc.ordermaster.business.service;
 
+import jakarta.ejb.Stateless;
 import edu.unl.cc.ordermaster.domain.security.User;
 import edu.unl.cc.ordermaster.exception.EntityNotFoundException;
-import jakarta.ejb.Stateless;
-
 
 import java.util.*;
+
 @Stateless
 public class UserRepository {
     private static final Map<Long, User> tableUserBD;

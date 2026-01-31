@@ -1,10 +1,8 @@
-/**
- * @author FrancisEngine(Francisco Chamba)
- */
 package edu.unl.cc.ordermaster.business;
 
 import edu.unl.cc.ordermaster.business.service.RoleRepository;
 import edu.unl.cc.ordermaster.business.service.UserRepository;
+import edu.unl.cc.ordermaster.domain.security.Role;
 import edu.unl.cc.ordermaster.domain.security.User;
 import edu.unl.cc.ordermaster.exception.AlreadyEntityException;
 import edu.unl.cc.ordermaster.exception.CredentialInvalidException;
@@ -14,9 +12,10 @@ import edu.unl.cc.ordermaster.util.EncryptorManager;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
-import javax.management.relation.Role;
 import java.io.Serializable;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Stateless
 public class SecurityFacade implements Serializable {
@@ -95,4 +94,3 @@ public class SecurityFacade implements Serializable {
 
 
 }
-
