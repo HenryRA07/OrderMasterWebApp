@@ -17,23 +17,62 @@ services:
       devordermaster-pg-network:
         ipv4_address: 171.21.0.241
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5 # Número de intentos antes de marcar como no saludable
       start_period: 30s #Espera inicial antes de comenzar a comprobar(Dar tiempo a PostgreSQL inicie)
+
+  ordermaster-web:
+    container_name: ordermaster-web-container
+    build:
+      context: .
+      args:
+        # Parámetros para el Dockerfile definido en las variables del archivo .env o sistema para copiar el archivo durante el build.
+        # Se usa solo durante la creación de la imagen. No afecta al contenedor en ejecución.
+        # Copia el driver JDBC a /config/ dentro de la imagen
+        - ENV_DRIVER_JDBC_DIR=${DRIVER_JDBC_DIR}
+    image: ordermaster-app:latest
+    environment:
+      # Ejecución del contenedor (environment):
+      # Open Liberty usa DRIVER_JDBC_DIR=/config/ para ubicar el driver.
+      - DRIVER_JDBC_DIR=/config/
+      - DB_SERVER_NAME=${DB_SERVER_NAME}
+      - DB_PORT_NUMBER=${DB_PORT_NUMBER}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "9080:9080"
+      - "9443:9443"
+    depends_on:
+      - devordermaster-pg-db
+    deploy:
+      resources:
+        limits:
+          #cpus: '0.50'
+          memory: 1024M
+        reservations:
+          #cpus: '0.25'
+          memory: 512M
+    networks:
+      devordermaster-pg-network:
+      #ipv4_address: 173.21.0.2
+
+
+
   devordermaster-pg-adminer-bd:
-      image: adminer
-      container_name: devordermaster-pg-adminer-bd-container
-      restart: unless-stopped
+    image: adminer
+    container_name: devordermaster-pg-adminer-bd-container
+    restart: unless-stopped
     #  restart: always
-      ports:
-        - 8081:8080
-      depends_on:
-        - devordermaster-pg-db
-      networks:
-        devordermaster-pg-network:
-          ipv4_address: 171.21.0.243
+    ports:
+      - 8081:8080
+    depends_on:
+      - devordermaster-pg-db
+    networks:
+      devordermaster-pg-network:
+        ipv4_address: 171.21.0.243
 
   ordermaster-pg-pgadmin4-db:
     container_name: devordermaster-pgadmin4-container
@@ -49,6 +88,7 @@ services:
     networks:
       devordermaster-pg-network:
         ipv4_address: 171.21.0.252
+
 networks:
   devordermaster-pg-network:
     driver: bridge
