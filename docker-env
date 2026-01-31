@@ -1,16 +1,16 @@
 ## VARIABLES DE ENTORNO PARA POSTGRES
 POSTGRES_VERSION=16.3-alpine
 DB_PGSQL_PORT_PUBLIC=5434
-LOCAL_DATA_DIR_BD=/home/franzludena/BaseDatos/DevOrderMaster
+LOCAL_DATA_DIR_BD=/home/franzludena/BaseDatos/OrderMasterDB-app
 
 ## VARIABLES DE ENTORNO COMUNES
-DB_NAME=devordermaster
-DB_USER=devordermasteruser
-DB_PWD=devorderUser2026
+DB_NAME=ordermasterv1
+DB_USER=ordermasterv1user
+DB_PWD=orderMasterUser2026
 
 ## VARIABLES DE ENTORNO PARA CONFIGURACIÓN DE ACCESO A BD
 ## DENTRO DEL CONTENEDOR DE LA APP
-DB_SERVER_NAME=devordermaster-pg-db
+DB_SERVER_NAME=ordermaster-v1-pg-db
 DB_PORT_NUMBER=5432
 
 #DRIVER_JDBC_DIR=target/lib/postgresql-42.7.3.jar

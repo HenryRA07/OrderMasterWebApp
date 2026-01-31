@@ -1,9 +1,9 @@
 services:
   # Base de datos PostgreSQL
-  devordermaster-pg-db:
+  ordermaster-v1-pg-db:
     image: postgres:${POSTGRES_VERSION}
     restart: unless-stopped
-    container_name: devordermaster-pg-db-container
+    container_name: ordermaster-v1-pg-db-container
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -11,56 +11,56 @@ services:
     ports:
       - ${DB_PGSQL_PORT_PUBLIC}:5434
     volumes:
-      - devordermaster-pg-data:/var/lib/postgresql/data
+      - ordermaster-v1-pg-data:/var/lib/postgresql/data
       #- ./init_db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      devordermaster-pg-network:
-        ipv4_address: 171.21.0.241
+      ordermaster-v1-pg-network:
+        ipv4_address: 170.21.0.241
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5 # Número de intentos antes de marcar como no saludable
       start_period: 30s #Espera inicial antes de comenzar a comprobar(Dar tiempo a PostgreSQL inicie)
-  devordermaster-pg-adminer-bd:
+  ordermaster-v1-pg-adminer-bd:
       image: adminer
-      container_name: devordermaster-pg-adminer-bd-container
+      container_name: ordermaster-v1-pg-adminer-bd-container
       restart: unless-stopped
     #  restart: always
       ports:
         - 8081:8080
       depends_on:
-        - devordermaster-pg-db
+        - ordermaster-v1-pg-db
       networks:
-        devordermaster-pg-network:
-          ipv4_address: 171.21.0.243
+        ordermaster-v1-pg-network:
+          ipv4_address: 170.21.0.243
 
-  ordermaster-pg-pgadmin4-db:
-    container_name: devordermaster-pgadmin4-container
+  ordermaster-v1-pg-pgadmin4-db:
+    container_name: ordermaster-v1-pgadmin4-container
     image: dpage/pgadmin4
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: "devordermaster@postgres.org"
-      PGADMIN_DEFAULT_PASSWORD: "devordermaster2026"
+      PGADMIN_DEFAULT_EMAIL: "ordermasterV1@postgres.org"
+      PGADMIN_DEFAULT_PASSWORD: "ordermasterV12026"
     ports:
       - 16543:80
     depends_on:
-      - devordermaster-pg-db
+      - ordermaster-v1-pg-db
     networks:
-      devordermaster-pg-network:
-        ipv4_address: 171.21.0.252
+      ordermaster-v1-pg-network:
+        ipv4_address: 170.21.0.252
 networks:
-  devordermaster-pg-network:
+  ordermaster-v1-pg-network:
     driver: bridge
     #driver_opts:
     #    parent: eth0
     ipam:
       driver: default
       config:
-        - subnet: 171.21.0.0/24
+        - subnet: 170.21.0.0/24
 volumes:
-  devordermaster-pg-data:
-    name: devordermaster-pg-data-local
+  ordermaster-v1-pg-data:
+    name: ordermaster-v1-pg-data-local
     driver: local
     driver_opts:
       type: none
