@@ -29,12 +29,19 @@ public class AuthorizationFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) servletRequest;
         // Obtener la ruta solicitada
         String requestPath = httpReq.getRequestURI().substring(httpReq.getContextPath().length());
+        // Obtener el método HTTP
+        String method = httpReq.getMethod();
 
-        //logger.info("-----> Request path: " + requestPath);
-        System.out.println("-----> Request path: " + requestPath);
+        logger.info("-----> Request path: " + requestPath + " --> HTTP Method: " + method);
+        //System.out.println("-----> Request path: " + requestPath + " --> HTTP Method: " + method);
 
         // 1. Permitir recursos públicos
-        if (requestPath.startsWith("/public/") || requestPath.equals("/login.xhtml") || requestPath.equals("/index.xhtml")) {
+        if (requestPath.startsWith("/public/")
+                || requestPath.equals("/login.xhtml")
+                || requestPath.equals("/index.xhtml")
+            //|| requestPath.contains("/jakarta.faces.resource/")  // Recursos de JSF
+            //|| requestPath.contains("/primefaces/")            // Recursos de PrimeFaces
+        ) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
@@ -50,8 +57,8 @@ public class AuthorizationFilter implements Filter {
         }
 
         // 4. Verificar permisos para la página solicitada
-        //logger.info("-----> userSession.hasPermissionForPage: " + requestPath + " return:  " + userSession.hasPermissionForPage(requestPath));
-        System.out.println("-----> userSession.hasPermissionForPage: " + requestPath + " return:  " + userSession.hasPermissionForPage(requestPath));
+        logger.info("-----> userSession.hasPermissionForPage: " + requestPath + " return:  " + userSession.hasPermissionForPage(requestPath));
+        //System.out.println("-----> userSession.hasPermissionForPage: " + requestPath + " return:  " + userSession.hasPermissionForPage(requestPath));
 
         if (userSession.hasPermissionForPage(requestPath)) {
             filterChain.doFilter(servletRequest, servletResponse);

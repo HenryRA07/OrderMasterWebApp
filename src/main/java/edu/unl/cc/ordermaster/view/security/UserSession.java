@@ -60,5 +60,4 @@ public class UserSession implements java.io.Serializable{
     public User getUser() {
         return user;
     }
-
 }

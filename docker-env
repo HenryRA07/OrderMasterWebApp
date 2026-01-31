@@ -8,6 +8,10 @@ DB_NAME=devordermaster
 DB_USER=devordermasteruser
 DB_PWD=devorderUser2026
 
+## VARIABLES DE ENTORNO PARA CONFIGURACIÓN DE ACCESO A BD
+## DENTRO DEL CONTENEDOR DE LA APP
+DB_SERVER_NAME=devordermaster-pg-db
+DB_PORT_NUMBER=5432
 
 #DRIVER_JDBC_DIR=target/lib/postgresql-42.7.3.jar
 DRIVER_JDBC_DIR=target/lib/*.jar

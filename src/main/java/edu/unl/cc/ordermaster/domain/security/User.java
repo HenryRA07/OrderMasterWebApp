@@ -3,8 +3,8 @@
  */
 package edu.unl.cc.ordermaster.domain.security;
 
-
 import edu.unl.cc.ordermaster.domain.common.Organization;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,22 +15,34 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Entity
+@Table(name = "user_")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
     // Validaciones a nivel de vista y modelo
     @NotNull @NotEmpty @Size(min=5)
+    @Column(unique = true, nullable = false, length = 50)
     private String name;
 
     @NotNull @NotEmpty
     private String password;
 
     // Relationships
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="role_id")
+    )
     private Set<Role> roles;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "organization_id")
     private Organization organization;
 
     public User() {
@@ -62,7 +74,6 @@ public class User implements Serializable {
         this.organization = organization;
     }
 
-
     /**
      * Validaciones a nivel de modelo y negocio
      * @param name
@@ -77,7 +88,6 @@ public class User implements Serializable {
             throw new IllegalArgumentException("Valor debe superar los 5 caracteres");
         }
     }
-
 
     public Long getId() {
         return id;
@@ -140,8 +150,5 @@ public class User implements Serializable {
         sb.append('}');
         return sb.toString();
     }
-
-
-
 }
 

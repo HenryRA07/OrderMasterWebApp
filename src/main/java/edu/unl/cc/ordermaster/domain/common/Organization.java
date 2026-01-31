@@ -3,6 +3,7 @@
  */
 package edu.unl.cc.ordermaster.domain.common;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -10,8 +11,14 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Organization implements java.io.Serializable{
 
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
     @NotNull @NotEmpty
@@ -21,9 +28,11 @@ public abstract class Organization implements java.io.Serializable{
     private LocalDate creationDate;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private IdentificationType identificationType;
 
     @NotNull @NotEmpty
+    @Column(unique = true)
     private String identificationNumber;
 
     @NotNull @NotEmpty

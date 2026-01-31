@@ -80,11 +80,11 @@ public class AuthenticationController implements java.io.Serializable{
     }
 
     public String logout() throws ServletException {
+        FacesUtil.addSuccessMessageAndKeep(userSession.getUser().getName(), "Hasta pronto");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.getExternalContext().invalidateSession();
-        FacesUtil.addSuccessMessageAndKeep("Hasta pronto");
         ((jakarta.servlet.http.HttpServletRequest) facesContext.getExternalContext().getRequest()).logout();
-        return "index.xhtml?faces-redirect=true";
+        return "/index.xhtml?faces-redirect=true";
     }
 
     public String getUsername() {

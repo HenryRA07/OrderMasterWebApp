@@ -90,7 +90,4 @@ public class SecurityFacade implements Serializable {
     public User findUser(Long userId) throws EntityNotFoundException {
         return  userRepository.find(userId);
     }
-
-
-
 }

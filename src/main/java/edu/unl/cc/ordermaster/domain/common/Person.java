@@ -3,11 +3,15 @@
  */
 package edu.unl.cc.ordermaster.domain.common;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
+@Entity
 public class Person extends Organization{
 
     @NotNull @NotEmpty
@@ -16,6 +20,7 @@ public class Person extends Organization{
     @NotNull @NotEmpty
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
     private GenderType gender;
 
     public Person() {
