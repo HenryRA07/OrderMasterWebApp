@@ -7,33 +7,7 @@
 <link rel="icon" href="images/logo_ShamanBlack.ico"/>
 <h:head>
     <title>Caja y Facturación - OrderMaster</title>
-    <style>
-        body { margin: 0; font-family: 'Inter', sans-serif; display: flex; background-color: #f8f9fa; }
-
-        /* Sidebar */
-        .sidebar { width: 250px; background-color: #0a0a0a; height: 100vh; color: white; padding: 20px; position: fixed; }
-        .sidebar-logo { color: #d4af37; font-weight: bold; font-size: 1.5rem; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
-        .nav-item { padding: 12px; border-radius: 8px; margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #718096; }
-        .nav-item.active { background-color: #d4af37; color: #0a0a0a; font-weight: bold; }
-
-        .main-content { margin-left: 250px; width: calc(100% - 250px); padding: 40px; }
-
-        /* Grid de Pedidos por Cobrar */
-        .billing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
-        .bill-card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; padding: 20px; }
-
-        .bill-header { border-bottom: 1px solid #edf2f7; padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; }
-        .total-badge { font-size: 1.4rem; font-weight: bold; color: #d4af37; }
-
-        /* Modal de Pago */
-        .payment-modal { padding: 10px; }
-        .payment-option { border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
-        .payment-option:hover { border-color: #d4af37; }
-        .payment-option.selected { border-color: #d4af37; background: #fffdf5; }
-
-        .btn-pay { background-color: #0a0a0a !important; color: white !important; border: none !important; width: 100%; padding: 12px !important; font-weight: bold !important; }
-        .vuelto-container { background: #f0fff4; border: 1px solid #c6f6d5; padding: 15px; border-radius: 8px; text-align: center; margin-top: 15px; }
-    </style>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </h:head>
 <h:body>
     <div class="sidebar">
@@ -82,33 +56,53 @@
         </div>
     </div>
 
-    <p:dialog header="Finalizar Pago - ORD-001" widgetVar="dlgPago" modal="true" width="450" responsive="true">
+    <p:dialog header="Finalizar Pago - ORD-001" widgetVar="dlgPago" modal="true" width="500" responsive="true">
         <h:form id="formPago">
             <div class="payment-modal">
-                <p:outputLabel value="Método de Pago:" style="font-weight: bold;"/>
-                <p:selectOneButton value="Efectivo" style="margin: 15px 0;">
-                    <f:selectItem itemLabel="Efectivo" itemValue="Efectivo" />
-                    <f:selectItem itemLabel="Tarjeta" itemValue="Tarjeta" />
-                </p:selectOneButton>
-
-                <div class="ui-fluid">
-                    <p:outputLabel value="Efectivo Recibido:" />
-                    <p:inputNumber symbol="$" value="30.00" style="font-size: 1.5rem;">
-                        <p:ajax event="keyup" update="vueltoPanel" />
-                    </p:inputNumber>
+                <div style="margin-bottom: 25px;">
+                    <p:outputLabel value="Método de Pago:" style="font-weight: bold; display: block; margin-bottom: 12px; font-size: 1rem;"/>
+                    <p:selectOneButton id="metodoPagoBtn" value="#{cajaBean.metodoPago}" style="width: 100%;">
+                        <f:selectItem itemLabel="Efectivo" itemValue="Efectivo" />
+                        <f:selectItem itemLabel="Tarjeta" itemValue="Tarjeta" />
+                        <p:ajax event="change" update="efectivoPanel" process="@this" />
+                    </p:selectOneButton>
                 </div>
 
-                <h:panelGroup id="vueltoPanel">
-                    <div class="vuelto-container">
-                        <small>Vuelto (Cambio):</small><br/>
-                        <strong style="font-size: 1.8rem; color: #2f855a;">$6.50</strong>
-                    </div>
+                <!-- Panel que se muestra solo cuando se selecciona Efectivo -->
+                <h:panelGroup id="efectivoPanel" layout="block">
+                    <h:panelGroup rendered="#{cajaBean.metodoPago eq 'Efectivo'}">
+                        <div style="margin-bottom: 25px;">
+                            <div class="ui-fluid">
+                                <p:outputLabel value="Efectivo Recibido:" style="font-weight: 600; display: block; margin-bottom: 10px;"/>
+                                <p:inputNumber id="efectivoRecibido" symbol="$" value="#{cajaBean.efectivoRecibido}"
+                                               style="font-size: 1.5rem;" minValue="0">
+                                    <p:ajax event="keyup" update="vueltoPanel" listener="#{cajaBean.calcularVuelto}" />
+                                </p:inputNumber>
+                            </div>
+
+                            <h:panelGroup id="vueltoPanel" layout="block" style="margin-top: 20px;">
+                                <div class="vuelto-container">
+                                    <small style="font-size: 0.85rem; color: #2d3748;">Vuelto (Cambio):</small><br/>
+                                    <strong style="font-size: 1.8rem; color: #2f855a;">
+                                        <h:outputText value="#{cajaBean.vuelto}">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </strong>
+                                </div>
+                            </h:panelGroup>
+                        </div>
+                    </h:panelGroup>
                 </h:panelGroup>
 
-                <p:commandButton value="Generar Comprobante" icon="pi pi-file-pdf"
-                action="#{cajaBean.confirmarPago}"
-                oncomplete="PF('dlgPago').hide(); PF('dlgExitoCaja').show()"
-                styleClass="btn-pay" style="margin-top: 20px; background:#d4af37 !important; color:#0a0a0a !important;"/>
+
+                <div style="margin-top: 30px;">
+                    <p:commandButton value="Generar Comprobante" icon="pi pi-file-pdf"
+                                     action="#{cajaBean.confirmarPago}"
+                                     update="@form"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgPago').hide(); PF('dlgExitoCaja').show(); }"
+                                     styleClass="btn-pay"
+                                     style="background:#d4af37 !important; color:#0a0a0a !important;"/>
+                </div>
             </div>
         </h:form>
     </p:dialog>
