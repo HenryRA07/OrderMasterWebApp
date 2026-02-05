@@ -4,7 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-
+    <link rel="icon" href="images/logo_ShamanBlack.ico"/>
 <h:head>
     <title>Login - OrderMaster</title>
     <style>
@@ -141,6 +141,34 @@
             background-color: #2D3748 !important; /* Un gris muy oscuro para el hover */
             border-color: #2D3748 !important;
         }
+
+        .ui-float-label>label {
+
+            left: 1.70em;
+
+        }
+
+        body .ui-input-icon-left, body .ui-input-icon-right {
+            width: 100%;
+            /* position: absolute; */
+            /* display: inline-block; */
+        }
+        body .ui-input-icon-left, body .ui-input-icon-right {
+            /* position: relative; */
+            display: inline-block;
+        }
+        .ui-float-label {
+            /* display: block; */
+            position: relative;
+        }
+        .ui-float-label {
+            display: block;
+            position: relative;
+        }
+        body .ui-input-icon-left>i:first-of-type {
+            z-index: 100;
+        }
+
     </style>
 </h:head>
 
@@ -171,24 +199,23 @@
                 <h:form id="loginForm">
 
                     <div class="custom-input-wrapper">
-                        <p:outputLabel for="rol" value="Rol de Usuario" styleClass="custom-label"/>
-                        <p:selectOneMenu id="rol" value="#{loginBean.rolSeleccionado}" style="width: 100%;">
-                            <f:selectItem itemLabel="Admin" itemValue="admin"/>
-                            <f:selectItem itemLabel="Mesero" itemValue="mesero"/>
-                            <f:selectItem itemLabel="Cocina" itemValue="cocina"/>
-                            <f:selectItem itemLabel="Caja" itemValue="caja"/>
-                        </p:selectOneMenu>
+                       <span class="ui-float-label ui-input-icon-left">
+                           <i class="pi pi-user" />
+                           <p:inputText id="float-input" value="#{inputTextView.text}"/>
+                           <p:outputLabel for="@previous" value="Username"/>
+                       </span>
                     </div>
 
                     <div class="custom-input-wrapper">
-                        <p:outputLabel for="pass" value="Contraseña" styleClass="custom-label"/>
-                        <p:password id="pass" value="#{loginBean.password}"
-                                    placeholder="Ingrese su contraseña"
-                                    toggleMask="true"
-                                    redisplay="true"/>
+
+                        <span class="ui-float-label ui-input-icon-left">
+                            <i class="pi pi-lock" />
+                            <p:password id="float-input2" value="" toggleMask="true"/>
+                            <p:outputLabel for="@previous" value="Password" />
+                        </span>
                     </div>
 
-                    <p:commandButton value="ENTRAR" action="#{loginBean.login}"
+                    <p:commandButton value="ENTRAR" action="MenuDiario.xhtml"
                                      styleClass="btn-login"
                                      update="@form"/>
                 </h:form>
