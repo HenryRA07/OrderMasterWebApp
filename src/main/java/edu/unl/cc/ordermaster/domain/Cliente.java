@@ -1,32 +1,51 @@
 package edu.unl.cc.ordermaster.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Cliente {
+@Entity
+public class Cliente implements Serializable {
 
-    @NotBlank
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull
+    @NotEmpty
     private String nombre;
 
-    @NotBlank
+    @NotNull @NotEmpty
     private String apellido;
 
-    @NotBlank
+    @NotNull @NotEmpty
     private String dni;
 
-    @NotBlank
+    @NotNull @NotEmpty
     private String telefono;
 
-    @Email
+    @NotNull @NotEmpty
+    @Email(message = "Formato de email incorrecto")
     private String email;
 
     public Cliente() {
     }
 
-    public Cliente(@NotBlank String nombre,@NotBlank String apellido,@NotBlank String dni,
-                   @NotBlank String telefono,@Email String email) {
+    public Cliente(Long id, @NotNull @NotEmpty String nombre,
+                   @NotNull @NotEmpty String apellido,
+                   @NotNull @NotEmpty String dni,
+                   @NotNull @NotEmpty String telefono,
+                   @NotNull @NotEmpty String email) {
+        this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
@@ -38,11 +57,19 @@ public class Cliente {
         return getNombre() + " " + getApellido();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(@NotBlank String nombre) {
+    public void setNombre(@NotNull @NotEmpty String nombre) {
         this.nombre = nombre;
     }
 
@@ -50,7 +77,7 @@ public class Cliente {
         return apellido;
     }
 
-    public void setApellido(@NotBlank String apellido) {
+    public void setApellido(@NotNull @NotEmpty String apellido) {
         this.apellido = apellido;
     }
 
@@ -58,7 +85,7 @@ public class Cliente {
         return dni;
     }
 
-    public void setDni(@NotBlank String dni) {
+    public void setDni(@NotNull @NotEmpty String dni) {
         this.dni = dni;
     }
 
@@ -66,7 +93,7 @@ public class Cliente {
         return telefono;
     }
 
-    public void setTelefono(@NotBlank String telefono) {
+    public void setTelefono(@NotNull @NotEmpty String telefono) {
         this.telefono = telefono;
     }
 
@@ -74,7 +101,7 @@ public class Cliente {
         return email;
     }
 
-    public void setEmail(@Email String email) {
+    public void setEmail(@NotNull @NotEmpty String email) {
         this.email = email;
     }
 

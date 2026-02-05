@@ -6,6 +6,7 @@ public class ItemComprobante {
 
 
     private Integer cantidad;
+
     private BigDecimal subtotal;
     //relaciones
     private ItemPedido itempedido;

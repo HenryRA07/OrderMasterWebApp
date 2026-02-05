@@ -1,27 +1,43 @@
 package edu.unl.cc.ordermaster.domain;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Menu {
+@Entity
+public class Menu implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    private Long id;
+
     private LocalDate fechaCreacion;
-    @NotBlank
+
+    @NotNull @NotEmpty
     private String nombreMenu;
+
+    @Enumerated(EnumType.STRING)
     private TipoMenu tipoMenu;
     //Extensiones
+
+    @OneToMany (fetch = FetchType.LAZY)
     private List<ItemMenu> itemMenu;
 
     public Menu() {
         fechaCreacion = LocalDate.now();
     }
 
-    public Menu(@NotBlank String nombreMenu, TipoMenu tipoMenu) {
+    public Menu(Long id,@NotNull @NotEmpty String nombreMenu, TipoMenu tipoMenu) {
         this();
+        this.id = id;
         this.nombreMenu = nombreMenu;
         this.tipoMenu = tipoMenu;
     }

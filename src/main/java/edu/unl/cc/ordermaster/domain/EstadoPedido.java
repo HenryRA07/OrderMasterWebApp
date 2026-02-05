@@ -4,4 +4,7 @@ public enum EstadoPedido {
     PENDIENTE,
     LISTO;
 
+    public EstadoPedido estadoPedido() {
+        return null;
+    }
 }

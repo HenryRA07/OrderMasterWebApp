@@ -2,13 +2,12 @@ package edu.unl.cc.ordermaster.util;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
-import edu.unl.cc.domain.ComprobanteVenta;
+import edu.unl.cc.ordermaster.domain.ComprobanteVenta;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 public class PDFGenerator {
-    private String texto;
     private String ruta;
     //relacion
     private ComprobanteVenta comprobante;

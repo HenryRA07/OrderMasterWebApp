@@ -1,30 +1,47 @@
 package edu.unl.cc.ordermaster.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class ItemMenu {
+@Entity
+public class ItemMenu implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull
     @Positive(message = "El precio debe ser mayor a 0")
     private BigDecimal precio;
+
+
     private boolean disponibilidad;
     //extensiones
 
     @NotNull
+    @OneToOne
     private Producto producto;
 
     public ItemMenu() {
     }
 
-    public ItemMenu(@NotNull @Positive(message = "El precio debe ser mayor a 0") BigDecimal precio,
-                    boolean disponibilidad,
+    public ItemMenu(Long id, @NotNull @Positive(message = "El precio debe ser mayor a 0")
+                    BigDecimal precio,
                     @NotNull Producto producto) {
+        this.id = id;
         setPrecio(precio);
         setProducto(producto);
-        this.disponibilidad = disponibilidad;
+        this.disponibilidad = true;
     }
 
     public BigDecimal getPrecio() {

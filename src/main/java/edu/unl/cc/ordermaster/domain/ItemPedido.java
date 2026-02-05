@@ -1,27 +1,45 @@
 package edu.unl.cc.ordermaster.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class ItemPedido {
+@Entity
+public class ItemPedido implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    private Long id;
+
 
     @Positive @NotNull
     private Integer cantidad;
+
+
     private BigDecimal subtotal;
 
-    @NotBlank
+    @NotNull @NotEmpty
     private String observacion;
     //relaciones
     @NotNull
+    @OneToOne
     private ItemMenu item;
 
     public ItemPedido() {
     }
 
-    public ItemPedido(@Positive @NotNull Integer cantidad, @NotBlank String observacion,@NotNull ItemMenu item) {
+    public ItemPedido(Long id, @Positive @NotNull Integer cantidad, @NotNull @NotEmpty String observacion, @NotNull ItemMenu item) {
+        this.id = id;
         setItem(item);
         this.observacion = observacion;
         setCantidad(cantidad);
@@ -62,7 +80,7 @@ public class ItemPedido {
         return observacion;
     }
 
-    public void setObservacion(@NotBlank String observacion) {
+    public void setObservacion(@NotNull @NotEmpty String observacion) {
         this.observacion = observacion;
     }
 

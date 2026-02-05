@@ -1,24 +1,37 @@
 package edu.unl.cc.ordermaster.domain;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Producto {
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class Producto implements Serializable {
 
-    @NotBlank
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull @NotEmpty
     private String nombre;
 
-    @NotBlank
+    @NotNull @NotEmpty
     private String descripcion;
 
     public Producto() {
     }
 
-    public Producto(@NotBlank String nombre, @NotBlank String descripcion) {
-        if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre del producto es obligatorio");
-        }
+    public Producto(Long id,@NotNull @NotEmpty String nombre, @NotNull @NotEmpty String descripcion) {
+//        if (nombre == null || nombre.trim().isEmpty()) {
+//            throw new IllegalArgumentException("El nombre del producto es obligatorio");
+//        }
+        this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
     }
@@ -27,10 +40,7 @@ public abstract class Producto {
         return nombre;
     }
 
-    public void setNombre(@NotBlank String nombre) {
-//        if(nombre == null || nombre.trim().isEmpty()){
-//            throw new IllegalArgumentException("El nombre del producto es obligatorio");
-//        }
+    public void setNombre(@NotNull @NotEmpty String nombre) {
         this.nombre = nombre;
     }
 
@@ -38,7 +48,7 @@ public abstract class Producto {
         return descripcion;
     }
 
-    public void setDescripcion(@NotBlank String descripcion) {
+    public void setDescripcion(@NotNull @NotEmpty String descripcion) {
         this.descripcion = descripcion;
     }
 

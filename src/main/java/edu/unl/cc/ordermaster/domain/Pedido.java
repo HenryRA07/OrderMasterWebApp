@@ -1,26 +1,53 @@
 package edu.unl.cc.ordermaster.domain;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pedido {
+@Entity
+public class Pedido implements Serializable {
 
+    private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    private Long id;
+
+    @Positive @NotNull
     private Integer mesa;
+
     private BigDecimal precioTotal;
+
+    @Enumerated(EnumType.STRING)
     private EstadoPedido estado = EstadoPedido.PENDIENTE;
     //relaciones
+    @OneToMany
     private List<ItemPedido> itemPedido;
+
+    @NotNull
+    @OneToOne
     private Cliente cliente;
 
+
+    private LocalDate fechaPedidoCreacion;
+
     public Pedido() {
+        this.fechaPedidoCreacion = LocalDate.now();
     }
 
-    public Pedido(int mesa, Cliente cliente) {
+    public Pedido(Long id,int mesa, Cliente cliente) {
+        this();
+        this.id = id;
         this.mesa = mesa;
         this.cliente = cliente;
         this.precioTotal = BigDecimal.ZERO;
+
     }
 
     public void agregarItem(ItemPedido item){
