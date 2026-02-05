@@ -56,7 +56,9 @@ public class AuthenticationController implements java.io.Serializable{
             fc.getExternalContext().getFlash().setKeepMessages(true);
             */
             userSession.postLogin(user);
-            return "dashboard.xhtml?faces-redirect=true";
+            //metodo provicionar por tiempo
+            String homePage = userSession.getHomePage();
+            return homePage;
 
         } catch (CredentialInvalidException | EntityNotFoundException e) {
             /*FacesMessage fcm = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Aviso",

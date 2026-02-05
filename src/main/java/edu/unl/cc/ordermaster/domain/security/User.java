@@ -17,6 +17,14 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user_")
+@NamedQueries({
+        @NamedQuery(name = "User.findLikeName", query = "SELECT o FROM User o WHERE LOWER(o.name) LIKE lower(:name)"),
+        @NamedQuery(name = "User.findById", query = "SELECT o FROM User o WHERE o.id = :id"),
+        //query provicionar por tiempo
+        @NamedQuery(name = "User.findWithRoles",
+        query = "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles r WHERE u.name = :username"
+),
+})
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;

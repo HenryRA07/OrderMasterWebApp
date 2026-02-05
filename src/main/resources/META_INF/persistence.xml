@@ -3,7 +3,7 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_1.xsd"
              version="3.0">
-    <persistence-unit name="jbrewPU" transaction-type="JTA">
+    <persistence-unit name="orderMasterApp" transaction-type="JTA">
         <jta-data-source>jdbc/jbrewDS</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>

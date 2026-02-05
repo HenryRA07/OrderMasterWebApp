@@ -27,14 +27,53 @@ public class UserSession implements java.io.Serializable{
     @Inject
     private SecurityFacade securityFacade;
 
+    @Inject
+    private RoleNavigationService roleNavigationService;
+
     private User user;
 
+//    public void postLogin(@NotNull User user) throws EntityNotFoundException {
+//        logger.info("User logged in: " + user.getName());
+//        this.user = user;
+//        Set<Role> roles = securityFacade.findRolesWithPermissionByUser(this.user.getId());
+//        user.setRoles(roles);
+//    }
+
+    //metodo provicionar por tiempo
     public void postLogin(@NotNull User user) throws EntityNotFoundException {
         logger.info("User logged in: " + user.getName());
         this.user = user;
-        Set<Role> roles = securityFacade.findRolesWithPermissionByUser(this.user.getId());
+        Set<Role> roles = null;
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            roles = securityFacade.findRoleNamesByUser(this.user.getId());
+        }
         user.setRoles(roles);
     }
+
+    //metodo provicionar por tiempo
+    public String getHomePage() {
+        return roleNavigationService.getHomePageByRoles(user.getRoles());
+    }
+
+    /**
+     * Métodos de utilidad para verificación de roles cambios provicionales
+     */
+    public boolean isAdministrador() {
+        return roleNavigationService.hasRole(user, "ADMINISTRADOR");
+    }
+
+    public boolean isMesero() {
+        return roleNavigationService.hasRole(user, "MESERO");
+    }
+
+    public boolean isCocinero() {
+        return roleNavigationService.hasRole(user, "COCINERO");
+    }
+
+    public boolean isCajero() {
+        return roleNavigationService.hasRole(user, "CAJERO");
+    }
+
 
     public boolean hasPermissionForPage(String pagePath) {
         return this.hasPermission(pagePath, ActionType.READ);

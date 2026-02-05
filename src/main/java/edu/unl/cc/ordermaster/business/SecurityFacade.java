@@ -1,7 +1,7 @@
 package edu.unl.cc.ordermaster.business;
 
-import edu.unl.cc.ordermaster.business.service.RoleRepository;
-import edu.unl.cc.ordermaster.business.service.UserRepository;
+import edu.unl.cc.ordermaster.business.service.security.RoleRepository;
+import edu.unl.cc.ordermaster.business.service.security.UserRepository;
 import edu.unl.cc.ordermaster.domain.security.Role;
 import edu.unl.cc.ordermaster.domain.security.User;
 import edu.unl.cc.ordermaster.exception.AlreadyEntityException;
@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Stateless
 public class SecurityFacade implements Serializable {
@@ -56,7 +57,7 @@ public class SecurityFacade implements Serializable {
 
     public User authenticate(String name, String password) throws CredentialInvalidException {
         try {
-            User userFound = userRepository.find(name);
+            User userFound = userRepository.findWithRoles(name);
             String pwdEncrypted = EncryptorManager.encrypt(password);
             if (pwdEncrypted.equals(userFound.getPassword())){
                 return userFound;
@@ -72,6 +73,10 @@ public class SecurityFacade implements Serializable {
     public Set<Role> findAllRolesWithPermission(){
         return roleRepository.findAllWithPermissions();
     }
+    public Set<Role> findRoleNamesByUser(Long userId) throws EntityNotFoundException {
+        User user = userRepository.findWithRoles(userId);
+        return user.getRoles();
+    }
 
     public Set<Role> findRolesWithPermissionByUser(Long userId) throws EntityNotFoundException {
         User user = userRepository.find(userId);
@@ -81,6 +86,7 @@ public class SecurityFacade implements Serializable {
         roles.add(role);
         return roles;
     }
+
 
 
     public List<User> findUsers(String criteria) throws EntityNotFoundException {
