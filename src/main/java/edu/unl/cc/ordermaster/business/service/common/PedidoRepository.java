@@ -29,13 +29,10 @@ public class PedidoRepository {
      * @return Lista de pedidos que cumplen los criterios
      */
     public List<Pedido> findPedidosForDateAndEstado(LocalDate fechaDesde, LocalDate fechaHasta, EstadoPedido estado) {
-        String jpql = "SELECT p FROM Pedido p " +
-                "LEFT JOIN FETCH p.items i" +
-                "WHERE p.fechaPedidoCreacion BETWEEN :fechaDesdec  AND :fechaHasta " +
+        String jpql = "SELECT p FROM Pedido p LEFT JOIN FETCH p.itemPedido i " +
+                "WHERE p.fechaPedidoCreacion BETWEEN :fechaDesde  AND :fechaHasta " +
                 "AND p.estado = :estado " +
-                "LEFT JOIN FETCH p.items i"+
-        "ORDER BY p.fechaPedidoCreacion DESC, p.id DESC";
-                //"ORDER BY p.fecha DESC, p.horaCreacion DESC";
+                "ORDER BY p.fechaPedidoCreacion DESC, p.id DESC";
 
         return em.createQuery(jpql, Pedido.class)
                 .setParameter("fechaDesde", fechaDesde)
