@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PWD}
     ports:
-      - ${DB_PGSQL_PORT_PUBLIC}:5434
+      - ${DB_PGSQL_PORT_PUBLIC}:5432
     volumes:
       - ordermaster-v1-pg-data:/var/lib/postgresql/data
       #- ./init_db/init.sql:/docker-entrypoint-initdb.d/init.sql

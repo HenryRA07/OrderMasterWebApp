@@ -1,4 +1,4 @@
-<server description="defaultServer">
+<server description="orderMasterServer">
     <featureManager>
         <feature>webProfile-10.0</feature>
         <!--<feature>jdbc-4.3</feature>-->
@@ -21,7 +21,7 @@
     <logging  traceSpecification="JPA=all" />
 
     <!-- Configuración del datasource para comunicación de bd-->
-    <dataSource jndiName="jdbc/rderMasterAppDS">
+    <dataSource jndiName="jdbc/ordermasterDS">
         <jdbcDriver id="postgres-driver" libraryRef="jdbcLib"/>
         <properties.postgresql serverName="${db.server.name}"
                                portNumber="${db.port.number}"

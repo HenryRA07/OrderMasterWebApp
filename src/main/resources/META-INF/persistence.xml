@@ -3,17 +3,18 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_1.xsd"
              version="3.0">
-    <persistence-unit name="orderMasterApp" transaction-type="JTA">
-        <jta-data-source>jdbc/jbrewDS</jta-data-source>
+    <persistence-unit name="orderMasterPU" transaction-type="JTA">
+        <jta-data-source>jdbc/ordermasterDS</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <!-- CONFIGURACION DE CONEXION A LA BD -->
             <!-- SOLO FUNCIONA CON transaction-type="RESOURCE_LOCAL" -->
+
             <!--
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgres://localhost:5434/jbrew"/>
-            <property name="jakarta.persistence.jdbc.user" value="jbrewuser"/>
-            <property name="jakarta.persistence.jdbc.password" value="jbrewUser2525"/>
-            -->
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgres://localhost:5434/ordermasterv1"/>
+            <property name="jakarta.persistence.jdbc.user" value="ordermasterv1user"/>
+            <property name="jakarta.persistence.jdbc.password" value="orderMasterUser2026"/>-->
+
             <!-- FIN CONFIGURACION DE CONEXION A LA BD -->
 
             <!-- 1. Configuración de generación / actualización de tablas (esquema de BD) -->
