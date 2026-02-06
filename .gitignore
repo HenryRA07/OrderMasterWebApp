@@ -2,3 +2,5 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 .idea/
 .vscode/
+docker-env
+
