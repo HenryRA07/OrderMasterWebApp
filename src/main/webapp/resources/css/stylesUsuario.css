@@ -1,0 +1,325 @@
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    background-color: #f8f9fa;
+}
+
+/* Sidebar Estilo Henry */
+.sidebar {
+    width: 250px;
+    background-color: #0a0a0a;
+    height: 100vh;
+    color: white;
+    padding: 20px;
+    position: fixed;
+}
+
+.sidebar-logo {
+    color: #d4af37;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-item {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #718096;
+}
+
+.nav-item.active {
+    background-color: #d4af37;
+    color: #0a0a0a;
+    font-weight: bold;
+}
+
+.nav-item:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Botón Salir - Corrección de estilos */
+.nav-item.btn-salir {
+    color: #718096 !important;
+    text-decoration: none !important;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-item.btn-salir:hover {
+    background-color: #2d3748 !important;
+    color: white !important;
+}
+/* Contenedor Principal */
+.main-content {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    padding: 40px;
+}
+
+.card-custom {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1a202c;
+    margin-bottom: 25px;
+}
+
+/* Botones Personalizados */
+.btn-black {
+    background-color: #0a0a0a !important;
+    border: none !important;
+    color: white !important;
+}
+
+.btn-gold {
+    background-color: #d4af37 !important;
+    border: none !important;
+    color: #0a0a0a !important;
+    font-weight: bold !important;
+}
+
+/* Estilos de Tabla */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.status-active {
+    background-color: #e6fffa;
+    color: #38a169;
+}
+
+.status-inactive {
+    background-color: #fff5f5;
+    color: #e53e3e;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+
+/* Header móvil */
+.mobile-header {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0a0a0a;
+    color: #d4af37;
+    padding: 1rem;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-header i {
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.mobile-header i:hover {
+    transform: scale(1.1);
+}
+
+.mobile-header span {
+    font-weight: bold;
+    font-size: 1rem;
+}
+.ui-outputlabel .ui-outputlabel-label {
+    margin-right: 10px;
+
+}
+
+/* Sidebar responsivo */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .mobile-header {
+        display: flex;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        margin-top: 60px;
+        width: 100%;
+        padding: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .card-custom {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* Formulario responsive - 1 columna */
+    .ui-g-12.ui-md-3 {
+        width: 100% !important;
+        margin-bottom: 1rem;
+    }
+    
+    .ui-g.ui-fluid {
+        display: block !important;
+    }
+    
+    /* Botones touch-friendly */
+    .btn-black, .btn-gold {
+        min-height: 44px;
+        padding: 12px 20px !important;
+        font-size: 16px;
+        margin: 5px 0;
+    }
+    
+    /* Ajustar botones del formulario */
+    .card-custom > div[style*="display: flex"] {
+        flex-direction: column !important;
+        gap: 1rem !important;
+        align-items: stretch !important;
+    }
+    
+    .card-custom > div[style*="display: flex"] > div[style*="flex-grow"] {
+        flex-grow: 0 !important;
+    }
+    
+    /* DataTable responsive */
+    .ui-datatable-reflow .ui-datatable-data {
+        display: block;
+    }
+    
+    .ui-datatable-reflow td {
+        display: block;
+        text-align: right;
+        border: none;
+        position: relative;
+        padding-left: 50%;
+    }
+    
+    .ui-datatable-reflow td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        text-align: left;
+        font-weight: bold;
+    }
+    
+    .ui-datatable-reflow .ui-datatable-header {
+        display: none;
+    }
+    
+    /* Status badges en móvil */
+    .status-badge {
+        display: inline-block;
+        margin: 2px 0;
+    }
+    
+    /* Links de acción en móvil */
+    .ui-datatable .ui-column-command {
+        display: block;
+        margin: 5px 0;
+    }
+}
+
+/* Tablets medianas y móviles grandes */
+@media (max-width: 1024px) {
+    .main-content {
+        padding: 2rem;
+    }
+    
+    .sidebar {
+        width: 220px;
+    }
+    
+    /*.main-content {*/
+    /*    margin-left: 220px;*/
+    /*    width: calc(100% - 220px);*/
+    /*}*/
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 480px) {
+    .mobile-header {
+        padding: 0.8rem 1rem;
+    }
+    
+    .main-content {
+        padding: 0.5rem;
+        margin-top: 50px;
+    }
+    
+    .card-custom {
+        padding: 0.75rem;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+    
+    .sidebar {
+        width: 280px; /* Más ancho para mejor usabilidad */
+    }
+    
+    .sidebar-logo {
+        font-size: 1.3rem;
+    }
+    
+    .nav-item {
+        padding: 15px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-black, .btn-gold {
+        min-height: 48px;
+        font-size: 18px;
+    }
+    
+    /* Formulario extra compacto */
+    .ui-g-12.ui-md-3 {
+        margin-bottom: 0.8rem;
+    }
+    
+    /* DataTable más compacto */
+    .ui-datatable-reflow td {
+        padding: 12px 0 12px 50%;
+        font-size: 0.9rem;
+    }
+    
+    .ui-datatable-reflow td:before {
+        font-size: 0.8rem;
+    }
+
+
+
+}

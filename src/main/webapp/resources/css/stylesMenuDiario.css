@@ -1,0 +1,303 @@
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    background-color: #f8f9fa;
+}
+
+/* Sidebar (Mismo estilo que Gestión de Usuarios) */
+.sidebar {
+    width: 250px;
+    background-color: #0a0a0a;
+    height: 100vh;
+    color: white;
+    padding: 20px;
+    position: fixed;
+}
+
+.sidebar-logo {
+    color: #d4af37;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-item {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #718096;
+}
+
+.nav-item.active {
+    background-color: #d4af37;
+    color: #0a0a0a;
+    font-weight: bold;
+}
+
+/* Layout Principal */
+.main-content {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    padding: 40px;
+}
+
+.header-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #1a202c;
+    margin-bottom: 30px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    align-items: start;
+}
+
+.card-custom {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid #e2e8f0;
+}
+
+.full-width {
+    grid-column: 1 / span 2;
+    margin-top: 25px;
+}
+
+/* Chips del Catálogo (Platillos Anteriores) */
+.catalog-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.chip-item {
+    padding: 8px 15px;
+    border: 1px solid #d4af37;
+    border-radius: 20px;
+    cursor: pointer;
+    background: white;
+    transition: 0.3s;
+    font-size: 0.9rem;
+}
+
+.chip-item:hover {
+    background-color: #fef9e7;
+}
+
+.chip-price {
+    color: #d4af37;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+/* Botones */
+
+.sidebar .nav-item {
+    text-decoration: none;
+}
+
+.btn-black {
+    background-color: #0a0a0a !important;
+    border: none !important;
+    color: white !important;
+    width: 100%;
+    padding: 10px !important;
+}
+
+.btn-black:disabled {
+    background-color: #718096 !important;
+    color: #a0aec0 !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-black:disabled:hover {
+    background-color: #718096 !important;
+    transform: none !important;
+}
+
+.ui-button-flat.ui-button-danger {
+    color: #e53e3e !important;
+}
+
+/* Botón Salir - Corrección de estilos */
+.nav-item.btn-salir {
+    color: #718096 !important;
+    text-decoration: none !important;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-item.btn-salir:hover {
+    background-color: #2d3748 !important;
+    color: white !important;
+}
+
+/* Selector de tipo producto */
+.tipo-producto-selector {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.btn-tipo-producto {
+    flex: 1;
+    background-color: #f7fafc !important;
+    border: 2px solid #e2e8f0 !important;
+    color: #4a5568 !important;
+    padding: 1rem 0 !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border-radius: 8px !important;
+}
+
+.btn-tipo-producto.selected {
+    background-color: #0a0a0a !important;
+    border-color: #0a0a0a !important;
+    color: white !important;
+}
+
+.btn-tipo-producto:hover {
+    border-color: #0a0a0a !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-tipo-producto.selected:hover {
+    transform: translateY(-1px);
+}
+
+/* Header móvil */
+.mobile-header {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0a0a0a;
+    color: #d4af37;
+    padding: 1rem;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-header i {
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.mobile-header i:hover {
+    transform: scale(1.1);
+}
+
+/* Diseño Responsivo */
+@media (max-width: 768px) {
+    /* Sidebar animado */
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    /* Header móvil visible */
+    .mobile-header {
+        display: flex;
+    }
+    
+    /* Main content ajustado */
+    .main-content {
+        margin-left: 0;
+        margin-top: 60px;
+        width: 100%;
+        padding: 1rem;
+    }
+    
+    /* Grid responsive */
+    .grid-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .card-custom {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .full-width {
+        grid-column: 1;
+        margin-top: 0;
+    }
+    
+    /* Header title responsive */
+    .header-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* Selector tipo producto responsive */
+    .tipo-producto-selector {
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .btn-tipo-producto {
+        padding: 0.8rem 0 !important;
+        font-size: 0.9rem;
+    }
+    
+    /* Chips responsive */
+    .catalog-container {
+        gap: 0.5rem;
+    }
+    
+    .chip-item {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small devices */
+    .main-content {
+        padding: 0.5rem;
+    }
+    
+    .card-custom {
+        padding: 0.75rem;
+    }
+    
+    .header-title {
+        font-size: 1.3rem;
+    }
+    
+    .tipo-producto-selector {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .btn-tipo-producto {
+        padding: 0.7rem 0 !important;
+    }
+}
