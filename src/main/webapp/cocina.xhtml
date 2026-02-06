@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Panel de Cocina - OrderMaster</title>
+    <link rel="icon" href="images/logo_ShamanBlack.ico"/>
+    <h:outputStylesheet library="css" name="stylesCocina.css"/>
+</h:head>
+
+<h:body>
+    <div class="sidebar">
+
+        <div class="sidebar-logo">
+            <i class="pi pi-fire"></i> OrderMaster
+        </div>
+
+        <div class="sidebar-menu">
+            <a href="#" class="nav-item active">
+                <i class="pi pi-clock"></i> Pedidos Pendientes
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <p:commandLink action="index.xhtml?faces-redirect=true" styleClass="nav-item">
+                <i class="pi pi-sign-out"></i> Salir
+            </p:commandLink>
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        <h1 style="font-size: 1.8rem; font-weight: bold;">Pedidos Pendientes - Cocina</h1>
+
+        <div class="orders-container">
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <strong style="font-size: 1.1rem;">ORD-001</strong><br/>
+                        <small style="color: #718096;">Mesero: Juan Pérez</small>
+                    </div>
+                    <span class="status-badge status-pending">Pendiente</span>
+                </div>
+                <div class="order-body">
+                    <div class="item-row">
+                        <span style="font-weight: bold; color: #d4af37;">2x</span> Pollo a la plancha
+                        <div class="observation-box">Obs: Sin ensalada, bien cocido</div>
+                    </div>
+                    <div class="item-row">
+                        <span style="font-weight: bold; color: #d4af37;">1x</span> Bandeja Paisa
+                    </div>
+                </div>
+                <div class="order-footer">
+                    <p:commandButton value="Iniciar Preparación" icon="pi pi-play" styleClass="btn-action-primary" />
+                    <p:commandButton value="Ver Detalles" icon="pi pi-eye" styleClass="btn-details" />
+                </div>
+            </div>
+
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <strong style="font-size: 1.1rem;">ORD-002</strong><br/>
+                        <small style="color: #718096;">Mesera: María González</small>
+                    </div>
+                    <span class="status-badge status-preparing">En preparación</span>
+                </div>
+                <div class="order-body">
+                    <div class="item-row">
+                        <span style="font-weight: bold; color: #d4af37;">1x</span> Churrasco
+                        <div class="observation-box">Obs: Término medio</div>
+                    </div>
+                    <div class="item-row">
+                        <span style="font-weight: bold; color: #d4af37;">1x</span> Costillas BBQ
+                    </div>
+                    <div class="item-row">
+                        <span style="font-weight: bold; color: #d4af37;">2x</span> Empanadas
+                    </div>
+                </div>
+                <div class="order-footer">
+                    <p:commandButton value="Marcar como Listo" icon="pi pi-check" styleClass="btn-action-ready" />
+                    <p:commandButton value="Ver Detalles" icon="pi pi-eye" styleClass="btn-details" />
+                </div>
+            </div>
+        </div>
+    </div>
+</h:body>
+</html>

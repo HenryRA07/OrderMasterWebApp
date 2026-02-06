@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Menú Diario - OrderMaster</title>
+    <link rel="icon" href="images/logo_ShamanBlack.ico"/>
+    <link rel="stylesheet" href="resources/css/stylesMenuDiario.css"/>
+</h:head>
+<h:body>
+    <div class="sidebar">
+        <div class="sidebar-logo"><i class="pi pi-fire"></i> OrderMaster</div>
+        <a href="usuario.xhtml" class="nav-item"><i class="pi pi-users"></i> Usuarios</a>
+        <a href="#" class="nav-item active"><i class="pi pi-calendar"></i> Menú Diario</a>
+        <div style="position: absolute; bottom: 30px; width: calc(100% - 40px);">
+            <p:commandLink action="index.xhtml?faces-redirect=true" styleClass="nav-item btn-salir">
+                <i class="pi pi-sign-out"></i> Salir
+            </p:commandLink>
+        </div>
+    </div>
+
+    <!-- Header móvil -->
+    <div class="mobile-header">
+        <i class="pi pi-bars" onclick="toggleSidebar()"></i>
+        <span>OrderMaster</span>
+    </div>
+
+    <div class="main-content">
+        <h1 class="header-title">Menú diario: Jueves, 15/01/2026</h1>
+
+        <div class="grid-container">
+            <h:form id="formCrear">
+                <div class="card-custom">
+                    <p style="font-weight: bold; margin-bottom: 20px;">Crear Menú Diario</p>
+
+                    <!-- Botones de selección de tipo producto -->
+                    <div class="tipo-producto-selector">
+                        <p:commandButton value="Platillo"
+                                         styleClass="btn-tipo-producto selected"
+                                         onclick="seleccionarTipoProducto('platillo')"/>
+                        <p:commandButton value="Bebida"
+                                         styleClass="btn-tipo-producto"
+                                         onclick="seleccionarTipoProducto('bebida')"/>
+                    </div>
+
+                    <!-- Campo oculto para el backend -->
+                    <h:inputHidden id="tipoProducto" value="platillo"/>
+
+
+                    <div class="ui-fluid">
+                        <div style="margin-bottom: 15px;">
+                            <p:outputLabel value="Nombre del Platillo"/>
+                            <p:inputText value=""
+                                         placeholder="Ej: Pollo a la plancha"
+                                         id="nombreProducto"/>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <p:outputLabel value="Precio"/>
+                            <p:inputNumber value=""
+                                           symbol="$"
+                                           placeholder="0.00"
+                                           id="precioProducto"/>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <p:outputLabel value="Descripción"/>
+                            <p:inputTextarea value=""
+                                             rows="3"
+                                             placeholder="Descripción breve del platillo"
+                                             id="descripcionProducto"/>
+                        </div>
+                    </div>
+                    <p:commandButton value="Agregar Producto"
+                                     styleClass="btn-black"
+                                     disabled="true"
+                                     id="btnAgregarProducto"
+                                     widgetVar="btnAgregar"/>
+                </div>
+            </h:form>
+
+            <div class="card-custom">
+                <p style="font-weight: bold; margin-bottom: 20px;">Menú Actual del Día</p>
+                <p:dataTable var="p" value="" emptyMessage="No hay platillos agregados.">
+                    <p:column headerText="Platillo">
+                        <h:outputText value="Pollo a la plancha" style="font-weight:bold"/><br/>
+                        <small>Pechuga de pollo con ensalada</small>
+                    </p:column>
+                    <p:column headerText="Precio" width="80">
+                        <h:outputText value="$8.50" style="color:#d4af37; font-weight:bold"/>
+                    </p:column>
+                    <p:column headerText="Acciones" width="80">
+                        <p:commandButton icon="pi pi-pencil" styleClass="ui-button-flat ui-button-plain"/>
+                        <p:commandButton icon="pi pi-trash" styleClass="ui-button-flat ui-button-danger"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <div class="card-custom full-width">
+                <p style="font-weight: bold;">Platillos Creados Anteriormente</p>
+                <p style="color: #718096; font-size: 0.85rem;">Seleccione un platillo para añadirlo directamente al menú actual.</p>
+
+                <div class="catalog-container">
+                    <div class="chip-item">Pollo a la plancha <span class="chip-price">$8.50</span></div>
+                    <div class="chip-item">Bandeja Paisa <span class="chip-price">$12.00</span></div>
+                    <div class="chip-item">Huevos Pericos <span class="chip-price">$5.00</span></div>
+                    <div class="chip-item">Arepa con Queso <span class="chip-price">$3.50</span></div>
+                    <div class="chip-item">Empanadas <span class="chip-price">$1.50</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Cerrar sidebar al hacer clic fuera en móviles
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth &lt;= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const header = document.querySelector('.mobile-header');
+
+                if (sidebar &amp;&amp; header &amp;&amp;
+                    !sidebar.contains(event.target) &amp;&amp;
+                    !header.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        // Cerrar sidebar al cambiar orientación
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+    </script>
+</h:body>
+</html>
