@@ -52,6 +52,14 @@ public abstract class Producto implements Serializable {
         this.descripcion = descripcion;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

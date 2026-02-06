@@ -67,11 +67,20 @@ public class ItemMenu implements Serializable {
         return producto;
     }
 
+
     public void setProducto(@NotNull Producto producto) {
 //        if (producto == null) {
 //            throw new IllegalArgumentException("El producto no puede ser nulo");
 //        }
         this.producto = producto;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 

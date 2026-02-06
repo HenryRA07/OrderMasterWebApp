@@ -105,6 +105,8 @@ public class Cliente implements Serializable {
         this.email = email;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

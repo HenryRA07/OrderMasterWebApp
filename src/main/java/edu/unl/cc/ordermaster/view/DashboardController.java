@@ -4,7 +4,7 @@
 package edu.unl.cc.ordermaster.view;
 
 import edu.unl.cc.ordermaster.business.JBrewFacade;
-import edu.unl.cc.ordermaster.domain.Product;
+import edu.unl.cc.ordermaster.domain.Producto;
 import edu.unl.cc.ordermaster.view.security.UserSession;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -29,7 +29,7 @@ public class DashboardController implements java.io.Serializable{
     public DashboardController(){
     }
 
-    public List<Product> getAllProducts(){
+    public List<Producto> getAllProducts(){
         return jBrewFacade.getAllProducts();
     }
 

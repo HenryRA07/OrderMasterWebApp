@@ -4,40 +4,46 @@ import edu.unl.cc.ordermaster.business.service.common.PedidoRepository;
 import edu.unl.cc.ordermaster.domain.EstadoPedido;
 import edu.unl.cc.ordermaster.domain.Pedido;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Named
+@Named("cocina")
+@RequestScoped
 public class ConcinaController {
 
-    private List<Pedido> pedidos;
-
-    public EstadoPedido estadoPedido;
+    private List<Pedido> pedidosPendientes;
+    private LocalDate fechaConsulta;
 
     @Inject
     PedidoRepository bdpedido;
 
     @PostConstruct
     public void init(){
-        pedidos = bdpedido.findPedidosForDateAndEstado(LocalDate.now(), LocalDate.now(), estadoPedido = EstadoPedido.PENDIENTE);
+        caragarPedidosPendientes();
     }
 
-    public EstadoPedido getEstadoPedido() {
-        return estadoPedido;
+    public void caragarPedidosPendientes(){
+        pedidosPendientes = bdpedido.findPedidosForDateAndEstado(
+                fechaConsulta.now(),fechaConsulta.now(), EstadoPedido.PENDIENTE
+        );
     }
 
-    public void setEstadoPedido(EstadoPedido estadoPedido) {
-        this.estadoPedido = estadoPedido;
+    public void marcarPedidoListo(Pedido pedido){
+        pedido.setEstado(EstadoPedido.LISTO);
+        //pedido respositorio para actualizar la base de datos
+        caragarPedidosPendientes();
     }
 
-    public List<Pedido> getPedidos() {
-        return pedidos;
+
+    public List<Pedido> getPedidosPendientes() {
+        return pedidosPendientes;
     }
 
-    public void setPedidos(List<Pedido> pedidos) {
-        this.pedidos = pedidos;
+    public void setPedidosPendientes(List<Pedido> pedidosPendientes) {
+        this.pedidosPendientes = pedidosPendientes;
     }
 }

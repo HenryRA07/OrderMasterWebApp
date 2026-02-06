@@ -19,6 +19,7 @@ public class Menu implements Serializable {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private LocalDate fechaCreacion;
 
     @NotNull @NotEmpty
@@ -94,6 +95,14 @@ public class Menu implements Serializable {
             throw new IllegalArgumentException("La lista de items no ha sido inicializada");
         }
         this.itemMenu = itemMenu;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
