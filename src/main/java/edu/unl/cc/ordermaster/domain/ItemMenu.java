@@ -1,9 +1,12 @@
 package edu.unl.cc.ordermaster.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -29,8 +32,12 @@ public class ItemMenu implements Serializable {
     //extensiones
 
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Producto producto;
+    
+    @ManyToOne
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
 
     public ItemMenu() {
     }
@@ -83,7 +90,13 @@ public class ItemMenu implements Serializable {
         this.id = id;
     }
 
+    public Menu getMenu() {
+        return menu;
+    }
 
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
 
     @Override
     public String toString() {

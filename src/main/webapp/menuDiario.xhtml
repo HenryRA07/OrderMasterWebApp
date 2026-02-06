@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
     <title>Menú Diario - OrderMaster</title>
@@ -14,7 +15,8 @@
     <div class="sidebar">
         <div class="sidebar-logo"><i class="pi pi-fire"></i> OrderMaster</div>
         <a href="usuario.xhtml" class="nav-item"><i class="pi pi-users"></i> Usuarios</a>
-        <a href="#" class="nav-item active"><i class="pi pi-calendar"></i> Menú Diario</a>
+        <a href="menuDiario.xhtml" class="nav-item active"><i class="pi pi-calendar"></i> Menú Diario</a>
+        <a href="mesero.xhtml" class="nav-item"><i class="pi pi-shopping-cart"></i> Mesero</a>
         <div style="position: absolute; bottom: 30px; width: calc(100% - 40px);">
             <p:commandLink action="index.xhtml?faces-redirect=true" styleClass="nav-item btn-salir">
                 <i class="pi pi-sign-out"></i> Salir
@@ -29,101 +31,169 @@
     </div>
 
     <div class="main-content">
-        <h1 class="header-title">Menú diario: Jueves, 15/01/2026</h1>
+        <h1 class="header-title">Menú diario: #{menuController.fechaActualFormateada}</h1>
+
+        <h:panelGroup id="msgPanel">
+            <p:messages id="messages" showDetail="true" showSummary="false" closable="true"/>
+        </h:panelGroup>
 
         <div class="grid-container">
+            <!-- SECCIÓN 1: Crear producto y agregar al menú -->
             <h:form id="formCrear">
                 <div class="card-custom">
-                    <p style="font-weight: bold; margin-bottom: 20px;">Crear Menú Diario</p>
+                    <p style="font-weight: bold; margin-bottom: 20px;">1. Crear Producto y Agregar al Menú</p>
 
-                    <!-- Botones de selección de tipo producto -->
-                    <div class="tipo-producto-selector">
-                        <p:commandButton value="Platillo"
-                                         styleClass="btn-tipo-producto selected"
-                                         onclick="seleccionarTipoProducto('platillo')"/>
-                        <p:commandButton value="Bebida"
-                                         styleClass="btn-tipo-producto"
-                                         onclick="seleccionarTipoProducto('bebida')"/>
+                    <div style="margin-bottom: 15px;">
+                        <p:outputLabel value="Nombre del Menú"/>
+                        <p:inputText value="#{menuController.nombreMenu}"
+                                     placeholder="Ej: Menú Desayuno Viernes"
+                                     required="true"
+                                     requiredMessage="El nombre del menú es obligatorio"/>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <p:outputLabel value="Tipo de Menú"/>
+                        <p:selectOneMenu value="#{menuController.tipoMenu}"
+                                         required="true"
+                                         requiredMessage="Seleccione el tipo de menú">
+                            <f:selectItem itemLabel="Desayuno" itemValue="DESAYUNO"/>
+                            <f:selectItem itemLabel="Almuerzo" itemValue="ALMUERZO"/>
+                            <f:selectItem itemLabel="Merienda" itemValue="MERIENDA"/>
+                        </p:selectOneMenu>
                     </div>
 
-                    <!-- Campo oculto para el backend -->
-                    <h:inputHidden id="tipoProducto" value="platillo"/>
+                    <p:separator/>
 
+                    <div style="margin-bottom: 10px; font-weight: 600;">Nuevo producto:</div>
+                    <p:selectOneButton value="#{menuController.tipoProductoSeleccionado}" styleClass="tipo-producto-selector">
+                        <f:selectItem itemLabel="Platillo" itemValue="PLATILLO"/>
+                        <f:selectItem itemLabel="Bebida" itemValue="BEBIDA"/>
+                    </p:selectOneButton>
 
                     <div class="ui-fluid">
                         <div style="margin-bottom: 15px;">
-                            <p:outputLabel value="Nombre del Platillo"/>
-                            <p:inputText value=""
+                            <p:outputLabel value="Nombre del Producto"/>
+                            <p:inputText value="#{menuController.nombre}"
                                          placeholder="Ej: Pollo a la plancha"
-                                         id="nombreProducto"/>
+                                         required="true"
+                                         requiredMessage="El nombre es obligatorio"/>
                         </div>
                         <div style="margin-bottom: 15px;">
                             <p:outputLabel value="Precio"/>
-                            <p:inputNumber value=""
+                            <p:inputNumber value="#{menuController.precio}"
                                            symbol="$"
                                            placeholder="0.00"
-                                           id="precioProducto"/>
+                                           minValue="0.01"
+                                           decimalPlaces="2"/>
                         </div>
                         <div style="margin-bottom: 15px;">
                             <p:outputLabel value="Descripción"/>
-                            <p:inputTextarea value=""
+                            <p:inputTextarea value="#{menuController.descripcion}"
                                              rows="3"
-                                             placeholder="Descripción breve del platillo"
-                                             id="descripcionProducto"/>
+                                             placeholder="Descripción breve del producto"
+                                             required="true"
+                                             requiredMessage="La descripción es obligatoria"/>
                         </div>
                     </div>
-                    <p:commandButton value="Agregar Producto"
-                                     styleClass="btn-black"
-                                     disabled="true"
-                                     id="btnAgregarProducto"
-                                     widgetVar="btnAgregar"/>
+                    <p:commandButton value="Agregar Producto al Menú"
+                                     action="#{menuController.agregarProductoMenu()}"
+                                     update="formMenu, formCrear, msgPanel"
+                                     styleClass="btn-black"/>
                 </div>
             </h:form>
 
+            <!-- SECCIÓN 2: Productos agregados al menú actual -->
             <div class="card-custom">
-                <p style="font-weight: bold; margin-bottom: 20px;">Menú Actual del Día</p>
-                <p:dataTable var="p" value="" emptyMessage="No hay platillos agregados.">
-                    <p:column headerText="Platillo">
-                        <h:outputText value="Pollo a la plancha" style="font-weight:bold"/><br/>
-                        <small>Pechuga de pollo con ensalada</small>
-                    </p:column>
-                    <p:column headerText="Precio" width="80">
-                        <h:outputText value="$8.50" style="color:#d4af37; font-weight:bold"/>
-                    </p:column>
-                    <p:column headerText="Acciones" width="80">
-                        <p:commandButton icon="pi pi-pencil" styleClass="ui-button-flat ui-button-plain"/>
-                        <p:commandButton icon="pi pi-trash" styleClass="ui-button-flat ui-button-danger"/>
-                    </p:column>
-                </p:dataTable>
+                <p style="font-weight: bold; margin-bottom: 20px;">2. Productos en el Menú Actual</p>
+                <h:form id="formMenu">
+                    <p:dataTable var="item" value="#{menuController.itemsDelMenu}"
+                                 emptyMessage="No hay productos agregados. Cree productos o seleccione del catálogo."
+                                 styleClass="ui-datatable-striped">
+                        <p:column headerText="Producto">
+                            <h:outputText value="#{item.producto.nombre}" style="font-weight:bold"/>
+                            <h:outputText value=" - #{item.producto.descripcion}" style="font-size:0.85rem; color:#718096;" rendered="#{item.producto.descripcion != null}"/>
+                        </p:column>
+                        <p:column headerText="Precio" width="100">
+                            <h:outputText value="$#{item.precio}" style="color:#d4af37; font-weight:bold"/>
+                        </p:column>
+                        <p:column headerText="Acciones" width="100">
+                            <p:commandButton icon="pi pi-trash"
+                                             styleClass="ui-button-flat ui-button-danger"
+                                             action="#{menuController.eliminarItemDelMenu(item)}"
+                                             update="formMenu, msgPanel"
+                                             onclick="return confirm('¿Eliminar este producto del menú?');"/>
+                        </p:column>
+                    </p:dataTable>
+                    <p:separator/>
+                    <p:commandButton value="Confirmar y Guardar Menú"
+                                     action="#{menuController.guardarMenu()}"
+                                     update="formMenu, formCrear, formCatalogo, msgPanel"
+                                     disabled="#{empty menuController.itemsDelMenu}"
+                                     styleClass="btn-black"
+                                     style="margin-top: 10px;"/>
+                </h:form>
             </div>
 
+            <!-- SECCIÓN 3: Catálogo de productos existentes -->
             <div class="card-custom full-width">
-                <p style="font-weight: bold;">Platillos Creados Anteriormente</p>
-                <p style="color: #718096; font-size: 0.85rem;">Seleccione un platillo para añadirlo directamente al menú actual.</p>
+                <p style="font-weight: bold;">3. Productos Creados Anteriormente</p>
+                <p style="color: #718096; font-size: 0.85rem;">Haga clic en un producto para añadirlo al menú actual (debe ingresar nombre y tipo de menú arriba).</p>
 
-                <div class="catalog-container">
-                    <div class="chip-item">Pollo a la plancha <span class="chip-price">$8.50</span></div>
-                    <div class="chip-item">Bandeja Paisa <span class="chip-price">$12.00</span></div>
-                    <div class="chip-item">Huevos Pericos <span class="chip-price">$5.00</span></div>
-                    <div class="chip-item">Arepa con Queso <span class="chip-price">$3.50</span></div>
-                    <div class="chip-item">Empanadas <span class="chip-price">$1.50</span></div>
-                </div>
+                <h:form id="formCatalogo">
+                    <div class="catalog-container">
+                        <ui:repeat value="#{menuController.productosExistentes}" var="prod">
+                            <p:commandButton value="#{prod.nombre}"
+                                             styleClass="chip-item"
+                                             action="#{menuController.prepararAgregarDelCatalogo(prod)}"
+                                             oncomplete="PF('dlgPrecioCatalogo').show()"
+                                             update=":formPrecioCatalogo"/>
+                        </ui:repeat>
+                    </div>
+                    <h:outputText value="No hay productos en el catálogo. Cree productos nuevos primero."
+                                  rendered="#{empty menuController.productosExistentes}"
+                                  style="color:#718096; font-style:italic; display:block; margin-top:10px;"/>
+                </h:form>
             </div>
         </div>
     </div>
 
+    <!-- Diálogo para agregar producto del catálogo con precio -->
+    <p:dialog header="Agregar producto al menú" widgetVar="dlgPrecioCatalogo" modal="true" responsive="true" width="400">
+        <h:form id="formPrecioCatalogo">
+            <div class="ui-fluid">
+                <p:outputLabel value="Producto:"/>
+                <h:outputText value="#{menuController.productoSeleccionado.nombre}" style="font-weight:bold; display:block; margin-bottom:15px;"/>
+                <div style="margin-bottom: 15px;">
+                    <p:outputLabel value="Precio para este menú"/>
+                    <p:inputNumber value="#{menuController.precioProductoCatalogo}"
+                                   symbol="$"
+                                   minValue="0.01"
+                                   decimalPlaces="2"
+                                   required="true"
+                                   requiredMessage="El precio es obligatorio"/>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <p:commandButton value="Agregar"
+                                     action="#{menuController.agregarProductoDelCatalogo()}"
+                                     update="formMenu, formCatalogo, msgPanel"
+                                     oncomplete="PF('dlgPrecioCatalogo').hide()"
+                                     styleClass="btn-black"/>
+                    <p:commandButton value="Cancelar"
+                                     onclick="PF('dlgPrecioCatalogo').hide()"
+                                     styleClass="ui-button-secondary"/>
+                </div>
+            </div>
+        </h:form>
+    </p:dialog>
+
     <script>
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) sidebar.classList.toggle('active');
         }
-
-        // Cerrar sidebar al hacer clic fuera en móviles
         document.addEventListener('click', function(event) {
             if (window.innerWidth &lt;= 768) {
-                const sidebar = document.getElementById('sidebar');
+                const sidebar = document.querySelector('.sidebar');
                 const header = document.querySelector('.mobile-header');
-
                 if (sidebar &amp;&amp; header &amp;&amp;
                     !sidebar.contains(event.target) &amp;&amp;
                     !header.contains(event.target)) {
@@ -131,14 +201,10 @@
                 }
             }
         });
-
-        // Cerrar sidebar al cambiar orientación
         window.addEventListener('resize', function() {
-            if (window.innerWidth > 768) {
-                const sidebar = document.getElementById('sidebar');
-                if (sidebar) {
-                    sidebar.classList.remove('active');
-                }
+            if (window.innerWidth &gt; 768) {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) sidebar.classList.remove('active');
             }
         });
     </script>

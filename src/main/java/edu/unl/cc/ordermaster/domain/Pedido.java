@@ -34,7 +34,6 @@ public class Pedido implements Serializable {
     @OneToOne
     private Cliente cliente;
 
-    @Temporal(TemporalType.DATE)
     private LocalDate fechaPedidoCreacion;
 
     public Pedido() {
@@ -77,10 +76,14 @@ public class Pedido implements Serializable {
         calcularTotal();
     }
 
-    private void calcularTotal(){
+    public void calcularTotal(){
         BigDecimal total = BigDecimal.ZERO;
-        for(ItemPedido item:itemPedido) {
-            total.add(item.getSubtotal());
+        if(itemPedido != null) {
+            for(ItemPedido item:itemPedido) {
+                if(item.getSubtotal() != null) {
+                    total = total.add(item.getSubtotal());
+                }
+            }
         }
         precioTotal = total;
     }
@@ -95,6 +98,10 @@ public class Pedido implements Serializable {
 
     public BigDecimal getPrecioTotal() {
         return precioTotal;
+    }
+
+    public void setPrecioTotal(BigDecimal precioTotal) {
+        this.precioTotal = precioTotal;
     }
 
     public List<ItemPedido> getItemPedido() {

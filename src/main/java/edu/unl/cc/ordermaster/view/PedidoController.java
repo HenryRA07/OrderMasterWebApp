@@ -1,45 +1,129 @@
 package edu.unl.cc.ordermaster.view;
 
-
-import edu.unl.cc.ordermaster.domain.Cliente;
-import edu.unl.cc.ordermaster.domain.ItemMenu;
-import edu.unl.cc.ordermaster.domain.ItemPedido;
-import edu.unl.cc.ordermaster.domain.Pedido;
+import edu.unl.cc.ordermaster.business.service.MenuFacade;
+import edu.unl.cc.ordermaster.business.service.PedidoFacade;
+import edu.unl.cc.ordermaster.domain.*;
+import edu.unl.cc.ordermaster.faces.FacesUtil;
+import jakarta.annotation.PostConstruct;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Named
-public class PedidoController {
+@ViewScoped
+public class PedidoController implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    // Inyección de dependencias
+    @Inject
+    private MenuFacade menuFacade;
+    
+    @Inject
+    private PedidoFacade pedidoFacade;
+    
+    @Inject
+    private FacesUtil facesUtil;
+
+    // Propiedades existentes del formulario
     private Integer cantidad;
     private String observacion;
     private BigDecimal precio;
     private Integer mesa;
     private String nombre;
-
     private String apellido;
-
     private String dni;
-
     private String telefono;
-
     private String email;
 
-
+    // Propiedades del pedido
     private Pedido pedidoactual;
     private Cliente clientepedido;
 
-    public List<ItemMenu> itemsMenu;
+    // Propiedades para manejo dinámico del menú
+    private List<ItemMenu> itemsMenuDelDia;
+    private List<ItemMenu> productosFiltrados;
     private ItemMenu itemseleccionado;
+    private TipoMenu tipoSeleccionado = TipoMenu.ALMUERZO; // Valor por defecto
 
+    @PostConstruct
+    public void init() {
+        inicilizarItems();
+        inicializarPedido();
+        inicializarValoresPorDefecto();
+    }
+
+    /**
+     * Carga los items del menú del día desde la base de datos
+     */
     public void inicilizarItems(){
-        //rescatar items desde la base de datos
-        //itemsMenu =
+        try {
+            itemsMenuDelDia = menuFacade.obtenerTodosLosItemsDelDia();
+            filtrarPorTipo();
+        } catch (Exception e) {
+            facesUtil.addErrorMessage("Error al cargar el menú del día: " + e.getMessage());
+            itemsMenuDelDia = List.of();
+            productosFiltrados = List.of();
+        }
+    }
+
+    /**
+     * Filtra los productos según el tipo de menú seleccionado
+     */
+    private void filtrarPorTipo() {
+        if (itemsMenuDelDia == null || itemsMenuDelDia.isEmpty()) {
+            productosFiltrados = List.of();
+            return;
+        }
+        
+        if (tipoSeleccionado == null || tipoSeleccionado == TipoMenu.MIXTO) {
+            // MIXTO significa mostrar todos los productos
+            productosFiltrados = itemsMenuDelDia;
+        } else {
+            // Filtrar por tipo específico
+            productosFiltrados = itemsMenuDelDia.stream()
+                .filter(item -> item.getMenu().getTipoMenu() == tipoSeleccionado)
+                .collect(Collectors.toList());
+        }
+    }
+
+    /**
+     * Método llamado cuando el usuario cambia el tipo de menú
+     */
+    public void onTipoChange() {
+        filtrarPorTipo();
+    }
+
+    /**
+     * Inicializa un nuevo pedido si no existe
+     */
+    private void inicializarPedido() {
+        if (pedidoactual == null) {
+            pedidoactual = new Pedido();
+            pedidoactual.setEstado(EstadoPedido.PENDIENTE);
+            // La fecha de creación se establece automáticamente en el constructor de Pedido
+        }
+    }
+
+    /**
+     * Inicializa valores por defecto para el formulario
+     */
+    private void inicializarValoresPorDefecto() {
+        if (cantidad == null) {
+            cantidad = 1;
+        }
+        if (mesa == null) {
+            mesa = 1;
+        }
     }
 
     public void seleccionarItem(ItemMenu itemMenu){
@@ -49,16 +133,58 @@ public class PedidoController {
     }
 
     public void agregarItemPedido(){
-        ItemPedido item = new ItemPedido();
-        item.setItem(itemseleccionado);
-        item.setCantidad(cantidad);
-        item.setObservacion(observacion);
-        pedidoactual.setMesa(mesa);
-        pedidoactual.setCliente(clientepedido);
+        try {
+            // Validaciones
+            if (itemseleccionado == null) {
+                facesUtil.addErrorMessage("Debe seleccionar un producto");
+                return;
+            }
+            if (cantidad == null || cantidad <= 0) {
+                facesUtil.addErrorMessage("La cantidad debe ser mayor a 0");
+                return;
+            }
+            if (mesa == null || mesa <= 0) {
+                facesUtil.addErrorMessage("El número de mesa debe ser válido");
+                return;
+            }
 
-        //agrgar para guardar en base de datos
-        pedidoactual.agregarItem(item);
-        limpiarSeleccion();
+            // Crear cliente si es necesario
+            if (clientepedido == null) {
+                clientepedido = new Cliente();
+                clientepedido.setNombre(nombre != null ? nombre : "Cliente");
+                clientepedido.setApellido(apellido != null ? apellido : "");
+                clientepedido.setDni(dni != null ? dni : "N/A");
+                clientepedido.setTelefono(telefono != null ? telefono : "");
+                clientepedido.setEmail(email != null ? email : "");
+            }
+
+            // Crear item del pedido
+            ItemPedido item = new ItemPedido();
+            item.setItem(itemseleccionado);
+            item.setCantidad(cantidad);
+            item.setObservacion(observacion != null ? observacion : "");
+
+            // Configurar pedido
+            pedidoactual.setMesa(mesa);
+            pedidoactual.setCliente(clientepedido);
+
+            // Si el pedido es nuevo, crearlo primero
+            if (pedidoactual.getId() == null) {
+                pedidoactual = pedidoFacade.crearPedido(pedidoactual);
+                facesUtil.addSuccessMessage("Pedido creado exitosamente. ID: " + pedidoactual.getId());
+            }
+
+            // Agregar item al pedido
+            pedidoFacade.agregarItemPedido(item, pedidoactual);
+            
+            facesUtil.addSuccessMessage("Producto agregado al pedido: " + 
+                itemseleccionado.getProducto().getNombre() + " (x" + cantidad + ")");
+            
+            limpiarSeleccion();
+            
+        } catch (Exception e) {
+            facesUtil.addErrorMessage("Error al agregar producto al pedido: " + e.getMessage());
+        }
     }
 
     private void limpiarSeleccion() {
@@ -157,5 +283,108 @@ public class PedidoController {
 
     public void setPedidoactual(Pedido pedidoactual) {
         this.pedidoactual = pedidoactual;
+    }
+
+    // Getters y setters para propiedades dinámicas
+    public List<ItemMenu> getItemsMenuDelDia() {
+        return itemsMenuDelDia;
+    }
+
+    public void setItemsMenuDelDia(List<ItemMenu> itemsMenuDelDia) {
+        this.itemsMenuDelDia = itemsMenuDelDia;
+    }
+
+    public List<ItemMenu> getProductosFiltrados() {
+        return productosFiltrados;
+    }
+
+    public void setProductosFiltrados(List<ItemMenu> productosFiltrados) {
+        this.productosFiltrados = productosFiltrados;
+    }
+
+    public ItemMenu getItemseleccionado() {
+        return itemseleccionado;
+    }
+
+    public void setItemseleccionado(ItemMenu itemseleccionado) {
+        this.itemseleccionado = itemseleccionado;
+    }
+
+    public TipoMenu getTipoSeleccionado() {
+        return tipoSeleccionado;
+    }
+
+    public void setTipoSeleccionado(TipoMenu tipoSeleccionado) {
+        this.tipoSeleccionado = tipoSeleccionado;
+    }
+
+    /**
+     * Obtiene el precio total formateado para mostrar en la vista
+     */
+    public String getPrecioTotalFormateado() {
+        if (pedidoactual == null || pedidoactual.getPrecioTotal() == null) {
+            return "$0.00";
+        }
+        return String.format("$%.2f", pedidoactual.getPrecioTotal());
+    }
+
+    /**
+     * Obtiene la cantidad de items en el pedido actual
+     */
+    public int getCantidadItemsPedido() {
+        if (pedidoactual == null || pedidoactual.getItemPedido() == null) {
+            return 0;
+        }
+        return pedidoactual.getItemPedido().size();
+    }
+
+    /**
+     * Confirma y finaliza el pedido actual
+     */
+    public String confirmarPedido() {
+        try {
+            if (pedidoactual == null || pedidoactual.getItemPedido() == null || pedidoactual.getItemPedido().isEmpty()) {
+                facesUtil.addErrorMessage("El pedido está vacío. Agregue productos antes de confirmar.");
+                return null;
+            }
+
+            // Actualizar el pedido para asegurar que esté guardado
+            pedidoFacade.actualizarPedido(pedidoactual);
+            
+            facesUtil.addSuccessMessage("Pedido confirmado exitosamente! ID: " + pedidoactual.getId());
+            
+            // Limpiar para nuevo pedido
+            pedidoactual = null;
+            inicializarPedido();
+            
+            return null; // Permanecer en la misma página
+        } catch (Exception e) {
+            facesUtil.addErrorMessage("Error al confirmar el pedido: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Elimina un item del pedido
+     */
+    public void eliminarItemPedido(ItemPedido item) {
+        try {
+            if (pedidoactual != null && item != null) {
+                pedidoactual.eliminarItem(item);
+                pedidoFacade.actualizarPedido(pedidoactual);
+                facesUtil.addSuccessMessage("Producto eliminado del pedido");
+            }
+        } catch (Exception e) {
+            facesUtil.addErrorMessage("Error al eliminar producto: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Reinicia el pedido actual
+     */
+    public void reiniciarPedido() {
+        pedidoactual = null;
+        inicializarPedido();
+        facesUtil.addSuccessMessage("Pedido reiniciado");
     }
 }

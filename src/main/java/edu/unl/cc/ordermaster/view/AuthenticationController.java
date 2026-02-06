@@ -40,6 +40,9 @@ public class AuthenticationController implements java.io.Serializable{
 
     @Inject
     private UserSession userSession;
+    
+    @Inject
+    private FacesUtil facesUtil;
 
     public String login(){
         logger.info("Login attempt for user: " + username);
@@ -47,7 +50,7 @@ public class AuthenticationController implements java.io.Serializable{
         try {
             User user = securityFacade.authenticate(username, password);
             setHttpSession(user);
-            FacesUtil.addSuccessMessageAndKeep("Aviso", "Bienvenido " + user.getName());
+            facesUtil.addSuccessMessageAndKeep("Aviso", "Bienvenido " + user.getName());
             /*
             FacesMessage fcm = new FacesMessage(FacesMessage.SEVERITY_INFO,"Aviso",
                     "Bienvenido " + user.getName());
@@ -66,7 +69,7 @@ public class AuthenticationController implements java.io.Serializable{
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(null, fcm
              */
-            FacesUtil.addErrorMessage("Inconveniente", e.getMessage());
+
             return null;
         }
     }
@@ -82,7 +85,7 @@ public class AuthenticationController implements java.io.Serializable{
     }
 
     public String logout() throws ServletException {
-        FacesUtil.addSuccessMessageAndKeep(userSession.getUser().getName(), "Hasta pronto");
+
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.getExternalContext().invalidateSession();
         ((jakarta.servlet.http.HttpServletRequest) facesContext.getExternalContext().getRequest()).logout();
