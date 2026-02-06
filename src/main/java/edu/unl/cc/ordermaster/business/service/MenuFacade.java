@@ -134,6 +134,38 @@ public class MenuFacade {
     }
 
     /**
+     * Verifica si existe un producto con el nombre indicado (ignorando mayúsculas)
+     */
+    public boolean existeProductoPorNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) return false;
+        try {
+            List<Producto> lista = crudService.findWithQuery(
+                "SELECT p FROM Producto p WHERE LOWER(TRIM(p.nombre)) = LOWER(TRIM(:nombre))",
+                java.util.Map.of("nombre", nombre.trim())
+            );
+            return lista != null && !lista.isEmpty();
+        } catch (Exception e) {
+            LOGGER.severe("Error al verificar producto por nombre: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Persiste un producto en la base de datos. Se usa al crear un producto nuevo para que
+     * aparezca inmediatamente en el catálogo.
+     */
+    @Transactional
+    public Producto guardarProducto(Producto producto) {
+        if (producto == null) throw new IllegalArgumentException("El producto no puede ser nulo");
+        try {
+            return crudService.create(producto);
+        } catch (Exception e) {
+            LOGGER.severe("Error al guardar producto: " + e.getMessage());
+            throw new RuntimeException("No se pudo guardar el producto: " + e.getMessage());
+        }
+    }
+
+    /**
      * Agrega un item al menú y lo persiste en base de datos.
      * Si el menú es nuevo (sin id), lo crea primero.
      * @param itemMenu Item a agregar (debe contener producto, precio, disponibilidad)

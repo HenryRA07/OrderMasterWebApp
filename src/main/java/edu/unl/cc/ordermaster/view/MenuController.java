@@ -74,7 +74,8 @@ public class MenuController implements Serializable {
     }
 
     /**
-     * Agrega un producto nuevo al menú (en memoria). Se persiste al confirmar el menú.
+     * Agrega un producto nuevo al menú. El producto se persiste inmediatamente para
+     * que aparezca en el catálogo. No se permiten productos duplicados por nombre.
      */
     public void agregarProductoMenu(){
         try {
@@ -99,13 +100,20 @@ public class MenuController implements Serializable {
                 return;
             }
 
+            if (menuFacade.existeProductoPorNombre(nombre.trim())) {
+                facesUtil.addErrorMessage("Ya existe un producto con el nombre '" + nombre.trim() + "'. Use el catálogo para agregarlo al menú.");
+                return;
+            }
+
             if (menu == null) {
                 inicializarMenu();
             }
 
             Producto productoitem = producto(tipoProductoSeleccionado);
-            productoitem.setDescripcion(descripcion);
-            productoitem.setNombre(nombre);
+            productoitem.setDescripcion(descripcion.trim());
+            productoitem.setNombre(nombre.trim());
+
+            menuFacade.guardarProducto(productoitem);
 
             ItemMenu itemMenu = new ItemMenu();
             itemMenu.setPrecio(precio);
@@ -124,6 +132,7 @@ public class MenuController implements Serializable {
 
     /**
      * Agrega un producto existente del catálogo al menú con el precio indicado.
+     * No permite agregar el mismo producto más de una vez al menú.
      */
     public void agregarProductoDelCatalogo(){
         try {
@@ -148,6 +157,11 @@ public class MenuController implements Serializable {
                 inicializarMenu();
             }
 
+            if (productoYaEnMenu(productoSeleccionado.getNombre())) {
+                facesUtil.addErrorMessage("El producto '" + productoSeleccionado.getNombre() + "' ya está en el menú actual.");
+                return;
+            }
+
             ItemMenu itemMenu = new ItemMenu();
             itemMenu.setPrecio(precioProductoCatalogo);
             itemMenu.setProducto(productoSeleccionado);
@@ -162,6 +176,15 @@ public class MenuController implements Serializable {
         } catch (Exception e) {
             facesUtil.addErrorMessage("Error al agregar producto: " + e.getMessage());
         }
+    }
+
+    private boolean productoYaEnMenu(String nombreProducto) {
+        if (menu == null || menu.getItemMenu() == null || nombreProducto == null) return false;
+        String busqueda = nombreProducto.trim().toLowerCase();
+        return menu.getItemMenu().stream()
+                .anyMatch(item -> item.getProducto() != null 
+                        && item.getProducto().getNombre() != null 
+                        && item.getProducto().getNombre().trim().toLowerCase().equals(busqueda));
     }
 
     /**

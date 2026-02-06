@@ -1,6 +1,5 @@
 package edu.unl.cc.ordermaster.domain;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -32,7 +31,7 @@ public class ItemMenu implements Serializable {
     //extensiones
 
     @NotNull
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     private Producto producto;
     
     @ManyToOne
