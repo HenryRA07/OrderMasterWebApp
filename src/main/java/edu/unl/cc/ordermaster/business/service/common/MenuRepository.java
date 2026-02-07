@@ -63,8 +63,9 @@ public class MenuRepository {
      */
     public List<ItemMenu> findAllAvailableItems(LocalDate fecha) {
         try {
-            String jpql = "SELECT im FROM ItemMenu im " +
-                          "JOIN im.menu m " +
+            String jpql = "SELECT DISTINCT im FROM ItemMenu im " +
+                          "JOIN FETCH im.menu m " +
+                          "JOIN FETCH im.producto " +
                           "WHERE m.fechaCreacion = :fecha " +
                           "AND im.disponibilidad = true " +
                           "ORDER BY m.tipoMenu, im.producto.nombre";

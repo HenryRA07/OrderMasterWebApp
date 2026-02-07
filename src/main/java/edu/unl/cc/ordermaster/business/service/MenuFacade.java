@@ -139,9 +139,10 @@ public class MenuFacade {
     public boolean existeProductoPorNombre(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) return false;
         try {
+            String nombreNorm = nombre.trim().toLowerCase();
             List<Producto> lista = crudService.findWithQuery(
-                "SELECT p FROM Producto p WHERE LOWER(TRIM(p.nombre)) = LOWER(TRIM(:nombre))",
-                java.util.Map.of("nombre", nombre.trim())
+                "SELECT p FROM Producto p WHERE LOWER(p.nombre) = :nombre",
+                java.util.Map.of("nombre", nombreNorm)
             );
             return lista != null && !lista.isEmpty();
         } catch (Exception e) {

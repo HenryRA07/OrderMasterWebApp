@@ -53,6 +53,9 @@ public class MenuController implements Serializable {
     @PostConstruct
     public void init(){
         inicializarValoresPorDefecto();
+        if (tipoMenu == null) {
+            tipoMenu = TipoMenu.ALMUERZO;
+        }
     }
 
     private void inicializarValoresPorDefecto() {

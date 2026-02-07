@@ -14,8 +14,11 @@ import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Named
@@ -53,7 +56,7 @@ public class PedidoController implements Serializable {
     private List<ItemMenu> itemsMenuDelDia;
     private List<ItemMenu> productosFiltrados;
     private ItemMenu itemseleccionado;
-    private TipoMenu tipoSeleccionado = TipoMenu.ALMUERZO; // Valor por defecto
+    private TipoMenu tipoSeleccionado = TipoMenu.MIXTO; // Todos por defecto
 
     @PostConstruct
     public void init() {
@@ -86,12 +89,10 @@ public class PedidoController implements Serializable {
         }
         
         if (tipoSeleccionado == null || tipoSeleccionado == TipoMenu.MIXTO) {
-            // MIXTO significa mostrar todos los productos
             productosFiltrados = itemsMenuDelDia;
         } else {
-            // Filtrar por tipo específico
             productosFiltrados = itemsMenuDelDia.stream()
-                .filter(item -> item.getMenu().getTipoMenu() == tipoSeleccionado)
+                .filter(item -> item.getMenu() != null && item.getMenu().getTipoMenu() == tipoSeleccionado)
                 .collect(Collectors.toList());
         }
     }
@@ -162,7 +163,7 @@ public class PedidoController implements Serializable {
             ItemPedido item = new ItemPedido();
             item.setItem(itemseleccionado);
             item.setCantidad(cantidad);
-            item.setObservacion(observacion != null ? observacion : "");
+            item.setObservacion(observacion != null && !observacion.trim().isEmpty() ? observacion.trim() : "-");
 
             // Configurar pedido
             pedidoactual.setMesa(mesa);
@@ -319,13 +320,25 @@ public class PedidoController implements Serializable {
     }
 
     /**
-     * Obtiene el precio total formateado para mostrar en la vista
+     * Obtiene el precio total formateado para mostrar en la vista (ej: $46.000)
      */
     public String getPrecioTotalFormateado() {
         if (pedidoactual == null || pedidoactual.getPrecioTotal() == null) {
-            return "$0.00";
+            return "$0";
         }
-        return String.format("$%.2f", pedidoactual.getPrecioTotal());
+        return formatPrecio(pedidoactual.getPrecioTotal());
+    }
+
+    /**
+     * Formatea un precio con separador de miles (ej: 12500 -> $12.500)
+     */
+    public String formatPrecio(BigDecimal precio) {
+        if (precio == null) return "$0";
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.GERMAN);
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+        DecimalFormat df = new DecimalFormat("#,##0", symbols);
+        return "$" + df.format(precio.longValue());
     }
 
     /**
@@ -336,6 +349,16 @@ public class PedidoController implements Serializable {
             return 0;
         }
         return pedidoactual.getItemPedido().size();
+    }
+
+    /**
+     * Lista de items del pedido para la vista (nunca null)
+     */
+    public List<ItemPedido> getItemsDelPedido() {
+        if (pedidoactual == null || pedidoactual.getItemPedido() == null) {
+            return List.of();
+        }
+        return pedidoactual.getItemPedido();
     }
 
     /**

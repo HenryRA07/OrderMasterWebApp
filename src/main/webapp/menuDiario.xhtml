@@ -16,7 +16,6 @@
         <div class="sidebar-logo"><i class="pi pi-fire"></i> OrderMaster</div>
         <a href="usuario.xhtml" class="nav-item"><i class="pi pi-users"></i> Usuarios</a>
         <a href="menuDiario.xhtml" class="nav-item active"><i class="pi pi-calendar"></i> Menú Diario</a>
-        <a href="mesero.xhtml" class="nav-item"><i class="pi pi-shopping-cart"></i> Mesero</a>
         <div style="position: absolute; bottom: 30px; width: calc(100% - 40px);">
             <p:commandLink action="index.xhtml?faces-redirect=true" styleClass="nav-item btn-salir">
                 <i class="pi pi-sign-out"></i> Salir
@@ -96,7 +95,8 @@
                     </div>
                     <p:commandButton value="Agregar Producto al Menú"
                                      action="#{menuController.agregarProductoMenu()}"
-                                     update="formMenu, formCrear, formCatalogo, msgPanel"
+                                     update=":formMenu :formCrear :formCatalogo :msgPanel"
+                                     process="@form"
                                      styleClass="btn-black"/>
                 </div>
             </h:form>
@@ -174,7 +174,8 @@
                 <div style="display: flex; gap: 10px;">
                     <p:commandButton value="Agregar"
                                      action="#{menuController.agregarProductoDelCatalogo()}"
-                                     update="formMenu, formCatalogo, msgPanel"
+                                     update=":formMenu :formCatalogo :msgPanel"
+                                     process="@form"
                                      oncomplete="PF('dlgPrecioCatalogo').hide()"
                                      styleClass="btn-black"/>
                     <p:commandButton value="Cancelar"
