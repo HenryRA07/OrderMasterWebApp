@@ -38,6 +38,7 @@ public class Pedido implements Serializable {
 
     public Pedido() {
         this.fechaPedidoCreacion = LocalDate.now();
+        this.itemPedido = new ArrayList<>();
     }
 
     public Pedido(Long id,int mesa, Cliente cliente) {
@@ -46,7 +47,6 @@ public class Pedido implements Serializable {
         this.mesa = mesa;
         this.cliente = cliente;
         this.precioTotal = BigDecimal.ZERO;
-
     }
 
     public void agregarItem(ItemPedido item){
@@ -69,10 +69,29 @@ public class Pedido implements Serializable {
         if(item == null){
             throw new IllegalArgumentException("El item no puede ser nulo");
         }
-        if(!itemPedido.contains(item)) {
-            throw new IllegalArgumentException("El item no puede ser eliminado");
+
+        boolean eliminado = false;
+        
+        // Buscar y eliminar por ID si existe
+        if(item.getId() != null) {
+            Long targetId = item.getId();
+            eliminado = itemPedido.removeIf(existing -> 
+                existing.getId() != null && existing.getId().equals(targetId));
+        } else {
+            // Si no tiene ID, buscar por igualdad (usa equals())
+            eliminado = itemPedido.remove(item);
+            
+            // Si no funciona por equals, buscar manualmente por item y cantidad
+            if (!eliminado) {
+                eliminado = itemPedido.removeIf(existing -> 
+                    existing.getItem() != null && existing.getItem().equals(item.getItem()) &&
+                    existing.getCantidad() != null && existing.getCantidad().equals(item.getCantidad()));
+            }
         }
-        itemPedido.remove(item);
+        
+        if(!eliminado) {
+            throw new IllegalArgumentException("El item no fue encontrado en el pedido");
+        }
         calcularTotal();
     }
 

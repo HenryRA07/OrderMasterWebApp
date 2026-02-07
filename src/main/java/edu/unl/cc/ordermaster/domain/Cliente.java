@@ -18,10 +18,10 @@ public class Cliente implements Serializable {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
-    @Transient
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @Column(unique = true, nullable = true)
+    @NotBlank(message = "El apellido es obligatorio")
     private String apellido;
 
     @Transient
@@ -30,18 +30,19 @@ public class Cliente implements Serializable {
     @Transient
     private String telefono;
 
-    @NotNull @NotEmpty
+    @NotBlank(message = "El email es obligatorio")
     @Email(message = "Formato de email incorrecto")
+    @Column(nullable = false, unique = true)
     private String email;
 
     public Cliente() {
     }
 
-    public Cliente(Long id, @NotNull @NotEmpty String nombre,
-                   @NotNull @NotEmpty String apellido,
-                   @NotNull @NotEmpty String dni,
-                   @NotNull @NotEmpty String telefono,
-                   @NotNull @NotEmpty String email) {
+    public Cliente(Long id, String nombre,
+                   String apellido,
+                   String dni,
+                   String telefono,
+                   String email) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -66,7 +67,7 @@ public class Cliente implements Serializable {
         return nombre;
     }
 
-    public void setNombre(@NotNull @NotEmpty String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
@@ -74,7 +75,7 @@ public class Cliente implements Serializable {
         return apellido;
     }
 
-    public void setApellido(@NotNull @NotEmpty String apellido) {
+    public void setApellido(String apellido) {
         this.apellido = apellido;
     }
 
@@ -82,7 +83,7 @@ public class Cliente implements Serializable {
         return dni;
     }
 
-    public void setDni(@NotNull @NotEmpty String dni) {
+    public void setDni(String dni) {
         this.dni = dni;
     }
 
@@ -90,7 +91,7 @@ public class Cliente implements Serializable {
         return telefono;
     }
 
-    public void setTelefono(@NotNull @NotEmpty String telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
@@ -98,7 +99,7 @@ public class Cliente implements Serializable {
         return email;
     }
 
-    public void setEmail(@NotNull @NotEmpty String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
