@@ -1,8 +1,6 @@
 package edu.unl.cc.ordermaster.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,17 +18,16 @@ public class Cliente implements Serializable {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @NotEmpty
+    @Transient
     private String nombre;
 
-    @NotNull @NotEmpty
+    @Column(unique = true, nullable = true)
     private String apellido;
 
-    @NotNull @NotEmpty
+    @Transient
     private String dni;
 
-    @NotNull @NotEmpty
+    @Transient
     private String telefono;
 
     @NotNull @NotEmpty

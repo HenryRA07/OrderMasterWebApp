@@ -31,7 +31,7 @@ public class Pedido implements Serializable {
     private List<ItemPedido> itemPedido;
 
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Cliente cliente;
 
     private LocalDate fechaPedidoCreacion;
