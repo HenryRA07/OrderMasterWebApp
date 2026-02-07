@@ -1,33 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <server description="orderMasterServer">
+    <!--The Liberty Maven Plugin has generated Liberty features necessary for your application in configDropins/overrides/generated-features.xml-->
     <featureManager>
         <feature>webProfile-10.0</feature>
         <!--<feature>jdbc-4.3</feature>-->
     </featureManager>
 
     <basicRegistry id="defaultBasicRegistry" realm="BasicRealm">
-        <user name="username" password="password" />
+        <user name="username" password="password"/>
     </basicRegistry>
 
-    <keyStore id="defaultKeyStore" password="password" />
+    <keyStore id="defaultKeyStore" password="password"/>
 
-    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080" httpsPort="9443" />
+    <httpEndpoint host="*" httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint"/>
 
-    <webApplication location="orderMasterApp.war" contextRoot="/"/>
+    <webApplication contextRoot="/" location="orderMasterApp.war"/>
 
     <!-- Configuración de salidas de log del server -->
-    <logging consoleFormat="SIMPLE" consoleLogLevel="INFO" />
-    <logging messageFormat="TBASIC" messageLogLevel="INFO" />
+    <logging consoleFormat="SIMPLE" consoleLogLevel="INFO"/>
+    <logging messageFormat="TBASIC" messageLogLevel="INFO"/>
     <!--logging traceFormat="ENHANCED" traceSpecification="*=all" /-->
-    <logging  traceSpecification="JPA=all" />
+    <logging traceSpecification="JPA=all"/>
 
     <!-- Configuración del datasource para comunicación de bd-->
     <dataSource jndiName="jdbc/ordermasterDS">
         <jdbcDriver id="postgres-driver" libraryRef="jdbcLib"/>
-        <properties.postgresql serverName="${db.server.name}"
-                               portNumber="${db.port.number}"
-                               databaseName="ordermasterv1"
-                               user="ordermasterv1user"
-                               password="orderMasterUser2026"/>
+        <properties.postgresql databaseName="ordermasterv1" password="orderMasterUser2026" portNumber="${db.port.number}" serverName="${db.server.name}" user="ordermasterv1user"/>
     </dataSource>
 
     <!-- Referencia al driver JDBC de Postgres -->
@@ -35,4 +33,3 @@
         <fileset dir="${driver.jdbc.dir}" includes="postgresql-*.jar"/>
     </library>
 </server>
-
