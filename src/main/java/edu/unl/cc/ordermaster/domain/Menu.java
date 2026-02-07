@@ -29,7 +29,7 @@ public class Menu implements Serializable {
     private TipoMenu tipoMenu;
     //Extensiones
 
-    @OneToMany (fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "menu", cascade = CascadeType.PERSIST)
     private List<ItemMenu> itemMenu;
 
     public Menu() {

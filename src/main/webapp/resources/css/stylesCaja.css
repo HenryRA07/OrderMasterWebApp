@@ -1,0 +1,404 @@
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    background-color: #f8f9fa;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: #0a0a0a;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-logo {
+    color: #d4af37;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-item {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #718096;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover:not(.active) {
+    background-color: rgba(212, 175, 55, 0.1);
+    color: #d4af37;
+}
+
+.nav-item.active {
+    background-color: #d4af37;
+    color: #0a0a0a;
+    font-weight: bold;
+}
+
+.main-content {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    padding: 40px;
+}
+
+/* Contenedor de pedidos */
+.orders-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.order-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/* Badge de estado */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    background-color: #d4af37;
+    color: #0a0a0a;
+}
+
+/* Grid de Pedidos por Cobrar */
+.billing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.bill-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease;
+}
+
+.bill-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.bill-header {
+    border-bottom: 1px solid #edf2f7;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.total-badge {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #d4af37;
+}
+
+/* Modal de Pago */
+.payment-modal-center {
+    padding: 10px;
+}
+
+.payment-buttons-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.payment-option-btn {
+    flex: 1;
+    background-color: white !important;
+    border: 2px solid #e2e8f0 !important;
+    color: #0a0a0a !important;
+    padding: 16px !important;
+    font-weight: bold !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+}
+
+.payment-option-btn:hover {
+    border-color: #d4af37 !important;
+    color: #d4af37 !important;
+}
+
+.payment-content {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.total-display {
+    margin-bottom: 20px;
+}
+
+.total-amount {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #d4af37;
+    margin: 10px 0;
+}
+
+.efectivo-field {
+    width: 100%;
+    font-size: 1.3rem;
+    text-align: center;
+    padding: 12px !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+}
+
+.vuelto-container {
+    background: #fffdf5;
+    border: 1px solid #d4af37;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.tarjeta-message {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.tarjeta-message .pi-credit-card {
+    color: #d4af37 !important;
+}
+
+.btn-pay {
+    background-color: #0a0a0a !important;
+    color: white !important;
+    border: none !important;
+    width: 100%;
+    padding: 14px !important;
+    font-weight: bold !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-pay:hover:not(:disabled) {
+    background-color: #1a1a1a !important;
+}
+
+.btn-cancel {
+    background-color: #e2e8f0 !important;
+    color: #4a5568 !important;
+    border: none !important;
+    padding: 14px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.vuelto-container {
+    background: #f0fff4;
+    border: 1px solid #c6f6d5;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        margin-left: 220px;
+        padding: 30px 25px;
+    }
+
+    .sidebar {
+        width: 220px;
+    }
+
+    .orders-container {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .order-card {
+        padding: 18px;
+    }
+
+    .sidebar-logo {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .sidebar-logo {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .nav-item {
+        display: none;
+    }
+
+    .sidebar-footer {
+        margin-bottom: 0;
+        text-align: center;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px 15px;
+    }
+
+    .orders-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .order-card {
+        padding: 15px;
+    }
+
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .total-badge {
+        font-size: 1rem;
+        padding: 6px 12px;
+    }
+
+    .payment-buttons-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-pay,
+    .btn-cancel {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 15px 10px;
+    }
+
+    h1 {
+        font-size: 1.5rem !important;
+        margin-bottom: 15px !important;
+    }
+
+    .order-card {
+        padding: 12px;
+    }
+
+    .total-badge {
+        font-size: 0.9rem;
+        padding: 4px 8px;
+    }
+
+    .sidebar {
+        width: 280px;
+    }
+
+    .sidebar-logo {
+        font-size: 1.3rem;
+    }
+
+    .btn-pay {
+        padding: 12px 20px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .payment-modal-center {
+        padding: 15px;
+    }
+
+    .payment-content {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .payment-option-btn {
+        width: 100%;
+        margin: 5px 0;
+        min-width: auto;
+        padding: 12px 20px !important;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-pay,
+    .btn-cancel {
+        width: 100%;
+        padding: 10px 16px !important;
+    }
+
+    .total-amount {
+        font-size: 1.5rem;
+    }
+
+    .efectivo-field {
+        font-size: 1.1rem !important;
+    }
+}

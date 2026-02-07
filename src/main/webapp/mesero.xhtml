@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Toma de Pedidos - OrderMaster</title>
+    <link rel="icon" href="images/logo_ShamanBlack.ico"/>
+    <link rel="stylesheet" href="resources/css/stylesMesero.css"/>
+</h:head>
+<h:body>
+    <!-- Sidebar izquierdo -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="pi pi-fire sidebar-logo-icon"></i>
+            <span class="sidebar-logo">OrderMaster</span>
+            <span class="sidebar-subtitle">Asadero ShamanBlack</span>
+        </div>
+        <a href="#" class="nav-item active">
+            <i class="pi pi-list"></i> Tomar Pedidos
+        </a>
+        <div class="sidebar-footer">
+            <p:commandLink action="index?faces-redirect=true" styleClass="nav-item nav-item-exit">
+                <i class="pi pi-arrow-right"></i> Salir
+            </p:commandLink>
+        </div>
+    </div>
+
+    <!-- Contenido central: menú de productos -->
+    <div class="main-content">
+        <h1 class="page-title">Toma de Pedidos</h1>
+
+        <h:form id="formMenu">
+            <!-- Filtros por tipo de menú -->
+            <div class="filter-buttons">
+                <p:selectOneButton value="#{pedidoController.tipoSeleccionado}">
+                    <f:selectItem itemLabel="Todos" itemValue="MIXTO"/>
+                    <f:selectItem itemLabel="Desayuno" itemValue="DESAYUNO"/>
+                    <f:selectItem itemLabel="Almuerzo" itemValue="ALMUERZO"/>
+                    <f:selectItem itemLabel="Merienda" itemValue="MERIENDA"/>
+                    <p:ajax update="productGrid msgPanel" listener="#{pedidoController.onTipoChange()}"/>
+                </p:selectOneButton>
+            </div>
+
+            <h:panelGroup id="msgPanel">
+                <p:messages id="messages" showDetail="true" showSummary="false" closable="true"/>
+            </h:panelGroup>
+
+            <!-- Grid de productos del menú -->
+            <div class="product-grid" id="productGrid">
+                <ui:repeat value="#{pedidoController.productosFiltrados}" var="item">
+                    <p:commandLink update=":formModal"
+                                   action="#{pedidoController.seleccionarItem(item)}"
+                                   oncomplete="PF('dlgCantidad').show()">
+                        <div class="product-card">
+                            <p class="product-name">#{item.producto.nombre}</p>
+                            <p class="product-desc">#{item.producto.descripcion}</p>
+                            <span class="product-type">#{item.menu != null ? item.menu.tipoMenu : ''}</span>
+                            <div class="product-price">#{pedidoController.formatPrecio(item.precio)}</div>
+                        </div>
+                    </p:commandLink>
+                </ui:repeat>
+                <h:outputText value="No hay productos disponibles. Cree un menú en Menú Diario primero."
+                              rendered="#{empty pedidoController.productosFiltrados}"
+                              style="grid-column: 1 / -1; color: #718096; padding: 40px; text-align: center;"/>
+            </div>
+        </h:form>
+    </div>
+
+    <!-- Panel derecho: Resumen del Pedido -->
+    <h:form id="formResumen">
+        <div class="order-summary-panel">
+            <h2 class="summary-title">
+                <i class="pi pi-shopping-cart"></i> Resumen del Pedido
+            </h2>
+            <p:separator/>
+
+            <div class="summary-content">
+                <h:panelGroup id="panelResumen">
+                    <ui:repeat value="#{pedidoController.itemsDelPedido}" var="itemPedido">
+                        <div class="summary-item">
+                            <div class="summary-item-info">
+                                <span>#{itemPedido.cantidad}x #{itemPedido.item.producto.nombre}</span>
+                                <span class="summary-item-price">#{pedidoController.formatPrecio(itemPedido.subtotal)}</span>
+                            </div>
+                            <p:commandButton icon="pi pi-times"
+                                             styleClass="btn-remove"
+                                             action="#{pedidoController.eliminarItemPedido(itemPedido)}"
+                                             update=":formResumen:panelResumen :formMenu:msgPanel"
+                                             title="Eliminar"/>
+                        </div>
+                    </ui:repeat>
+
+                    <h:panelGroup rendered="#{pedidoController.cantidadItemsPedido == 0}">
+                        <div class="summary-empty">
+                            <i class="pi pi-shopping-cart"></i>
+                            <p>No hay productos en el pedido</p>
+                            <span>Seleccione productos del menú para comenzar</span>
+                        </div>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </div>
+
+            <div class="summary-totals">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>#{pedidoController.precioTotalFormateado}</span>
+                </div>
+                <div class="summary-row summary-total">
+                    <span>Total</span>
+                    <span>#{pedidoController.precioTotalFormateado}</span>
+                </div>
+                <p:commandButton value="Confirmar Pedido"
+                                 action="#{pedidoController.confirmarPedido()}"
+                                 update=":formResumen:panelResumen :formMenu:msgPanel"
+                                 disabled="#{pedidoController.cantidadItemsPedido == 0}"
+                                 styleClass="btn-confirm"/>
+            </div>
+
+            <div class="summary-help">
+                <i class="pi pi-question-circle"></i>
+            </div>
+        </div>
+    </h:form>
+
+    <!-- Diálogo: Añadir al Pedido -->
+    <p:dialog header="Añadir al Pedido" widgetVar="dlgCantidad" modal="true" responsive="true" width="400">
+        <h:form id="formModal">
+            <div class="modal-content">
+                <div class="modal-product">
+                    <h3>#{pedidoController.itemseleccionado != null ? pedidoController.itemseleccionado.producto.nombre : ''}</h3>
+                    <p:spinner value="#{pedidoController.cantidad}" min="1" max="20"/>
+                    <p class="modal-price">Precio unitario: #{pedidoController.itemseleccionado != null ? pedidoController.formatPrecio(pedidoController.itemseleccionado.precio) : '$0'}</p>
+                </div>
+                <div class="modal-fields">
+                    <p:inputText value="#{pedidoController.mesa}" placeholder="Número de mesa" required="true"/>
+                    <p:inputText value="#{pedidoController.nombre}" placeholder="Nombre del cliente (opcional)"/>
+                    <p:inputTextarea value="#{pedidoController.observacion}" placeholder="Observaciones" rows="3"/>
+                </div>
+                <div class="modal-actions">
+                    <p:commandButton value="Añadir"
+                                     action="#{pedidoController.agregarItemPedido()}"
+                                     update=":formResumen:panelResumen :formMenu:msgPanel"
+                                     oncomplete="PF('dlgCantidad').hide()"
+                                     styleClass="btn-confirm"/>
+                    <p:commandButton value="Cancelar"
+                                     onclick="PF('dlgCantidad').hide()"
+                                     styleClass="btn-cancel"/>
+                </div>
+            </div>
+        </h:form>
+    </p:dialog>
+
+    <!-- Diálogo: Pedido confirmado -->
+    <p:dialog widgetVar="dlgExito" modal="true" closable="false" showHeader="false" width="350" resizable="false">
+        <div class="success-modal">
+            <i class="pi pi-check-circle success-icon"></i>
+            <h3>Pedido confirmado con éxito</h3>
+            <p:commandButton value="Aceptar" onclick="PF('dlgExito').hide()" styleClass="btn-confirm"/>
+        </div>
+    </p:dialog>
+</h:body>
+</html>

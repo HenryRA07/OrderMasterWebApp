@@ -40,4 +40,81 @@ public class PedidoRepository {
                 .setParameter("estado", estado)
                 .getResultList();
     }
+
+    /**
+     * Busca pedidos por estado específico
+     * @param estado Estado del pedido
+     * @return Lista de pedidos en ese estado
+     */
+    public List<Pedido> findPedidosByEstado(EstadoPedido estado) {
+        try {
+            String jpql = "SELECT p FROM Pedido p " +
+                          "LEFT JOIN FETCH p.itemPedido " +
+                          "WHERE p.estado = :estado " +
+                          "ORDER BY p.fechaPedidoCreacion DESC, p.id DESC";
+            
+            return em.createQuery(jpql, Pedido.class)
+                    .setParameter("estado", estado)
+                    .getResultList();
+        } catch (Exception e) {
+            return List.of(); // Retornar lista vacía en caso de error
+        }
+    }
+
+    /**
+     * Busca pedidos por fecha específica
+     * @param fecha Fecha a consultar
+     * @return Lista de pedidos del día
+     */
+    public List<Pedido> findPedidosByFecha(LocalDate fecha) {
+        try {
+            String jpql = "SELECT p FROM Pedido p " +
+                          "LEFT JOIN FETCH p.itemPedido " +
+                          "WHERE p.fechaPedidoCreacion = :fecha " +
+                          "ORDER BY p.fechaPedidoCreacion DESC, p.id DESC";
+            
+            return em.createQuery(jpql, Pedido.class)
+                    .setParameter("fecha", fecha)
+                    .getResultList();
+        } catch (Exception e) {
+            return List.of(); // Retornar lista vacía en caso de error
+        }
+    }
+
+    /**
+     * Busca todos los pedidos (para administración)
+     * @return Lista de todos los pedidos
+     */
+    public List<Pedido> findAllPedidos() {
+        try {
+            String jpql = "SELECT p FROM Pedido p " +
+                          "LEFT JOIN FETCH p.itemPedido " +
+                          "ORDER BY p.fechaPedidoCreacion DESC, p.id DESC";
+            
+            return em.createQuery(jpql, Pedido.class)
+                    .getResultList();
+        } catch (Exception e) {
+            return List.of(); // Retornar lista vacía en caso de error
+        }
+    }
+
+    /**
+     * Busca pedido por ID con items cargados
+     * @param id ID del pedido
+     * @return Pedido encontrado o null
+     */
+    public Pedido findPedidoWithItems(Long id) {
+        try {
+            String jpql = "SELECT p FROM Pedido p " +
+                          "LEFT JOIN FETCH p.itemPedido " +
+                          "LEFT JOIN FETCH p.cliente " +
+                          "WHERE p.id = :id";
+            
+            return em.createQuery(jpql, Pedido.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

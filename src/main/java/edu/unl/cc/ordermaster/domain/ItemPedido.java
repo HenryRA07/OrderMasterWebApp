@@ -32,6 +32,10 @@ public class ItemPedido implements Serializable {
     @OneToOne
     @JoinColumn(name = "itemMenu_id")
     private ItemMenu item;
+    
+    @ManyToOne
+    @JoinColumn(name = "pedido_id")
+    private Pedido pedido;
 
     public ItemPedido() {
     }
@@ -88,6 +92,14 @@ public class ItemPedido implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     @Override

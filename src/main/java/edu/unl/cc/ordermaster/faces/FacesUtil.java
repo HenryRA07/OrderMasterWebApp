@@ -4,10 +4,11 @@
 package edu.unl.cc.ordermaster.faces;
 
 import edu.unl.cc.ordermaster.view.security.UserPrincipalDTO;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 
-
+@ApplicationScoped
 public class FacesUtil {
 
     public static UserPrincipalDTO getCurrentUser() {
@@ -23,35 +24,35 @@ public class FacesUtil {
     }
     */
 
-    public static void addSuccessMessage(String summary, String detail) {
+    public void addSuccessMessage(String summary, String detail) {
         addMessage(FacesMessage.SEVERITY_INFO, summary, detail);
     }
 
-    public static void addSuccessMessageAndKeep(String summary, String detail) {
+    public void addSuccessMessageAndKeep(String summary, String detail) {
         addMessageAndKeep(FacesMessage.SEVERITY_INFO, summary, detail);
     }
 
-    public static void addSuccessMessage(String detail) {
+    public void addSuccessMessage(String detail) {
         addMessage(FacesMessage.SEVERITY_INFO, null, detail);
     }
 
-    public static void addSuccessMessageAndKeep(String detail) {
+    public void addSuccessMessageAndKeep(String detail) {
         addMessageAndKeep(FacesMessage.SEVERITY_INFO, null, detail);
     }
 
-    public static void addErrorMessage(String summary, String detail) {
+    public void addErrorMessage(String summary, String detail) {
         addMessage(FacesMessage.SEVERITY_ERROR, summary, detail);
     }
 
-    public static void addErrorMessageAndKeep(String summary, String detail) {
+    public void addErrorMessageAndKeep(String summary, String detail) {
         addMessageAndKeep(FacesMessage.SEVERITY_ERROR, summary, detail);
     }
 
-    public static void addErrorMessage(String detail) {
+    public void addErrorMessage(String detail) {
         addMessage(FacesMessage.SEVERITY_ERROR, null, detail);
     }
 
-    public static void addErrorMessageAndKeep(String detail) {
+    public void addErrorMessageAndKeep(String detail) {
         addMessageAndKeep(FacesMessage.SEVERITY_ERROR, null, detail);
     }
 
@@ -61,7 +62,7 @@ public class FacesUtil {
      * @param summary
      * @param detail
      */
-    public static void addMessage(FacesMessage.Severity severity,  String summary, String detail){
+    public static void addMessage(FacesMessage.Severity severity, String summary, String detail){
         FacesMessage fc = new FacesMessage(severity, summary, detail);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.addMessage(null, fc);
@@ -73,7 +74,7 @@ public class FacesUtil {
      * @param summary
      * @param detail
      */
-    public static void addMessageAndKeep(FacesMessage.Severity severity,  String summary, String detail){
+    public void addMessageAndKeep(FacesMessage.Severity severity,  String summary, String detail){
         FacesMessage fc = new FacesMessage(severity, summary, detail);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.addMessage(null, fc);

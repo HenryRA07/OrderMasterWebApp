@@ -18,15 +18,15 @@ public class RoleNavigationService implements Serializable {
 
     // Mapeo directo de roles a páginas
     private static final Map<String, String> ROLE_HOME_PAGES = Map.of(
-            "ADMINISTRADOR", "/admin/dashboard.xhtml",
-            "MESERO", "/mesa/pedidos.xhtml",
-            "COCINERO", "/cocina/ordenes.xhtml",
-            "CAJERO", "/caja/facturacion.xhtml"
+            "ADMIN", "/menuDiario.xhtml",
+            "MESERO", "/mesero.xhtml",
+            "COCINERO", "/cocina.xhtml",
+            "CAJERO", "/caja.xhtml"
     );
 
     // Prioridad de roles (si un usuario tiene múltiples roles)
     private static final List<String> ROLE_PRIORITY = List.of(
-            "ADMINISTRADOR",  // Mayor prioridad
+            "ADMIN",  // Mayor prioridad
             "CAJERO",
             "COCINERO",
             "MESERO"          // Menor prioridad

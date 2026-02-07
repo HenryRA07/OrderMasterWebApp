@@ -57,7 +57,7 @@ public class UserRepository {
     //metodo provicionar por tiempo
     public User findWithRoles(@NotNull String name) throws EntityNotFoundException {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", name);
+        params.put("username", name);
         User userFound = crudService.findSingleResultOrNullWithNamedQuery("User.findWithRoles", params);
         if (userFound == null) {
             throw new EntityNotFoundException("Usuario no encontrado: " + name);
