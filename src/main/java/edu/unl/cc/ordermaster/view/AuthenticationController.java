@@ -29,10 +29,10 @@ public class AuthenticationController implements java.io.Serializable{
 
     private static Logger logger = Logger.getLogger(AuthenticationController.class.getName());
 
-    @NotNull @NotEmpty @Size(min=5, message = "Nombre de usuario muy corto")
+    @NotNull @NotEmpty @Size(min=4, message = "Nombre de usuario muy corto")
     private String username;
 
-    @NotNull @NotEmpty @Size(min=8, message = "Contraseña muy corta")
+    @NotNull @NotEmpty @Size(min=4, message = "Contraseña muy corta")
     private String password;
 
     @Inject
@@ -40,6 +40,9 @@ public class AuthenticationController implements java.io.Serializable{
 
     @Inject
     private UserSession userSession;
+    
+    @Inject
+    private FacesUtil facesUtil;
 
     public String login(){
         logger.info("Login attempt for user: " + username);
@@ -47,7 +50,7 @@ public class AuthenticationController implements java.io.Serializable{
         try {
             User user = securityFacade.authenticate(username, password);
             setHttpSession(user);
-            FacesUtil.addSuccessMessageAndKeep("Aviso", "Bienvenido " + user.getName());
+            facesUtil.addSuccessMessageAndKeep("Aviso", "Bienvenido " + user.getName());
             /*
             FacesMessage fcm = new FacesMessage(FacesMessage.SEVERITY_INFO,"Aviso",
                     "Bienvenido " + user.getName());
@@ -61,12 +64,8 @@ public class AuthenticationController implements java.io.Serializable{
             return homePage;
 
         } catch (CredentialInvalidException | EntityNotFoundException e) {
-            /*FacesMessage fcm = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Aviso",
-                    e.getMessage());
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(null, fcm
-             */
-            FacesUtil.addErrorMessage("Inconveniente", e.getMessage());
+            logger.warning("Login failed for user " + username + ": " + e.getMessage());
+            facesUtil.addErrorMessage("Error de Autenticación", "Credenciales incorrectas");
             return null;
         }
     }
@@ -82,7 +81,7 @@ public class AuthenticationController implements java.io.Serializable{
     }
 
     public String logout() throws ServletException {
-        FacesUtil.addSuccessMessageAndKeep(userSession.getUser().getName(), "Hasta pronto");
+
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.getExternalContext().invalidateSession();
         ((jakarta.servlet.http.HttpServletRequest) facesContext.getExternalContext().getRequest()).logout();

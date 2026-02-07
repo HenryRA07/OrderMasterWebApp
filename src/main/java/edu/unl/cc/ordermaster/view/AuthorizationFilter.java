@@ -37,8 +37,12 @@ public class AuthorizationFilter implements Filter {
 
         // 1. Permitir recursos públicos
         if (requestPath.startsWith("/public/")
-                || requestPath.equals("/login.xhtml")
                 || requestPath.equals("/index.xhtml")
+                || requestPath.equals("/menuDiario.xhtml")
+                || requestPath.equals("/usuario.xhtml")
+                || requestPath.equals("/mesero.xhtml")
+                || requestPath.equals("/cocina.xhtml")
+                || requestPath.equals("/caja.xhtml")
             //|| requestPath.contains("/jakarta.faces.resource/")  // Recursos de JSF
             //|| requestPath.contains("/primefaces/")            // Recursos de PrimeFaces
         ) {

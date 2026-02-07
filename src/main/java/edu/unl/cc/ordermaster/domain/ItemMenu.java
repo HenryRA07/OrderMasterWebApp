@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -31,6 +33,10 @@ public class ItemMenu implements Serializable {
     @NotNull
     @OneToOne
     private Producto producto;
+    
+    @ManyToOne
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
 
     public ItemMenu() {
     }
@@ -67,6 +73,7 @@ public class ItemMenu implements Serializable {
         return producto;
     }
 
+
     public void setProducto(@NotNull Producto producto) {
 //        if (producto == null) {
 //            throw new IllegalArgumentException("El producto no puede ser nulo");
@@ -74,7 +81,21 @@ public class ItemMenu implements Serializable {
         this.producto = producto;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
 
     @Override
     public String toString() {

@@ -28,7 +28,7 @@ public class CrudGenericService {
     public static final String PERSISTENCE_FETCHGRAPH = "javax.persistence.fetchgraph";
     public static final String PERSISTENCE_LOADGRAPH = "javax.persistence.loadgraph";
 
-    @PersistenceContext//(name = "JbrewPU", unitName = "JbrewPU")
+    @PersistenceContext(unitName = "orderMasterPU")
     private EntityManager em;
 
     public <T> T create(T t) {

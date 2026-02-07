@@ -34,7 +34,6 @@ public class Pedido implements Serializable {
     @OneToOne
     private Cliente cliente;
 
-
     private LocalDate fechaPedidoCreacion;
 
     public Pedido() {
@@ -77,48 +76,32 @@ public class Pedido implements Serializable {
         calcularTotal();
     }
 
-    private void calcularTotal(){
+    public void calcularTotal(){
         BigDecimal total = BigDecimal.ZERO;
-        for(ItemPedido item:itemPedido) {
-            total.add(item.getSubtotal());
+        if(itemPedido != null) {
+            for(ItemPedido item:itemPedido) {
+                if(item.getSubtotal() != null) {
+                    total = total.add(item.getSubtotal());
+                }
+            }
         }
         precioTotal = total;
     }
 
-    public boolean cambiarEstado(EstadoPedido nuevoEstado) {
-        if (this.estado == EstadoPedido.PENDIENTE) {
-
-            if (nuevoEstado == EstadoPedido.LISTO) {
-                this.estado = nuevoEstado;
-                return true;
-            } else {
-                throw new IllegalArgumentException("El estado ya es pendiente");
-            }
-        }
-
-        else if (this.estado == EstadoPedido.LISTO) {
-
-            if (nuevoEstado == EstadoPedido.PENDIENTE) {
-                throw  new IllegalArgumentException("El estado ya esta listo, no puede ser cambiado");
-            }
-            return true;
-        }
-
-        else {
-            return false;
-        }
-    }
-
-    public int getMesa() {
+    public Integer getMesa() {
         return mesa;
     }
 
-    public void setMesa(int mesa) {
+    public void setMesa(Integer mesa) {
         this.mesa = mesa;
     }
 
     public BigDecimal getPrecioTotal() {
         return precioTotal;
+    }
+
+    public void setPrecioTotal(BigDecimal precioTotal) {
+        this.precioTotal = precioTotal;
     }
 
     public List<ItemPedido> getItemPedido() {
@@ -136,6 +119,24 @@ public class Pedido implements Serializable {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
+
+    public EstadoPedido getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoPedido estado) {
+        this.estado = estado;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
 
     @Override
     public String toString() {

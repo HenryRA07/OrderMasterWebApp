@@ -1,0 +1,265 @@
+/* --- RESET Y ESTRUCTURA BASE --- */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', 'Inter', sans-serif;
+    overflow: hidden; /* Evita scrollbars innecesarios */
+}
+
+.main-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+/* --- LADO IZQUIERDO (BRANDING) --- */
+.left-panel {
+    flex: 1;
+    background-color: #0A0A0A; /* Negro Profundo Shaman */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    padding: 2rem;
+    text-align: center;
+}
+
+.brand-icon {
+    font-size: 4rem;
+    color: #D4AF37; /* Dorado Shaman */
+    margin-bottom: 1rem;
+}
+
+.brand-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.brand-subtitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0.5rem 0 1.5rem 0;
+}
+
+.brand-desc {
+    color: #A0AEC0; /* Gris suave para texto secundario */
+    max-width: 450px;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* --- LADO DERECHO (LOGIN FORM) --- */
+.right-panel {
+    flex: 1;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.login-header h2 {
+    font-size: 1.8rem;
+    color: #1A202C;
+    margin: 0 0 0.5rem 0;
+}
+
+.login-header p {
+    color: #718096;
+    margin: 0;
+}
+
+/* --- PERSONALIZACIÓN DE PRIMEFACES --- */
+.custom-input-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.custom-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #4A5568;
+}
+
+/* Forzar inputs al 100% del ancho */
+.ui-inputtext, .ui-password, .ui-selectonemenu {
+    width: 100% !important;
+    box-sizing: border-box !important; /* Importante para que el padding no rompa el ancho */
+}
+
+/* Ajuste específico para el SelectOneMenu de PrimeFaces */
+.ui-selectonemenu {
+    display: flex !important;
+    align-items: center;
+}
+
+.ui-selectonemenu-label {
+    width: 100% !important;
+}
+
+/* Estilo del Botón Negro */
+.btn-login.ui-button {
+    width: 100%;
+    background-color: #0A0A0A !important;
+    border: 1px solid #0A0A0A !important;
+    color: #ffffff !important;
+    padding: 0.8rem 0;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-login.ui-button:hover {
+    background-color: #2D3748 !important; /* Un gris muy oscuro para el hover */
+    border-color: #2D3748 !important;
+}
+
+.ui-float-label > label {
+
+    left: 1.70em;
+
+}
+
+body .ui-input-icon-left, body .ui-input-icon-right {
+    width: 100%;
+    /* position: absolute; */
+    /* display: inline-block; */
+}
+
+body .ui-input-icon-left, body .ui-input-icon-right {
+    /* position: relative; */
+    display: inline-block;
+}
+
+.ui-float-label {
+    /* display: block; */
+    position: relative;
+}
+
+.ui-float-label {
+    display: block;
+    position: relative;
+}
+
+body .ui-input-icon-left > i:first-of-type {
+    z-index: 100;
+}
+
+body .ui-inputfield {
+    padding: .5rem 0 .5rem 32px;
+}
+
+/* --- RESPONSIVE MOBILE DESIGN --- */
+/* Teléfonos medianos y pequeños: hasta 768px */
+@media (max-width: 768px) {
+    
+    /* Layout stacked para móvil (arriba/abajo) */
+    .main-container {
+        flex-direction: column;
+    }
+    
+    .left-panel {
+        flex: 0.4;
+        padding: 1.5rem;
+        min-height: 40vh;
+    }
+    
+    .right-panel {
+        flex: 0.6;
+        padding: 1.5rem;
+        min-height: 60vh;
+    }
+    
+    /* Logo más pequeño para móvil */
+    .left-panel img {
+        height: 120px !important;
+        padding-bottom: 15px !important;
+    }
+    
+    /* Tipografía escalada */
+    .brand-title {
+        font-size: 2rem !important;
+    }
+    
+    .brand-subtitle {
+        font-size: 1.2rem !important;
+    }
+    
+    .brand-desc {
+        font-size: 0.9rem !important;
+        max-width: 280px !important;
+    }
+    
+    /* Formulario más compacto */
+    .login-wrapper {
+        max-width: 320px !important;
+    }
+    
+    .login-header h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    /* Botones más grandes para touch */
+    .btn-login.ui-button {
+        padding: 1rem 0 !important;
+        font-size: 1.1rem !important;
+    }
+    
+    /* Más espaciado entre elementos */
+    .custom-input-wrapper {
+        margin-bottom: 2rem !important;
+    }
+}
+
+/* Teléfonos muy pequeños: hasta 480px */
+@media (max-width: 480px) {
+    
+    .left-panel {
+        flex: 0.35;
+        padding: 1rem;
+        min-height: 35vh;
+    }
+    
+    .right-panel {
+        flex: 0.65;
+        padding: 1rem;
+        min-height: 65vh;
+    }
+    
+    .left-panel img {
+        height: 100px !important;
+    }
+    
+    .brand-title {
+        font-size: 1.8rem !important;
+    }
+    
+    .brand-subtitle {
+        font-size: 1rem !important;
+    }
+    
+    .brand-desc {
+        font-size: 0.8rem !important;
+        display: none;
+    }
+}
+
+
