@@ -3,7 +3,7 @@
  */
 package edu.unl.cc.ordermaster.business;
 
-import edu.unl.cc.ordermaster.domain.Product;
+import edu.unl.cc.ordermaster.domain.Producto;
 import jakarta.ejb.Stateless;
 
 import java.io.Serializable;
@@ -15,8 +15,8 @@ public class JBrewFacade implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public List<Product> getAllProducts(){
-        return new ArrayList<Product>();
+    public List<Producto> getAllProducts(){
+        return new ArrayList<Producto>();
     }
 
 }

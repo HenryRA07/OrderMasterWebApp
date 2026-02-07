@@ -6,5 +6,12 @@
         <!--The following features were generated based on API usage detected in your application-->
         <feature>jsonb-3.0</feature>
         <feature>restfulWS-3.1</feature>
+        <feature>persistence-3.1</feature>
+        <feature>beanValidation-3.0</feature>
+        <feature>enterpriseBeansLite-4.0</feature>
+        <feature>cdi-4.0</feature>
+        <feature>servlet-6.0</feature>
+        <feature>faces-4.0</feature>
+        <feature>mail-2.1</feature>
     </featureManager>
 </server>

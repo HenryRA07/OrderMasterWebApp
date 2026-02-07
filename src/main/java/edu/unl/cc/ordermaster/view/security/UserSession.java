@@ -43,15 +43,26 @@ public class UserSession implements java.io.Serializable{
     public void postLogin(@NotNull User user) throws EntityNotFoundException {
         logger.info("User logged in: " + user.getName());
         this.user = user;
-        Set<Role> roles = null;
+        
+        // Si el usuario ya viene con roles del authenticate(), usarlos
+        // Si no, buscarlos en la BD
         if (user.getRoles() == null || user.getRoles().isEmpty()) {
-            roles = securityFacade.findRoleNamesByUser(this.user.getId());
+            logger.info("Usuario sin roles, buscando en BD para user ID: " + this.user.getId());
+            Set<Role> roles = securityFacade.findRoleNamesByUser(this.user.getId());
+            user.setRoles(roles);
+        } else {
+            logger.info("Usuario ya tiene roles: " + user.getRoles().size());
+            user.getRoles().forEach(role -> logger.info("Rol encontrado: " + role.getName()));
         }
-        user.setRoles(roles);
     }
 
     //metodo provicionar por tiempo
     public String getHomePage() {
+        logger.info("getHomePage() llamado para usuario: " + (user != null ? user.getName() : "null"));
+        if (user != null && user.getRoles() != null) {
+            logger.info("Roles del usuario en getHomePage: " + user.getRoles().size());
+            user.getRoles().forEach(role -> logger.info("Rol: " + role.getName()));
+        }
         return roleNavigationService.getHomePageByRoles(user.getRoles());
     }
 
@@ -59,7 +70,7 @@ public class UserSession implements java.io.Serializable{
      * Métodos de utilidad para verificación de roles cambios provicionales
      */
     public boolean isAdministrador() {
-        return roleNavigationService.hasRole(user, "ADMINISTRADOR");
+        return roleNavigationService.hasRole(user, "ADMIN");
     }
 
     public boolean isMesero() {
@@ -80,8 +91,8 @@ public class UserSession implements java.io.Serializable{
     }
 
     public boolean hasPermission(String resource, ActionType action) {
-        if (resource.equals("/dashboard.xhtml")){
-            return true;
+        if (resource.equals("/menuDiario.xhtml")){
+            return hasRole("ADMIN");
         }
         return user.getRoles().stream()
                 .flatMap(role -> role.getPermissions().stream())

@@ -32,6 +32,8 @@ public class UserHomeController implements java.io.Serializable{
     @Inject
     SecurityFacade securityFacade;
 
+    @Inject
+    FacesUtil facesUtil;
 
     public UserHomeController() {
     }
@@ -42,7 +44,7 @@ public class UserHomeController implements java.io.Serializable{
             try {
                 user = securityFacade.findUser(selectedUserId);
             } catch (EntityNotFoundException e) {
-                FacesUtil.addErrorMessage("No se pudo encontrar el usuario con id: " + selectedUserId);
+                facesUtil.addErrorMessage("No se pudo encontrar el usuario con id: " + selectedUserId);
                 user = new User();
             }
         } else {
@@ -66,7 +68,7 @@ public class UserHomeController implements java.io.Serializable{
 
         } catch (Exception e) {
             e.printStackTrace();
-            FacesUtil.addErrorMessage(e.getMessage(), "Invconveniente al decifrar la clave: " + e.getMessage());
+            facesUtil.addErrorMessage(e.getMessage(), "Invconveniente al decifrar la clave: " + e.getMessage());
         }
 
     }
@@ -75,10 +77,10 @@ public class UserHomeController implements java.io.Serializable{
         try {
             user = securityFacade.createUser(user);
             //decryptPassword(user);
-            FacesUtil.addSuccessMessageAndKeep("Usuario creado correctamente");
+            facesUtil.addSuccessMessageAndKeep("Usuario creado correctamente");
             return "userList?faces-redirect=true";
         } catch (Exception e) {
-            FacesUtil.addErrorMessage("Inconveniente al crear usuario: " + e.getMessage());
+            facesUtil.addErrorMessage("Inconveniente al crear usuario: " + e.getMessage());
             return null;
         }
     }
@@ -87,10 +89,10 @@ public class UserHomeController implements java.io.Serializable{
         try {
             securityFacade.updateUser(user);
             //decryptPassword(user);
-            FacesUtil.addSuccessMessageAndKeep("Usuario actualizado correctamente");
+            facesUtil.addSuccessMessageAndKeep("Usuario actualizado correctamente");
             return "userList?faces-redirect=true";
         } catch (Exception e) {
-            FacesUtil.addErrorMessage("Inconveniente al actualizar usuario: " + e.getMessage());
+            facesUtil.addErrorMessage("Inconveniente al actualizar usuario: " + e.getMessage());
             return null;
         }
     }
