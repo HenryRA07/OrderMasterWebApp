@@ -37,26 +37,33 @@
 
                 <h:form id="loginForm">
 
+
                     <div class="custom-input-wrapper">
                        <span class="ui-float-label ui-input-icon-left">
                            <i class="pi pi-user" />
-                           <p:inputText id="float-input" value=""/>
+                           <p:inputText id="float-input" value="#{authenticationController.username}"/>
                            <p:outputLabel for="@previous" value="Username"/>
                        </span>
                     </div>
 
                     <div class="custom-input-wrapper">
-
                         <span class="ui-float-label ui-input-icon-left">
                             <i class="pi pi-lock" />
-                            <p:password id="float-input2" value="" toggleMask="true"/>
+                            <p:password id="float-input2" value="#{authenticationController.password}" toggleMask="true"/>
                             <p:outputLabel for="@previous" value="Password" />
                         </span>
                     </div>
 
-                    <p:commandButton value="ENTRAR" action="MenuDiario.xhtml"
+                    <p:messages id="messages"
+                                showDetail="true"
+                                showSummary="true"
+                                closable="true"
+                                redisplay="false"/>
+
+                    <p:commandButton value="ENTRAR" action="#{authenticationController.login()}"
                                      styleClass="btn-login"
-                                     update="@form"/>
+                                     update="@form messages"
+                                     ajax="false"/>
                 </h:form>
 
             </div>

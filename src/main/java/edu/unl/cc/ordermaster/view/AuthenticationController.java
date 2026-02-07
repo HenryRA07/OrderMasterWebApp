@@ -29,10 +29,10 @@ public class AuthenticationController implements java.io.Serializable{
 
     private static Logger logger = Logger.getLogger(AuthenticationController.class.getName());
 
-    @NotNull @NotEmpty @Size(min=5, message = "Nombre de usuario muy corto")
+    @NotNull @NotEmpty @Size(min=4, message = "Nombre de usuario muy corto")
     private String username;
 
-    @NotNull @NotEmpty @Size(min=8, message = "Contraseña muy corta")
+    @NotNull @NotEmpty @Size(min=4, message = "Contraseña muy corta")
     private String password;
 
     @Inject
@@ -64,12 +64,8 @@ public class AuthenticationController implements java.io.Serializable{
             return homePage;
 
         } catch (CredentialInvalidException | EntityNotFoundException e) {
-            /*FacesMessage fcm = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Aviso",
-                    e.getMessage());
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(null, fcm
-             */
-
+            logger.warning("Login failed for user " + username + ": " + e.getMessage());
+            facesUtil.addErrorMessage("Error de Autenticación", "Credenciales incorrectas");
             return null;
         }
     }
