@@ -162,25 +162,26 @@
                         <strong>#{pedidoController.precioTotalFormateado}</strong>
                     </div>
                 </div>
-                
+
                 <!-- Datos del cliente -->
                 <div class="modal-fields">
                     <h4>Datos del Cliente</h4>
                     <p:separator/>
-                    <p:inputText value="#{pedidoController.mesa}" placeholder="Número de mesa *" required="true" style="width: 100%; margin-bottom: 10px;"/>
-                    <p:inputText value="#{pedidoController.nombre}" placeholder="Nombre *" required="true" style="width: 100%; margin-bottom: 10px;"/>
-                    <p:inputText value="#{pedidoController.apellido}" placeholder="Apellido *" required="true" style="width: 100%; margin-bottom: 10px;"/>
-                    <p:inputText value="#{pedidoController.email}" placeholder="Email *" required="true" style="width: 100%; margin-bottom: 10px;"/>
-                    <p:inputText value="#{pedidoController.telefono}" placeholder="Teléfono *" required="true" style="width: 100%; margin-bottom: 10px;"/>
-                    <p:inputText value="#{pedidoController.dni}" placeholder="DNI *" required="true" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputText value="#{pedidoController.mesa}" placeholder="Número de mesa" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputText value="#{pedidoController.nombre}" placeholder="Nombre" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputText value="#{pedidoController.apellido}" placeholder="Apellido" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputText value="#{pedidoController.email}" placeholder="Email" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputText value="#{pedidoController.telefono}" placeholder="Teléfono" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputText value="#{pedidoController.dni}" placeholder="DNI" style="width: 100%; margin-bottom: 10px;"/>
                     <p:inputTextarea value="#{pedidoController.observacion}" placeholder="Observaciones del pedido" rows="3" style="width: 100%; margin-bottom: 10px;"/>
                 </div>
                 <div class="modal-actions">
                     <p:commandButton value="Enviar a Cocina"
                                      action="#{pedidoController.confirmarPedidoConDatos()}"
-                                     update=":formResumen:panelResumen :formMenu:msgPanel"
+                                     update=":formResumen:panelResumen :formMenu:msgPanel formCliente"
                                      oncomplete="if(args &amp;&amp; !args.validationFailed) { PF('dlgCliente').hide(); PF('dlgExito').show(); }"
-                                     styleClass="btn-confirm"/>
+                                     styleClass="btn-confirm"
+                                     validateClient="true"/>
                     <p:commandButton value="Cancelar"
                                      onclick="PF('dlgCliente').hide()"
                                      styleClass="btn-cancel"/>

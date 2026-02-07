@@ -19,7 +19,6 @@ public class Pedido implements Serializable {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
-    @Positive @NotNull
     private Integer mesa;
 
     private BigDecimal precioTotal;
@@ -27,10 +26,9 @@ public class Pedido implements Serializable {
     @Enumerated(EnumType.STRING)
     private EstadoPedido estado = EstadoPedido.PENDIENTE;
     //relaciones
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "pedido")
     private List<ItemPedido> itemPedido;
 
-    @NotNull
     @OneToOne(cascade = CascadeType.PERSIST)
     private Cliente cliente;
 
@@ -55,6 +53,7 @@ public class Pedido implements Serializable {
         }
         if(!itemPedido.contains(item)){
             itemPedido.add(item);
+            item.setPedido(this); // Establecer relación bidireccional
         }
         calcularTotal();
     }

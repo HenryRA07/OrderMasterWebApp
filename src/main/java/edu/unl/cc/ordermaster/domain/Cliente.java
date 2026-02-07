@@ -18,10 +18,8 @@ public class Cliente implements Serializable {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @NotBlank(message = "El apellido es obligatorio")
     private String apellido;
 
     @Transient
@@ -30,9 +28,6 @@ public class Cliente implements Serializable {
     @Transient
     private String telefono;
 
-    @NotBlank(message = "El email es obligatorio")
-    @Email(message = "Formato de email incorrecto")
-    @Column(nullable = false, unique = true)
     private String email;
 
     public Cliente() {

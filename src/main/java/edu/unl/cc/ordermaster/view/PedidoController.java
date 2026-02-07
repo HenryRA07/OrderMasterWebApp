@@ -31,10 +31,10 @@ public class PedidoController implements Serializable {
     // Inyección de dependencias
     @Inject
     private MenuFacade menuFacade;
-    
+
     @Inject
     private PedidoFacade pedidoFacade;
-    
+
     @Inject
     private FacesUtil facesUtil;
 
@@ -88,13 +88,13 @@ public class PedidoController implements Serializable {
             productosFiltrados = List.of();
             return;
         }
-        
+
         if (tipoSeleccionado == null || tipoSeleccionado == TipoMenu.MIXTO) {
             productosFiltrados = itemsMenuDelDia;
         } else {
             productosFiltrados = itemsMenuDelDia.stream()
-                .filter(item -> item.getMenu() != null && item.getMenu().getTipoMenu() == tipoSeleccionado)
-                .collect(Collectors.toList());
+                    .filter(item -> item.getMenu() != null && item.getMenu().getTipoMenu() == tipoSeleccionado)
+                    .collect(Collectors.toList());
         }
     }
 
@@ -159,12 +159,12 @@ public class PedidoController implements Serializable {
 
             // Agregar item al pedido temporal (sin persistir en BD)
             pedidoactual.agregarItem(item);
-            
-            facesUtil.addSuccessMessage("Producto agregado al pedido: " + 
-                itemseleccionado.getProducto().getNombre() + " (x" + cantidad + ")");
-            
+
+            facesUtil.addSuccessMessage("Producto agregado al pedido: " +
+                    itemseleccionado.getProducto().getNombre() + " (x" + cantidad + ")");
+
             limpiarSeleccion();
-            
+
         } catch (Exception e) {
             facesUtil.addErrorMessage("Error al agregar producto al pedido: " + e.getMessage());
         }
@@ -352,13 +352,13 @@ public class PedidoController implements Serializable {
     public void verificarYMostrarDialogoCliente() {
         System.out.println("=== DEBUG: verificarYMostrarDialogoCliente() llamado ===");
         System.out.println("Cantidad de items en pedido: " + getCantidadItemsPedido());
-        
+
         if (getCantidadItemsPedido() > 0) {
             System.out.println("HAY productos - preparando para mostrar diálogo");
-            
+
             // Agregar mensaje de éxito para asegurar que se muestre en el update
             facesUtil.addSuccessMessage("Preparando confirmación del pedido...");
-            
+
             // Intentar mostrar diálogo con JavaScript
             try {
                 PrimeFaces.current().executeScript("console.log('Intentando mostrar modal desde backend...'); PF('dlgCliente').show();");
@@ -367,10 +367,10 @@ public class PedidoController implements Serializable {
                 System.out.println("ERROR al mostrar diálogo desde backend: " + e.getMessage());
                 e.printStackTrace();
             }
-            
+
             // También lo forzamos con oncomplete en el XHTML
             System.out.println("El modal debería aparecer con oncomplete también");
-            
+
         } else {
             System.out.println("ERROR: No hay productos en el pedido");
             facesUtil.addErrorMessage("Debe agregar productos al pedido antes de confirmar");
@@ -390,13 +390,13 @@ public class PedidoController implements Serializable {
 
             // Actualizar el pedido para asegurar que esté guardado
             pedidoFacade.actualizarPedido(pedidoactual);
-            
+
             facesUtil.addSuccessMessage("Pedido confirmado exitosamente! ID: " + pedidoactual.getId());
-            
+
             // Limpiar para nuevo pedido
             pedidoactual = null;
             inicializarPedido();
-            
+
             return null; // Permanecer en la misma página
         } catch (Exception e) {
             facesUtil.addErrorMessage("Error al confirmar el pedido: " + e.getMessage());
@@ -409,7 +409,7 @@ public class PedidoController implements Serializable {
      */
     public String confirmarPedidoConDatos() {
         System.out.println("=== DEBUG: confirmarPedidoConDatos() llamado ===");
-        
+
         try {
             // Validaciones
             if (pedidoactual == null || pedidoactual.getItemPedido() == null || pedidoactual.getItemPedido().isEmpty()) {
@@ -419,28 +419,13 @@ public class PedidoController implements Serializable {
             }
             System.out.println("Items en pedido: " + pedidoactual.getItemPedido().size());
 
-            // Validar datos del cliente
-            if (mesa == null || mesa <= 0) {
+            // Validar datos del cliente (opcional)
+            if (mesa != null && mesa <= 0) {
                 System.out.println("ERROR: Mesa inválida");
-                facesUtil.addErrorMessage("El número de mesa es obligatorio");
+                facesUtil.addErrorMessage("El número de mesa debe ser mayor a 0");
                 return null;
             }
-            if (nombre == null || nombre.trim().isEmpty()) {
-                System.out.println("ERROR: Nombre vacío");
-                facesUtil.addErrorMessage("El nombre es obligatorio");
-                return null;
-            }
-            if (apellido == null || apellido.trim().isEmpty()) {
-                System.out.println("ERROR: Apellido vacío");
-                facesUtil.addErrorMessage("El apellido es obligatorio");
-                return null;
-            }
-            if (email == null || email.trim().isEmpty()) {
-                System.out.println("ERROR: Email vacío");
-                facesUtil.addErrorMessage("El email es obligatorio");
-                return null;
-            }
-            if (!email.trim().contains("@")) {
+            if (email != null && !email.trim().isEmpty() && !email.trim().contains("@")) {
                 System.out.println("ERROR: Formato de email incorrecto");
                 facesUtil.addErrorMessage("El formato del email es incorrecto");
                 return null;
@@ -457,87 +442,66 @@ public class PedidoController implements Serializable {
 
             // Crear cliente
             clientepedido = new Cliente();
-            
-            // Asignar valores con validación
-            if (nombre != null && nombre.trim().length() > 0) {
-                clientepedido.setNombre(nombre.trim());
-                System.out.println("Nombre asignado: " + clientepedido.getNombre());
-            } else {
-                System.out.println("ERROR: Nombre vacío después de validación");
+
+            // Asignar valores DIRECTAMENTE sin validaciones adicionales
+            // (las validaciones ya se hicieron arriba)
+            clientepedido.setNombre(nombre.trim());
+            clientepedido.setApellido(apellido.trim());
+            clientepedido.setEmail(email.trim() + "+pedido" + System.currentTimeMillis() + "@ordermaster.local");
+
+            // DNI y teléfono opcionales
+            if (dni != null && dni.trim().length() > 0) {
+                clientepedido.setDni(dni.trim());
             }
-            
-            if (apellido != null && apellido.trim().length() > 0) {
-                clientepedido.setApellido(apellido.trim());
-                System.out.println("Apellido asignado: " + clientepedido.getApellido());
-            } else {
-                System.out.println("ERROR: Apellido vacío después de validación");
+            if (telefono != null && telefono.trim().length() > 0) {
+                clientepedido.setTelefono(telefono.trim());
             }
-            
-            // Email siempre válido y único
-            String emailUnico = email.trim() + "+pedido" + System.currentTimeMillis() + "@ordermaster.local";
-            clientepedido.setEmail(emailUnico);
-            System.out.println("Email único asignado: " + clientepedido.getEmail());
-            
-            // DNI y teléfono con valores por defecto seguros
-            String valorDni = (dni != null && dni.trim().length() > 0) ? dni.trim() : "00000000";
-            String valorTelefono = (telefono != null && telefono.trim().length() > 0) ? telefono.trim() : "0000000000";
-            
-            clientepedido.setDni(valorDni);
-            clientepedido.setTelefono(valorTelefono);
-            
-            System.out.println("DNI asignado: " + clientepedido.getDni());
-            System.out.println("Teléfono asignado: " + clientepedido.getTelefono());
+
+            System.out.println("=== CLIENTE CREADO ===");
+            System.out.println("Nombre: " + clientepedido.getNombre());
+            System.out.println("Apellido: " + clientepedido.getApellido());
+            System.out.println("Email: " + clientepedido.getEmail());
 
             // Asignar cliente al pedido y número de mesa
             pedidoactual.setCliente(clientepedido);
             pedidoactual.setMesa(mesa);
-            
-            System.out.println("Cliente asignado al pedido");
-            System.out.println("Enviando pedido a cocina (creando pedido)...");
 
-            // Crear y persistir el pedido
-            pedidoactual = pedidoFacade.crearPedido(pedidoactual);
-            
+            System.out.println("Cliente asignado al pedido");
+            System.out.println("Enviando pedido a cocina...");
+
+            // Crear y persistir el pedido con manejo específico de errores
+            try {
+                pedidoactual = pedidoFacade.crearPedido(pedidoactual);
+                System.out.println("✅ Pedido CREADO y ENVIADO A COCINA - ID: " + pedidoactual.getId());
+            } catch (Exception persistenceError) {
+                System.out.println("❌ ERROR DE PERSISTENCIA: " + persistenceError.getMessage());
+                persistenceError.printStackTrace();
+
+                // Error más específico para el usuario
+                if (persistenceError.getMessage().contains("ConstraintViolation")) {
+                    facesUtil.addErrorMessage("❌ Error: Hay datos obligatorios que no se completaron correctamente. Verifique todos los campos marcados con *");
+                } else {
+                    facesUtil.addErrorMessage("❌ Error al guardar el pedido: " + persistenceError.getMessage());
+                }
+                return null;
+            }
+
             System.out.println("Pedido CREADO y ENVIADO A COCINA - ID: " + pedidoactual.getId());
             System.out.println("Estado del pedido: " + pedidoactual.getEstado());
-            
-            facesUtil.addSuccessMessage("Pedido confirmado exitosamente! ID: " + pedidoactual.getId() + " - Enviado a cocina");
-            
+
+            facesUtil.addSuccessMessage("✅ Pedido confirmado exitosamente! ID: " + pedidoactual.getId() + " - Enviado a cocina");
+
             // Limpiar para nuevo pedido
             limpiarDatosCliente();
             pedidoactual = null;
             inicializarPedido();
-            
+
             System.out.println("=== FIN: Pedido enviado a cocina exitosamente ===");
             return null;
         } catch (Exception e) {
-            System.out.println("ERROR al confirmar pedido: " + e.getMessage());
+            System.out.println("❌ ERROR GENERAL: " + e.getMessage());
             e.printStackTrace();
-            
-            // Mostrar error detallado específico
-            String errorMessage = "Error al confirmar el pedido";
-            
-            if (e.getMessage().contains("ConstraintViolationException")) {
-                errorMessage = "❌ Error de validación: Complete todos los campos obligatorios (*)";
-                
-                // Analizar campos específicos que pueden faltar
-                if (nombre == null || nombre.trim().isEmpty()) {
-                    errorMessage += " - Falta Nombre";
-                }
-                if (apellido == null || apellido.trim().isEmpty()) {
-                    errorMessage += " - Falta Apellido";
-                }
-                if (email == null || email.trim().isEmpty()) {
-                    errorMessage += " - Falta Email";
-                }
-                if (mesa == null || mesa <= 0) {
-                    errorMessage += " - Falta Número de mesa";
-                }
-            } else {
-                errorMessage += ": " + e.getMessage();
-            }
-            
-            facesUtil.addErrorMessage(errorMessage);
+            facesUtil.addErrorMessage("❌ Error al procesar el pedido: " + e.getMessage());
             return null;
         }
     }
@@ -560,45 +524,45 @@ public class PedidoController implements Serializable {
     public void eliminarItemPedido(ItemPedido item) {
         System.out.println("=== DEBUG: eliminarItemPedido() llamado ===");
         System.out.println("Item a eliminar: " + (item != null ? item.toString() : "NULL"));
-        System.out.println("Items en pedido antes de eliminar: " + 
-            (pedidoactual != null && pedidoactual.getItemPedido() != null ? pedidoactual.getItemPedido().size() : "NULL"));
-        
+        System.out.println("Items en pedido antes de eliminar: " +
+                (pedidoactual != null && pedidoactual.getItemPedido() != null ? pedidoactual.getItemPedido().size() : "NULL"));
+
         try {
             if (pedidoactual == null) {
                 System.out.println("ERROR: pedidoactual es NULL");
                 facesUtil.addErrorMessage("Error: pedidoactual es nulo");
                 return;
             }
-            
+
             if (item == null) {
                 System.out.println("ERROR: item es NULL");
                 facesUtil.addErrorMessage("Error: item es nulo");
                 return;
             }
-            
+
             // Método alternativo: buscar por producto y cantidad
             boolean eliminado = false;
             for (int i = 0; i < pedidoactual.getItemPedido().size(); i++) {
                 ItemPedido currentItem = pedidoactual.getItemPedido().get(i);
                 if (currentItem.getItem() != null && item.getItem() != null &&
-                    currentItem.getItem().getProducto().getId().equals(item.getItem().getProducto().getId()) &&
-                    currentItem.getCantidad().equals(item.getCantidad())) {
-                    
+                        currentItem.getItem().getProducto().getId().equals(item.getItem().getProducto().getId()) &&
+                        currentItem.getCantidad().equals(item.getCantidad())) {
+
                     pedidoactual.getItemPedido().remove(i);
                     eliminado = true;
                     System.out.println("Item eliminado por índice: " + i);
                     break;
                 }
             }
-            
+
             if (!eliminado) {
                 System.out.println("Intentando eliminar por equals()...");
                 pedidoactual.eliminarItem(item);
             }
-            
+
             pedidoactual.calcularTotal();
             System.out.println("Items en pedido después de eliminar: " + pedidoactual.getItemPedido().size());
-            
+
             // Solo actualizar en BD si el pedido ya fue persistido
             if (pedidoactual.getId() != null) {
                 pedidoFacade.actualizarPedido(pedidoactual);
@@ -606,10 +570,10 @@ public class PedidoController implements Serializable {
             } else {
                 System.out.println("Pedido no persistido, solo se actualizó en memoria");
             }
-            
+
             facesUtil.addSuccessMessage("Producto eliminado del pedido");
             System.out.println("=== FIN: eliminación exitosa ===");
-            
+
         } catch (Exception e) {
             System.out.println("ERROR en eliminación: " + e.getMessage());
             e.printStackTrace();
