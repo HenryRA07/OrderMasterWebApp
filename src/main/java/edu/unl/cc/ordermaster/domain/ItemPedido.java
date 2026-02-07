@@ -48,7 +48,11 @@ public class ItemPedido implements Serializable {
     }
 
     private void calcularSubtotal(){
-        this.subtotal = BigDecimal.valueOf(this.cantidad).multiply(this.getItem().getPrecio());
+        if (this.cantidad != null && this.getItem() != null && this.getItem().getPrecio() != null) {
+            this.subtotal = BigDecimal.valueOf(this.cantidad).multiply(this.getItem().getPrecio());
+        } else {
+            this.subtotal = BigDecimal.ZERO;
+        }
     }
 
     public Integer getCantidad() {
@@ -72,6 +76,9 @@ public class ItemPedido implements Serializable {
 //            throw new IllegalArgumentException("Item no puede estar vacio");
 //        }
         this.item = item;
+        if (this.cantidad != null) {
+            calcularSubtotal();
+        }
     }
 
     public BigDecimal getSubtotal() {
@@ -100,6 +107,40 @@ public class ItemPedido implements Serializable {
 
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        ItemPedido that = (ItemPedido) obj;
+        
+        // Si ambos tienen ID, comparar por ID
+        if (id != null && that.id != null) {
+            return id.equals(that.id);
+        }
+        
+        // Si no tienen ID, comparar por item y cantidad (productos iguales)
+        if (item != null && that.item != null) {
+            return item.equals(that.item) && 
+                   cantidad != null && cantidad.equals(that.cantidad);
+        }
+        
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        // Si tiene ID, usar ID
+        if (id != null) {
+            return id.hashCode();
+        }
+        
+        // Si no tiene ID, usar combinación de item y cantidad
+        int result = item != null ? item.hashCode() : 0;
+        result = 31 * result + (cantidad != null ? cantidad.hashCode() : 0);
+        return result;
     }
 
     @Override

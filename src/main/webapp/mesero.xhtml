@@ -20,7 +20,7 @@
             <span class="sidebar-subtitle">Asadero ShamanBlack</span>
         </div>
         <a href="#" class="nav-item active">
-            <i class="pi pi-list"></i> Tomar Pedidos
+            <i class="pi pi-list"></i> Menú Diario
         </a>
         <div class="sidebar-footer">
             <p:commandLink action="index?faces-redirect=true" styleClass="nav-item nav-item-exit">
@@ -31,19 +31,9 @@
 
     <!-- Contenido central: menú de productos -->
     <div class="main-content">
-        <h1 class="page-title">Toma de Pedidos</h1>
+        <h1 class="page-title">Menú Diario</h1>
 
         <h:form id="formMenu">
-            <!-- Filtros por tipo de menú -->
-            <div class="filter-buttons">
-                <p:selectOneButton value="#{pedidoController.tipoSeleccionado}">
-                    <f:selectItem itemLabel="Todos" itemValue="MIXTO"/>
-                    <f:selectItem itemLabel="Desayuno" itemValue="DESAYUNO"/>
-                    <f:selectItem itemLabel="Almuerzo" itemValue="ALMUERZO"/>
-                    <f:selectItem itemLabel="Merienda" itemValue="MERIENDA"/>
-                    <p:ajax update="productGrid msgPanel" listener="#{pedidoController.onTipoChange()}"/>
-                </p:selectOneButton>
-            </div>
 
             <h:panelGroup id="msgPanel">
                 <p:messages id="messages" showDetail="true" showSummary="false" closable="true"/>
@@ -80,7 +70,7 @@
 
             <div class="summary-content">
                 <h:panelGroup id="panelResumen">
-                    <ui:repeat value="#{pedidoController.itemsDelPedido}" var="itemPedido">
+                    <ui:repeat value="#{pedidoController.itemsDelPedido}" var="itemPedido" varStatus="status">
                         <div class="summary-item">
                             <div class="summary-item-info">
                                 <span>#{itemPedido.cantidad}x #{itemPedido.item.producto.nombre}</span>
@@ -89,8 +79,9 @@
                             <p:commandButton icon="pi pi-times"
                                              styleClass="btn-remove"
                                              action="#{pedidoController.eliminarItemPedido(itemPedido)}"
-                                             update=":formResumen:panelResumen :formMenu:msgPanel"
-                                             title="Eliminar"/>
+                                             update=":formResumen panelResumen :formMenu:msgPanel"
+                                             title="Eliminar #{itemPedido.item.producto.nombre}"
+                                             process="@this"/>
                         </div>
                     </ui:repeat>
 
@@ -105,6 +96,7 @@
             </div>
 
             <div class="summary-totals">
+                <h:inputHidden value="#{pedidoController.cantidadItemsPedido}" />
                 <div class="summary-row">
                     <span>Subtotal</span>
                     <span>#{pedidoController.precioTotalFormateado}</span>
@@ -114,10 +106,11 @@
                     <span>#{pedidoController.precioTotalFormateado}</span>
                 </div>
                 <p:commandButton value="Confirmar Pedido"
-                                 action="#{pedidoController.confirmarPedido()}"
-                                 update=":formResumen:panelResumen :formMenu:msgPanel"
+                                 action="#{pedidoController.verificarYMostrarDialogoCliente()}"
+                                 update="@form"
                                  disabled="#{pedidoController.cantidadItemsPedido == 0}"
-                                 styleClass="btn-confirm"/>
+                                 styleClass="btn-confirm"
+                                 oncomplete="if(args &amp;&amp; !args.validationFailed) { setTimeout(function() { PF('dlgCliente').show(); }, 100); }"/>
             </div>
 
             <div class="summary-help">
@@ -135,19 +128,11 @@
                     <p:spinner value="#{pedidoController.cantidad}" min="1" max="20"/>
                     <p class="modal-price">Precio unitario: #{pedidoController.itemseleccionado != null ? pedidoController.formatPrecio(pedidoController.itemseleccionado.precio) : '$0'}</p>
                 </div>
-                <div class="modal-fields">
-                    <p:inputText value="#{pedidoController.mesa}" placeholder="Número de mesa" required="true"/>
-                    <p:inputText value="#{pedidoController.nombre}" placeholder="Nombre del cliente (opcional)"/>
-                    <p:inputText value="#{pedidoController.apellido}" placeholder="Apellido" required="true"/>
-                    <p:inputText value="#{pedidoController.email}" placeholder="Email" required="true"/>
-                    <p:inputText value="#{pedidoController.telefono}" placeholder="Telefono" required="true"/>
-                    <p:inputText value="#{pedidoController.dni}" placeholder="DNI" required="true"/>
-                    <p:inputTextarea value="#{pedidoController.observacion}" placeholder="Observaciones" rows="3"/>
-                </div>
+
                 <div class="modal-actions">
                     <p:commandButton value="Añadir"
                                      action="#{pedidoController.agregarItemPedido()}"
-                                     update=":formResumen:panelResumen :formMenu:msgPanel"
+                                     update=":formResumen :formMenu:msgPanel"
                                      oncomplete="PF('dlgCantidad').hide()"
                                      styleClass="btn-confirm"/>
                     <p:commandButton value="Cancelar"
@@ -158,13 +143,61 @@
         </h:form>
     </p:dialog>
 
+    <!-- Diálogo: Datos del Cliente -->
+    <p:dialog header="Datos del Cliente" widgetVar="dlgCliente" modal="true" responsive="true" width="550">
+        <h:form id="formCliente">
+            <div class="modal-content">
+                <!-- Resumen del pedido -->
+                <div class="modal-order-summary">
+                    <h4>Resumen del Pedido</h4>
+                    <p:separator/>
+                    <ui:repeat value="#{pedidoController.itemsDelPedido}" var="itemPedido">
+                        <div class="modal-summary-item">
+                            <span>#{itemPedido.cantidad}x #{itemPedido.item.producto.nombre}</span>
+                            <span class="modal-item-price">#{pedidoController.formatPrecio(itemPedido.subtotal)}</span>
+                        </div>
+                    </ui:repeat>
+                    <div class="modal-total-row">
+                        <strong>Total a pagar:</strong>
+                        <strong>#{pedidoController.precioTotalFormateado}</strong>
+                    </div>
+                </div>
+                
+                <!-- Datos del cliente -->
+                <div class="modal-fields">
+                    <h4>Datos del Cliente</h4>
+                    <p:separator/>
+                    <p:inputText value="#{pedidoController.mesa}" placeholder="Número de mesa *" required="true" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputText value="#{pedidoController.nombre}" placeholder="Nombre *" required="true" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputText value="#{pedidoController.apellido}" placeholder="Apellido *" required="true" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputText value="#{pedidoController.email}" placeholder="Email *" required="true" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputText value="#{pedidoController.telefono}" placeholder="Teléfono *" required="true" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputText value="#{pedidoController.dni}" placeholder="DNI *" required="true" style="width: 100%; margin-bottom: 10px;"/>
+                    <p:inputTextarea value="#{pedidoController.observacion}" placeholder="Observaciones del pedido" rows="3" style="width: 100%; margin-bottom: 10px;"/>
+                </div>
+                <div class="modal-actions">
+                    <p:commandButton value="Enviar a Cocina"
+                                     action="#{pedidoController.confirmarPedidoConDatos()}"
+                                     update=":formResumen:panelResumen :formMenu:msgPanel"
+                                     oncomplete="if(args &amp;&amp; !args.validationFailed) { PF('dlgCliente').hide(); PF('dlgExito').show(); }"
+                                     styleClass="btn-confirm"/>
+                    <p:commandButton value="Cancelar"
+                                     onclick="PF('dlgCliente').hide()"
+                                     styleClass="btn-cancel"/>
+                </div>
+            </div>
+        </h:form>
+    </p:dialog>
+
     <!-- Diálogo: Pedido confirmado -->
     <p:dialog widgetVar="dlgExito" modal="true" closable="false" showHeader="false" width="350" resizable="false">
         <div class="success-modal">
             <i class="pi pi-check-circle success-icon"></i>
-            <h3>Pedido confirmado con éxito</h3>
-            <p:commandButton value="Aceptar" onclick="PF('dlgExito').hide()" styleClass="btn-confirm"/>
+            <h3>¡Pedido enviado a cocina!</h3>
+            <p style="color: #718096; margin: 10px 0;">Tu pedido ha sido confirmado y está siendo preparado</p>
+            <p:commandButton value="Nuevo Pedido" onclick="PF('dlgExito').hide()" styleClass="btn-confirm"/>
         </div>
     </p:dialog>
+
 </h:body>
 </html>
