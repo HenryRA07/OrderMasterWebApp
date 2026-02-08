@@ -1,6 +1,7 @@
 package edu.unl.cc.ordermaster.view;
 
 import edu.unl.cc.ordermaster.business.service.common.PedidoRepository;
+import edu.unl.cc.ordermaster.business.service.PedidoFacade;
 import edu.unl.cc.ordermaster.domain.EstadoPedido;
 import edu.unl.cc.ordermaster.domain.Pedido;
 import jakarta.annotation.PostConstruct;
@@ -17,9 +18,13 @@ public class ConcinaController {
 
     private List<Pedido> pedidosPendientes;
     private LocalDate fechaConsulta;
+    private Pedido pedidoSeleccionado;
 
     @Inject
     PedidoRepository bdpedido;
+    
+    @Inject
+    PedidoFacade pedidoFacade;
 
     @PostConstruct
     public void init(){
@@ -34,7 +39,7 @@ public class ConcinaController {
 
     public void marcarPedidoListo(Pedido pedido){
         pedido.setEstado(EstadoPedido.LISTO);
-        //pedido respositorio para actualizar la base de datos
+        pedidoFacade.actualizarPedido(pedido);
         caragarPedidosPendientes();
     }
 
@@ -45,5 +50,17 @@ public class ConcinaController {
 
     public void setPedidosPendientes(List<Pedido> pedidosPendientes) {
         this.pedidosPendientes = pedidosPendientes;
+    }
+
+    public void verDetallesPedido(Pedido pedido) {
+        this.pedidoSeleccionado = pedido;
+    }
+
+    public Pedido getPedidoSeleccionado() {
+        return pedidoSeleccionado;
+    }
+
+    public void setPedidoSeleccionado(Pedido pedidoSeleccionado) {
+        this.pedidoSeleccionado = pedidoSeleccionado;
     }
 }
