@@ -41,7 +41,7 @@
 
             <!-- Grid de productos del menú -->
             <div class="product-grid" id="productGrid">
-                <ui:repeat value="#{pedidoController.itemsMenuDelDia}" var="item">
+                <ui:repeat value="#{pedidoController.productosFiltrados}" var="item">
                     <p:commandLink update=":formModal"
                                    action="#{pedidoController.seleccionarItem(item)}"
                                    oncomplete="PF('dlgCantidad').show()">
@@ -70,7 +70,7 @@
 
             <div class="summary-content">
                 <h:panelGroup id="panelResumen">
-                    <ui:repeat value="#{pedidoController.itemsMenuDelDia}" var="itemPedido" varStatus="status">
+                    <ui:repeat value="#{pedidoController.itemsDelPedido}" var="itemPedido" varStatus="status">
                         <div class="summary-item">
                             <div class="summary-item-info">
                                 <span>#{itemPedido.cantidad}x #{itemPedido.item.producto.nombre}</span>
@@ -173,7 +173,6 @@
                     <p:inputText value="#{pedidoController.email}" placeholder="Email" style="width: 100%; margin-bottom: 10px;"/>
                     <p:inputText value="#{pedidoController.telefono}" placeholder="Teléfono" style="width: 100%; margin-bottom: 10px;"/>
                     <p:inputText value="#{pedidoController.dni}" placeholder="DNI" style="width: 100%; margin-bottom: 10px;"/>
-                    <p:inputTextarea value="#{pedidoController.observacion}" placeholder="Observaciones del pedido" rows="3" style="width: 100%; margin-bottom: 10px;"/>
                 </div>
                 <div class="modal-actions">
                     <p:commandButton value="Enviar a Cocina"

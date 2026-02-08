@@ -154,7 +154,13 @@ public class Pedido implements Serializable {
         this.id = id;
     }
 
+    public LocalDate getFechaPedidoCreacion() {
+        return fechaPedidoCreacion;
+    }
 
+    public void setFechaPedidoCreacion(LocalDate fechaPedidoCreacion) {
+        this.fechaPedidoCreacion = fechaPedidoCreacion;
+    }
 
     @Override
     public String toString() {

@@ -41,24 +41,52 @@
                 <ui:repeat value="#{cocina.pedidosPendientes}" var="pedido">
                     <div class="order-card">
                         <div class="order-header">
-                            <div>
-                                <strong style="font-size: 1.1rem;">ORD-#{pedido.id}</strong><br/>
-                                <small style="color: #718096;">Mesa: #{pedido.mesa}</small>
-                                <br/>
-                                <small style="color: #718096;">Cliente: #{pedido.cliente.nombreCompleto}</small>
+                            <div class="order-info">
+                                <div class="order-id">
+                                    <strong style="font-size: 1.2rem; color: #2d3748;">ORD-#{pedido.id}</strong>
+                                </div>
+                                <div class="order-details">
+                                    <div class="detail-row">
+                                        <i class="pi pi-user" style="color: #718096; margin-right: 5px; font-size: 0.8rem;"></i>
+                                        <small style="color: #4a5568;">Cliente: #{pedido.cliente.nombreCompleto}</small>
+                                    </div>
+                                    <h:panelGroup rendered="#{pedido.mesa != null}">
+                                        <div class="detail-row">
+                                            <i class="pi pi-table" style="color: #718096; margin-right: 5px; font-size: 0.8rem;"></i>
+                                            <small style="color: #4a5568;">Mesa: #{pedido.mesa}</small>
+                                        </div>
+                                    </h:panelGroup>
+                                    <div class="detail-row">
+                                        <i class="pi pi-clock" style="color: #718096; margin-right: 5px; font-size: 0.8rem;"></i>
+                                        <small style="color: #4a5568;">Fecha: #{pedido.fechaPedidoCreacion}</small>
+                                    </div>
+                                </div>
                             </div>
                             <span class="status-badge status-pending">#{pedido.estado}</span>
                         </div>
+                        
                         <div class="order-body">
-                            <ui:repeat value="#{pedido.itemPedido}" var="item">
-                                <div class="item-row">
-                                    <span style="font-weight: bold; color: #d4af37;">#{item.cantidad}x</span> #{item.item.producto.nombre}
-                                    <h:panelGroup rendered="#{item.observacion != null and !item.observacion.trim().isEmpty()}">
-                                        <div class="observation-box">Obs: #{item.observacion}</div>
-                                    </h:panelGroup>
-                                </div>
-                            </ui:repeat>
+                            <div class="items-section">
+                                <ui:repeat value="#{pedido.itemPedido}" var="item" varStatus="status">
+                                    <div class="item-container">
+                                        <div class="item-header">
+                                            <span class="item-quantity">#{item.cantidad}x</span>
+                                            <span class="item-name">#{item.item.producto.nombre}</span>
+                                        </div>
+                                        <h:panelGroup rendered="#{item.observacion != null and !item.observacion.trim().isEmpty() and item.observacion != '-'}">
+                                            <div class="item-observation">
+                                                <i class="pi pi-info-circle" style="color: #e53e3e; margin-right: 5px; font-size: 0.7rem;"></i>
+                                                <span class="observation-text">Obs: #{item.observacion}</span>
+                                            </div>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{status.last != true}">
+                                            <div class="item-divider"></div>
+                                        </h:panelGroup>
+                                    </div>
+                                </ui:repeat>
+                            </div>
                         </div>
+                        
                         <div class="order-footer">
                             <p:commandButton value="Marcar como Listo" 
                                              icon="pi pi-check" 
@@ -67,7 +95,10 @@
                                              update="formCocina"/>
                             <p:commandButton value="Ver Detalles" 
                                              icon="pi pi-eye" 
-                                             styleClass="btn-details"/>
+                                             styleClass="btn-details"
+                                             action="#{cocina.verDetalles(pedido)}"
+                                             oncomplete="PF('dlgDetalles').show()"
+                                             update=":formDetalles"/>
                         </div>
                     </div>
                 </ui:repeat>
@@ -81,5 +112,73 @@
             </div>
         </h:form>
     </div>
+
+    <!-- Modal de Detalles del Pedido -->
+    <p:dialog header="Detalles del Pedido" widgetVar="dlgDetalles" modal="true" responsive="true" width="500" height="auto">
+        <h:form id="formDetalles">
+            <div class="detalles-container">
+                <!-- Información esencial del pedido -->
+                <div class="pedido-info-esencial">
+                    <div class="orden-numero">
+                        <i class="pi pi-hashtag" style="color: #d4af37; margin-right: 8px;"></i>
+                        <strong style="font-size: 1.3rem; color: #2d3748;"> ORD-#{cocina.pedidoSeleccionado.id} </strong>
+                    </div>
+                    <div class="pedido-datos">
+                        <div class="dato-row">
+                            <i class="pi pi-user" style="color: #718096; margin-right: 8px; font-size: 0.9rem;"></i>
+                            <span style="color: #4a5568;">Mesero: #{cocina.pedidoSeleccionado.cliente != null ? cocina.pedidoSeleccionado.cliente.nombreCompleto : 'Sin asignar'}</span>
+                        </div>
+                        <div class="dato-row">
+                            <i class="pi pi-clock" style="color: #718096; margin-right: 8px; font-size: 0.9rem;"></i>
+                            <span style="color: #4a5568;">Hora: #{cocina.pedidoSeleccionado.fechaPedidoCreacion}</span>
+                        </div>
+                        <h:panelGroup rendered="#{cocina.pedidoSeleccionado.mesa != null}">
+                            <div class="dato-row">
+                                <i class="pi pi-table"
+                                   style="color: #718096; margin-right: 8px; font-size: 0.9rem;"></i>
+                                <span style="color: #4a5568;">Mesa: #{cocina.pedidoSeleccionado.mesa}</span>
+                            </div>
+                        </h:panelGroup>
+                    </div>
+                </div>
+
+                <p:separator style="margin: 20px 0;"/>
+
+                <!-- Platillos del pedido -->
+                <div class="platillos-pedido">
+                    <h4 style="color: #2d3748; margin-bottom: 15px; font-size: 1.1rem;">
+                        <i class="pi pi-list" style="margin-right: 8px; color: #d4af37;"></i>Platillos del Pedido
+                    </h4>
+                    <div class="platillos-list">
+                        <ui:repeat value="#{cocina.detallesPedido}" var="itemPedido">
+                            <div class="platillo-item">
+                                <div class="platillo-info">
+                                    <div class="platillo-cantidad-nombre">
+                                        <span class="cantidad-badge">#{itemPedido.cantidad}x</span>
+                                        <span class="producto-nombre">#{itemPedido.item.producto.nombre}</span>
+                                    </div>
+                                    <h:panelGroup rendered="#{itemPedido.observacion != null and !itemPedido.observacion.trim().isEmpty()}">
+                                        <div class="producto-observacion">
+                                            <i class="pi pi-info-circle" style="color: #e53e3e; margin-right: 6px; font-size: 0.8rem;"></i>
+                                            <span class="observacion-text">Obs: #{itemPedido.observacion}</span>
+                                        </div>
+                                    </h:panelGroup>
+                                </div>
+                            </div>
+                        </ui:repeat>
+                    </div>
+                </div>
+
+                <!-- Botón de cerrar -->
+                <div class="modal-cerrar" style="margin-top: 20px; text-align: center;">
+                    <p:commandButton value="Cerrar" 
+                                     icon="pi pi-times" 
+                                     onclick="PF('dlgDetalles').hide()" 
+                                     style="background-color: #718096 !important; border: none !important; padding: 8px 20px !important; border-radius: 6px !important; color: white !important; font-weight: 500 !important;"/>
+                </div>
+            </div>
+        </h:form>
+    </p:dialog>
+
 </h:body>
 </html>
