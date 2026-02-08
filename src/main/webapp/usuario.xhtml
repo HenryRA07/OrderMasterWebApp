@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<html xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="primefaces">
+<h:head>
+    <title>Gestion de Usuarios - OrderMaster</title>
+    <link rel="icon" href="images/logo_ShamanBlack.ico"/>
+    <link rel="stylesheet" href="resources/css/styles.css"/>
+</h:head>
 
 <ui:composition template="/WEB-INF/templates/template.xhtml">
     <ui:define name="title">
@@ -44,7 +48,8 @@
 <!--                    </div>-->
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="Rol" for="rol"/>
-                        <p:selectOneMenu id="rol" >
+                        <p:selectOneMenu id="rol" value="#{usuarioBean.rolSeleccionado}">
+                            <f:selectItem itemLabel="Seleccione un rol" itemValue="#{null}" noSelectionOption="true" />
                             <f:selectItem itemLabel="Administrador" itemValue="admin" />
                             <f:selectItem itemLabel="Mesero" itemValue="mesero" />
                             <f:selectItem itemLabel="Cocina" itemValue="cocina" />
@@ -72,13 +77,13 @@
             <p style="margin-top: 0; font-weight: bold; color: #4a5568;">Usuarios del Sistema</p>
             <p:dataTable var="user" value="" styleClass="ui-datatable-striped">
                 <p:column headerText="Nombre Completo">
-                    <h:inputText value="Carlos Rodríguez" />
+                    <h:outputText value="Carlos Rodríguez" />
                 </p:column>
                 <p:column headerText="Rol">
-                    <h:inputText value="Mesero" />
+                    <h:outputText value="Mesero" />
                 </p:column>
                 <p:column headerText="Correo">
-                    <h:inputText value="carlos@shamanblack.com" />
+                    <h:outputText value="carlos@shamanblack.com" />
                 </p:column>
                 <p:column headerText="Estado">
                     <span class="status-badge status-active">Activo</span>
@@ -97,17 +102,16 @@
         <h:form id="userForm">
             <div class="col-12">
                 <div class="card ui-fluid" >
-                    <h5>
-                        #{userHome.managed ? 'Editar' : 'Ćrear'} Usuario
-                    </h5>
+<!--                    <h5>-->
+<!--                        #{userHome.managed ? 'Editar' : 'Ćrear'} Usuario-->
+<!--                    </h5>-->
                     <p:messages skipDetailIfEqualsSummary="true" showDetail="true" closable="true">
                         <p:autoUpdate/>
                     </p:messages>
                     <p:panel header="Cuenta de usuario">
                         <h:panelGrid columns="2" cellpadding="7">
                             <p:outputLabel for="username" value="Nombre de usuario:" />
-                            <p:inputText id="username" value="#{userHome.user.name}" required="true"
-                                         disabled="#{userHome.managed}"/>
+                            <p:inputText id="username" value="#{userHome.user.name}" required="true"/>
                             <p:outputLabel for="password" value="Contraseña:" />
                             <p:password id="password" value="#{userHome.user.password}" required="true"
                                         toggleMask="true" redisplay="true" >
@@ -121,22 +125,25 @@
                             <p:outputLabel for="firstName" value="Nombres:" />
                             <p:inputText id="firstName" value="#{userHome.user.organization.name}" required="true"/>
 
-                            <p:outputLabel for="identificationType" value="Tipo de identificación:"/>
-                            <p:selectOneMenu id="identificationType" value="#{userHome.user.organization.identificationType}">
-                                <f:selectItem itemLabel="-- Seleccione --" noSelectionOption="true"/>
-                                <f:selectItems value="#{factoryListApp.identificationTypeOptions}"
-                                               var="identificationType" itemValue="#{identificationType}"
-                                               itemLabel="#{identificationType == 'DNI' ? 'DNI' : (identificationType == 'RUC' ? 'RUC' : 'PASAPORTE')}"/>
-                            </p:selectOneMenu>
-                            <p:outputLabel for="identificationNumber" value="Número de identificación:" />
-                            <p:inputText id="identificationNumber" value="#{userHome.user.organization.identificationNumber}" required="true"/>
+<!--                            <p:outputLabel for="lastName" value="Apellido:" />-->
+<!--                            <p:inputText id="lastName" value="#{userHome.user}" required="true"/>-->
 
-                            <p:outputLabel for="birthDate" value="Fecha nacimiento:" />
-                            <p:datePicker id="birthDate" value="#{userHome.user.organization.creationDate}"
-                                          required="true"
-                                          title="Fecha de nacimiento" pattern="yyyy-MM-dd"
-                                          showIcon="true" showOnFocus="false"
-                                          yearNavigator="yes" monthNavigator="yes"/>
+<!--                            <p:outputLabel for="identificationType" value="Tipo de identificación:"/>-->
+<!--                            <p:selectOneMenu id="identificationType" value="#{userHome.user.organization.identificationType}">-->
+<!--                                <f:selectItem itemLabel="&#45;&#45; Seleccione &#45;&#45;" noSelectionOption="true"/>-->
+<!--                                <f:selectItems value="#{factoryListApp.identificationTypeOptions}"-->
+<!--                                               var="identificationType" itemValue="#{identificationType}"-->
+<!--                                               itemLabel="#{identificationType == 'DNI' ? 'DNI' : (identificationType == 'RUC' ? 'RUC' : 'PASAPORTE')}"/>-->
+<!--                            </p:selectOneMenu>-->
+<!--                            <p:outputLabel for="identificationNumber" value="Número de identificación:" />-->
+<!--                            <p:inputText id="identificationNumber" value="#{userHome.user.organization.identificationNumber}" required="true"/>-->
+
+<!--                            <p:outputLabel for="birthDate" value="Fecha nacimiento:" />-->
+<!--                            <p:datePicker id="birthDate" value="#{userHome.user.organization.creationDate}"-->
+<!--                                          required="true"-->
+<!--                                          title="Fecha de nacimiento" pattern="yyyy-MM-dd"-->
+<!--                                          showIcon="true" showOnFocus="false"-->
+<!--                                          yearNavigator="yes" monthNavigator="yes"/>-->
                             <p:outputLabel for="email" value="Email:" />
                             <p:inputText id="email" value="#{userHome.user.organization.email}"
                                          placeholder="ejemplo@correo.com"
@@ -160,6 +167,7 @@
                                      action="#{userHome.create()}"
                                      icon="pi pi-user" validateClient="true" styleClass="mt-3"
                                      update="@form" title="Guarda un usuario nuevo"/>
+
                     <p:commandButton value="Guardar" rendered="#{userHome.managed}"
                                      action="#{userHome.update()}"
                                      icon="pi pi-user" validateClient="true" styleClass="mt-3"

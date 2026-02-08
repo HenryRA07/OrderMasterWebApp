@@ -25,6 +25,7 @@
 
         <!--START DATASOURCE CONFIG!-->
         <!-- VARIABLES CON VALORES POR DEFECTO PARA DESPLIEGUE LOCAL-->
+        <!--suppress UnresolvedMavenProperty -->
         <driver.jdbc.dir>${server.config.dir}/lib/global</driver.jdbc.dir>
         <db.server.name>localhost</db.server.name>
         <db.port.number>5434</db.port.number>

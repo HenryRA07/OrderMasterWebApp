@@ -98,7 +98,10 @@ public class UserHomeController implements java.io.Serializable{
     }
 
     public boolean isManaged(){
-        return this.user.getId() != null;
+        if (this.user == null || this.user.getId() == null) {
+            return false;
+        }
+        return true;
     }
 
     public Long getSelectedUserId() {
