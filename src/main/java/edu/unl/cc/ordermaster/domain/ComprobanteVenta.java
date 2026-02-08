@@ -1,13 +1,15 @@
 package edu.unl.cc.ordermaster.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ComprobanteVenta {
-    private String nombreRestaurante;
-    private String direccionRestaurante;
+    private String NOMBRECOMPROBANTE = "Shaman Black";
+    private String DIRECCIONRESTAURANTE = "Via Antigua Zamora";
     private LocalDate fechaComprobante;
+    private BigDecimal precioTotal;
     //Relaciones
     private Pedido pedido;
     private List<ItemComprobante> itemComprobante;
@@ -17,13 +19,12 @@ public class ComprobanteVenta {
         this.fechaComprobante = LocalDate.now();
     }
 
-    public ComprobanteVenta(String nombreRestaurante, String direccionRestaurante, Pedido pedido, MetodoPago metodoPago) {
+    public ComprobanteVenta(Pedido pedido, MetodoPago metodoPago) {
         this();
-        this.nombreRestaurante = nombreRestaurante;
-        this.direccionRestaurante = direccionRestaurante;
         this.pedido = pedido;
         this.metodoPago = metodoPago;
         duplicar();
+        calcularTotal();
     }
 
     public void duplicar(){
@@ -47,6 +48,18 @@ public class ComprobanteVenta {
         }
     }
 
+    public void calcularTotal(){
+        BigDecimal total = BigDecimal.ZERO;
+        if(itemComprobante != null) {
+            for(ItemComprobante item:itemComprobante) {
+                if(item.getSubtotal() != null) {
+                    total = total.add(item.getSubtotal());
+                }
+            }
+        }
+        precioTotal = total;
+    }
+
     public void eliminarItem(ItemComprobante item){
         if(item == null){
             throw new IllegalArgumentException("El item no puede ser nulo");
@@ -57,20 +70,20 @@ public class ComprobanteVenta {
         itemComprobante.remove(item);
     }
 
-    public String getNombreRestaurante() {
-        return nombreRestaurante;
+    public String getNOMBRECOMPROBANTE() {
+        return NOMBRECOMPROBANTE;
     }
 
-    public void setNombreRestaurante(String nombreRestaurante) {
-        this.nombreRestaurante = nombreRestaurante;
+    public void setNOMBRECOMPROBANTE(String NOMBRECOMPROBANTE) {
+        this.NOMBRECOMPROBANTE = NOMBRECOMPROBANTE;
     }
 
-    public String getDireccionRestaurante() {
-        return direccionRestaurante;
+    public String getDIRECCIONRESTAURANTE() {
+        return DIRECCIONRESTAURANTE;
     }
 
-    public void setDireccionRestaurante(String direccionRestaurante) {
-        this.direccionRestaurante = direccionRestaurante;
+    public void setDIRECCIONRESTAURANTE(String DIRECCIONRESTAURANTE) {
+        this.DIRECCIONRESTAURANTE = DIRECCIONRESTAURANTE;
     }
 
     public LocalDate getFechaComprobante() {
@@ -87,5 +100,26 @@ public class ComprobanteVenta {
 
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
+    }
+
+    public MetodoPago getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(MetodoPago metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
+    public List<ItemComprobante> getItemComprobante() {
+        return itemComprobante;
+    }
+
+    public void setItemComprobante(List<ItemComprobante> itemComprobante) {
+        this.itemComprobante = itemComprobante;
+        calcularTotal();
+    }
+
+    public BigDecimal getPrecioTotal() {
+        return precioTotal;
     }
 }
