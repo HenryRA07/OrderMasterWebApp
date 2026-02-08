@@ -1,12 +1,14 @@
 package edu.unl.cc.ordermaster.business.service;
 
 import edu.unl.cc.ordermaster.business.service.common.PedidoRepository;
+import edu.unl.cc.ordermaster.domain.EstadoPedido;
 import edu.unl.cc.ordermaster.domain.ItemPedido;
 import edu.unl.cc.ordermaster.domain.Pedido;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Collections;
 import java.util.logging.Logger;
@@ -82,9 +84,7 @@ public class PedidoFacade {
         try {
             // Recalcular el total antes de actualizar
             pedido.calcularTotal();
-            
             Pedido pedidoActualizado = crudService.update(pedido);
-            
             LOGGER.info("Pedido actualizado exitosamente: ID=" + pedidoActualizado.getId());
             return pedidoActualizado;
         } catch (Exception e) {
@@ -168,7 +168,7 @@ public class PedidoFacade {
      * @return Pedido actualizado
      */
     @Transactional
-    public Pedido cambiarEstadoPedido(Pedido pedido, edu.unl.cc.ordermaster.domain.EstadoPedido nuevoEstado) {
+    public Pedido cambiarEstadoPedido(Pedido pedido,EstadoPedido nuevoEstado) {
         try {
             pedido.setEstado(nuevoEstado);
             Pedido pedidoActualizado = crudService.update(pedido);
@@ -202,11 +202,20 @@ public class PedidoFacade {
      * @param fecha Fecha a consultar
      * @return Lista de pedidos del día
      */
-    public List<Pedido> obtenerPedidosPorFecha(java.time.LocalDate fecha) {
+    public List<Pedido> obtenerPedidosPorFecha(LocalDate fecha) {
         try {
             return pedidoRepository.findPedidosByFecha(fecha);
         } catch (Exception e) {
             LOGGER.severe("Error al obtener pedidos por fecha: " + e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    public List<Pedido> obtenerPedidosPorFechayEstado(LocalDate fecha, EstadoPedido estado) {
+        try {
+            return pedidoRepository.findPedidosForDateAndEstado(fecha,fecha, estado);
+        } catch (Exception e) {
+            LOGGER.severe("Error al encontrar pedidos: " + e.getMessage());
             return Collections.emptyList();
         }
     }

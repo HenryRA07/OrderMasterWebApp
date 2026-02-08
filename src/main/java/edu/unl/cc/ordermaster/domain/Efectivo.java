@@ -7,7 +7,7 @@ public class Efectivo extends MetodoPago {
     private Pedido pedido;
 
     public Efectivo(BigDecimal cantidad, Pedido pedido) {
-        super(cantidad);
+        super(cantidad, pedido);
         this.pedido = pedido;
         cambio();
     }

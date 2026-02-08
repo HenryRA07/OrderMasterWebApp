@@ -4,8 +4,13 @@ import java.math.BigDecimal;
 
 public abstract class MetodoPago {
     private BigDecimal cantidadEntrgada;
+    private Pedido pedido;
 
-    public MetodoPago(BigDecimal cantidad) {
+    public MetodoPago() {
+    }
+
+    public MetodoPago(BigDecimal cantidad, Pedido pedido) {
+        this.pedido = pedido;
         setCantidad(cantidad);
     }
 
@@ -18,6 +23,14 @@ public abstract class MetodoPago {
             throw new IllegalArgumentException("El cantidad debe ser mayor a 0");
         }
         this.cantidadEntrgada = cantidad;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     @Override

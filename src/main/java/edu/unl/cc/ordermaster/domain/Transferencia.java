@@ -5,9 +5,10 @@ import java.math.BigDecimal;
 public class Transferencia extends MetodoPago{
     private String banco;
     private String numeroComprobante;
+    private Pedido pedido;
 
-    public Transferencia(BigDecimal cantidad, String banco, String numeroComprobante){
-        super(cantidad);
+    public Transferencia(BigDecimal cantidad, String banco, String numeroComprobante,Pedido pedido){
+        super(cantidad, pedido);
         setBanco(banco);
         setNumeroComprobante(numeroComprobante);
     }
