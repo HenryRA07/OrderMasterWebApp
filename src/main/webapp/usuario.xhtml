@@ -3,34 +3,46 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-<h:head>
-    <title>Gestión de Usuarios - OrderMaster</title>
-    <link rel="stylesheet" href="resources/css/stylesUsuario.css"/>
-    <link rel="icon" href="images/logo_ShamanBlack.ico"/>
-</h:head>
-<h:body>
-    <!-- Header móvil -->
-    <div class="mobile-header">
-        <i class="pi pi-bars" onclick="toggleSidebar()"></i>
-        <span>OrderMaster</span>
-    </div>
+<ui:composition template="/WEB-INF/templates/template.xhtml">
+    <ui:define name="title">
+        <title>Gestión de Usuarios - OrderMaster</title>
+    </ui:define>
+    
+    <ui:define name="styles">
+        <link rel="stylesheet" href="resources/css/template.css"/>
+        <link rel="stylesheet" href="resources/css/stylesUsuario.css"/>
+    </ui:define>
 
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-logo">
-            <i class="pi pi-fire"></i> OrderMaster
+    <ui:define name="sidebar">
+        <ui:include src="/WEB-INF/templates/sidebar.xhtml">
+            <ui:param name="navigationItems" value="#{
+                [
+                    {
+                        label: 'Usuarios',
+                        url: 'usuario.xhtml',
+                        icon: 'pi pi-users',
+                        active: true
+                    },
+                    {
+                        label: 'Menú Diario',
+                        url: 'menuDiario.xhtml',
+                        icon: 'pi pi-calendar',
+                        active: false
+                    }
+                ]}"/>
+        </ui:include>
+    </ui:define>
+
+    <ui:define name="content">
+        <!-- Header móvil -->
+        <div class="mobile-header">
+            <i class="pi pi-bars" onclick="toggleSidebar()"></i>
+            <span>OrderMaster</span>
         </div>
-        <a href="#" class="nav-item active"><i class="pi pi-users"></i> Usuarios</a>
-        <a href="menuDiario.xhtml" class="nav-item"><i class="pi pi-calendar"></i> Menú Diario</a>
-        <div style="position: absolute; bottom: 30px; width: calc(100% - 40px);">
-            <p:commandLink action="index.xhtml?faces-redirect=true" styleClass="nav-item btn-salir">
-                <i class="pi pi-sign-out"></i> Salir
-            </p:commandLink>
-        </div>
-    </div>
 
-    <div class="main-content">
         <h1 class="section-title">Gestión de Usuarios</h1>
 
         <h:form id="formRegistro">
@@ -72,7 +84,7 @@
 
         <div class="card-custom">
             <p style="margin-top: 0; font-weight: bold; color: #4a5568;">Usuarios del Sistema</p>
-            <p:dataTable var="user" value="" reflow="true">
+            <p:dataTable var="user" value="" styleClass="ui-datatable-striped">
                 <p:column headerText="Nombre Completo">
                     <h:outputText value="Carlos Rodríguez" />
                 </p:column>
@@ -90,38 +102,33 @@
                 </p:column>
             </p:dataTable>
         </div>
-    </div>
+    </ui:define>
 
-    <!-- Scripts para funcionalidad responsiva -->
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
-        }
-
-        // Cerrar sidebar al hacer clic fuera en móviles
-        document.addEventListener('click', function(event) {
-            if (window.innerWidth &lt;= 768) {
-                const sidebar = document.getElementById('sidebar');
-                const header = document.querySelector('.mobile-header');
-
-                if (sidebar &amp;&amp; header &amp;&amp;
-                    !sidebar.contains(event.target) &amp;&amp;
-                    !header.contains(event.target)) {
-                    sidebar.classList.remove('active');
-                }
+    <ui:define name="scripts">
+        <script>
+            function toggleSidebar() {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) sidebar.classList.toggle('active');
             }
-        });
-
-        // Cerrar sidebar al cambiar orientación
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768) {
-                const sidebar = document.getElementById('sidebar');
-                if (sidebar) {
-                    sidebar.classList.remove('active');
+            
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth &lt;= 768) {
+                    const sidebar = document.querySelector('.sidebar');
+                    const header = document.querySelector('.mobile-header');
+                    if (sidebar &amp;&amp; header &amp;&amp;
+                        !sidebar.contains(event.target) &amp;&amp;
+                        !header.contains(event.target)) {
+                        sidebar.classList.remove('active');
+                    }
                 }
-            }
-        });
-    </script>
-</h:body>
+            });
+            window.addEventListener('resize', function() {
+                if (window.innerWidth &gt; 768) {
+                    const sidebar = document.querySelector('.sidebar');
+                    if (sidebar) sidebar.classList.remove('active');
+                }
+            });
+        </script>
+    </ui:define>
+</ui:composition>
 </html>

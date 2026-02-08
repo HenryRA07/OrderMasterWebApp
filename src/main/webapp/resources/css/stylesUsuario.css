@@ -6,60 +6,60 @@ body {
     background-color: #f8f9fa;
 }
 
-/* Sidebar Estilo Henry */
-.sidebar {
-    width: 250px;
-    background-color: #0a0a0a;
-    height: 100vh;
-    color: white;
-    padding: 20px;
-    position: fixed;
-}
+/*!* Sidebar Estilo Henry *!*/
+/*.sidebar {*/
+/*    width: 250px;*/
+/*    background-color: #0a0a0a;*/
+/*    height: 100vh;*/
+/*    color: white;*/
+/*    padding: 20px;*/
+/*    position: fixed;*/
+/*}*/
 
-.sidebar-logo {
-    color: #d4af37;
-    font-weight: bold;
-    font-size: 1.5rem;
-    margin-bottom: 30px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+/*.sidebar-logo {*/
+/*    color: #d4af37;*/
+/*    font-weight: bold;*/
+/*    font-size: 1.5rem;*/
+/*    margin-bottom: 30px;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 10px;*/
+/*}*/
 
-.nav-item {
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    color: #718096;
-}
+/*.nav-item {*/
+/*    padding: 12px;*/
+/*    border-radius: 8px;*/
+/*    margin-bottom: 5px;*/
+/*    cursor: pointer;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 10px;*/
+/*    text-decoration: none;*/
+/*    color: #718096;*/
+/*}*/
 
-.nav-item.active {
-    background-color: #d4af37;
-    color: #0a0a0a;
-    font-weight: bold;
-}
+/*.nav-item.active {*/
+/*    background-color: #d4af37;*/
+/*    color: #0a0a0a;*/
+/*    font-weight: bold;*/
+/*}*/
 
-.nav-item:hover:not(.active) {
-    background-color: rgba(255, 255, 255, 0.05);
-}
+/*.nav-item:hover:not(.active) {*/
+/*    background-color: rgba(255, 255, 255, 0.05);*/
+/*}*/
 
-/* Botón Salir - Corrección de estilos */
-.nav-item.btn-salir {
-    color: #718096 !important;
-    text-decoration: none !important;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
+/*!* Botón Salir - Corrección de estilos *!*/
+/*.nav-item.btn-salir {*/
+/*    color: #718096 !important;*/
+/*    text-decoration: none !important;*/
+/*    border-radius: 8px;*/
+/*    transition: all 0.3s ease;*/
+/*}*/
 
-.nav-item.btn-salir:hover {
-    background-color: #2d3748 !important;
-    color: white !important;
-}
+/*.nav-item.btn-salir:hover {*/
+/*    background-color: #2d3748 !important;*/
+/*    color: white !important;*/
+/*}*/
 /* Contenedor Principal */
 .main-content {
     margin-left: 250px;
@@ -82,7 +82,8 @@ body {
     margin-bottom: 25px;
 }
 
-/* Botones Personalizados */
+
+
 .btn-black {
     background-color: #0a0a0a !important;
     border: none !important;
@@ -149,19 +150,23 @@ body {
     margin-right: 10px;
 
 }
+.ui-fluid .ui-inputtext {
+    margin-top: 5px;
+    width: 100%;
+}
 
 /* Sidebar responsivo */
 @media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-        z-index: 1000;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    }
+    /*.sidebar {*/
+    /*    transform: translateX(-100%);*/
+    /*    transition: transform 0.3s ease;*/
+    /*    z-index: 1000;*/
+    /*    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);*/
+    /*}*/
     
-    .sidebar.active {
-        transform: translateX(0);
-    }
+    /*.sidebar.active {*/
+    /*    transform: translateX(0);*/
+    /*}*/
     
     .mobile-header {
         display: flex;
@@ -258,9 +263,9 @@ body {
         padding: 2rem;
     }
     
-    .sidebar {
-        width: 220px;
-    }
+    /*.sidebar {*/
+    /*    width: 220px;*/
+    /*}*/
     
     /*.main-content {*/
     /*    margin-left: 220px;*/
@@ -287,13 +292,13 @@ body {
         font-size: 1.2rem;
     }
     
-    .sidebar {
-        width: 280px; /* Más ancho para mejor usabilidad */
-    }
+    /*.sidebar {*/
+    /*    width: 280px; !* Más ancho para mejor usabilidad *!*/
+    /*}*/
     
-    .sidebar-logo {
-        font-size: 1.3rem;
-    }
+    /*.sidebar-logo {*/
+    /*    font-size: 1.3rem;*/
+    /*}*/
     
     .nav-item {
         padding: 15px 12px;
