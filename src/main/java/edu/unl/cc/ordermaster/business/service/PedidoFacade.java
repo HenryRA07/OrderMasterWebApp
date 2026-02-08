@@ -71,7 +71,52 @@ public class PedidoFacade {
             throw new RuntimeException("No se pudo crear el pedido: " + e.getMessage());
         }
     }
-    
+    @Transactional
+    public Pedido confirmarPedido(
+            Pedido pedido,
+            String nombre,
+            String apellido,
+            String dni,
+            String telefono,
+            String email,
+            Integer mesa
+    ) {
+
+        if (pedido == null || pedido.getItemPedido() == null || pedido.getItemPedido().isEmpty()) {
+            throw new RuntimeException("El pedido está vacío");
+        }
+
+        if (mesa == null || mesa <= 0) {
+            throw new RuntimeException("El número de mesa es inválido");
+        }
+
+        if (email != null && !email.isBlank() && !email.contains("@")) {
+            throw new RuntimeException("El formato del email es incorrecto");
+        }
+
+        // Crear cliente
+        var cliente = new edu.unl.cc.ordermaster.domain.Cliente();
+        cliente.setNombre(nombre.trim());
+        cliente.setApellido(apellido.trim());
+        cliente.setEmail(
+                email.trim() + "+pedido" + System.currentTimeMillis() + "@ordermaster.local"
+        );
+
+        if (dni != null && !dni.isBlank()) {
+            cliente.setDni(dni.trim());
+        }
+
+        if (telefono != null && !telefono.isBlank()) {
+            cliente.setTelefono(telefono.trim());
+        }
+
+        pedido.setCliente(cliente);
+        pedido.setMesa(mesa);
+
+        LOGGER.info("Confirmando pedido con cliente y mesa");
+
+        return crearPedido(pedido);
+    }
     /**
      * Actualiza un pedido existente
      * @param pedido Pedido a actualizar
@@ -80,7 +125,6 @@ public class PedidoFacade {
     @Transactional
     public Pedido actualizarPedido(Pedido pedido) {
         try {
-            // Recalcular el total antes de actualizar
             pedido.calcularTotal();
             
             Pedido pedidoActualizado = crudService.update(pedido);
@@ -102,13 +146,8 @@ public class PedidoFacade {
     @Transactional
     public ItemPedido agregarItemPedido(ItemPedido itemPedido, Pedido pedido) {
         try {
-            // Asociar el item con el pedido
             itemPedido.setPedido(pedido);
-            
-            // Guardar el item
             ItemPedido itemCreado = crudService.create(itemPedido);
-            
-            // Agregar el item al pedido y actualizar
             pedido.agregarItem(itemCreado);
             actualizarPedido(pedido);
             
@@ -120,7 +159,24 @@ public class PedidoFacade {
             throw new RuntimeException("No se pudo agregar el item al pedido: " + e.getMessage());
         }
     }
-    
+
+    @Transactional
+    public void eliminarItemPedido(Pedido pedido, ItemPedido item) {
+        try {
+            if (pedido == null || item == null) {
+                throw new RuntimeException("Pedido o item nulo");
+            }
+            pedido.eliminarItem(item);
+            pedido.calcularTotal();
+            crudService.update(pedido);
+            LOGGER.info("Item eliminado del pedido ID=" + pedido.getId());
+
+        } catch (Exception e) {
+            LOGGER.severe("Error al eliminar item del pedido: " + e.getMessage());
+            throw new RuntimeException("No se pudo eliminar el item del pedido");
+        }
+    }
+
     /**
      * Busca un pedido por su ID
      * @param id ID del pedido

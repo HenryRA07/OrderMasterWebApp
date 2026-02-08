@@ -16,11 +16,10 @@ public class ProductoRepository {
     private CrudGenericService crudGenericService;
     @PersistenceContext
     private EntityManager em;
-    public List<Producto> findAll(Long id,String nombre, String descripcion) {
-        String Jpql = "SELECT p FROM Producto p " +
-                "LEFT JOIN FETCH p.id i" +
-                "WHERE p.nombre = :nombre AND p.descripcion = :descripcion ";
-        TypedQuery<Producto> query = em.createQuery(Jpql, Producto.class);
+    public List<Producto> findAll(String nombre, String descripcion) {
+        String jpql = "SELECT p FROM Producto p " +
+                "WHERE p.nombre = :nombre AND p.descripcion = :descripcion";
+        TypedQuery<Producto> query = em.createQuery(jpql, Producto.class);
         query.setParameter("nombre", nombre);
         query.setParameter("descripcion", descripcion);
         return query.getResultList();
