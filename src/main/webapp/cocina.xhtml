@@ -18,14 +18,7 @@
 
     <ui:define name="sidebar">
         <ui:include src="/WEB-INF/templates/sidebar.xhtml">
-            <ui:param name="navigationItems" value="#{
-                [{
-                    label: 'Pedidos Pendientes',
-                    url: '#',
-                    icon: 'pi pi-clock',
-                    active: true
-                }]
-            }"/>
+
         </ui:include>
     </ui:define>
 
@@ -34,6 +27,8 @@
 
         <h:form id="formCocina">
             <div class="orders-container">
+
+
                 <ui:repeat value="#{cocina.pedidosPendientes}" var="pedido">
                     <div class="order-card">
                         <div class="order-header">
@@ -60,7 +55,7 @@
                             </div>
                             <span class="status-badge status-pending">#{pedido.estado}</span>
                         </div>
-                        
+
                         <div class="order-body">
                             <div class="items-section">
                                 <ui:repeat value="#{pedido.itemPedido}" var="item" varStatus="status">
@@ -82,17 +77,17 @@
                                 </ui:repeat>
                             </div>
                         </div>
-                        
+
                         <div class="order-footer">
-                            <p:commandButton value="Marcar como Listo" 
-                                             icon="pi pi-check" 
+                            <p:commandButton value="Marcar como Listo"
+                                             icon="pi pi-check"
                                              styleClass="btn-action-ready"
                                              action="#{cocina.marcarPedidoListo(pedido)}"
                                              update="formCocina"/>
-                            <p:commandButton value="Ver Detalles" 
-                                             icon="pi pi-eye" 
+                            <p:commandButton value="Ver Detalles"
+                                             icon="pi pi-eye"
                                              styleClass="btn-details"
-                                             action="#{cocina.verDetallesPedido(pedido)}"
+                                             action="#{cocina.verDetalles(pedido)}"
                                              oncomplete="PF('dlgDetalles').show()"
                                              update=":formDetalles"/>
                         </div>
@@ -113,28 +108,44 @@
             <h:form id="formDetalles">
                 <div class="detalles-container">
                     <!-- Información esencial del pedido -->
-                    <div class="pedido-info-esencial">
-                        <div class="orden-numero">
-                            <i class="pi pi-hashtag" style="color: #d4af37; margin-right: 8px;"></i>
-                            <strong style="font-size: 1.3rem; color: #2d3748;">ORD-#{cocina.pedidoSeleccionado.id}</strong>
-                        </div>
-                        <div class="pedido-datos">
-                            <div class="dato-row">
-                                <i class="pi pi-user" style="color: #718096; margin-right: 8px; font-size: 0.9rem;"></i>
-                                <span style="color: #4a5568;">Mesero: #{cocina.pedidoSeleccionado.cliente != null ? cocina.pedidoSeleccionado.cliente.nombreCompleto : 'Sin asignar'}</span>
-                            </div>
-                            <div class="dato-row">
-                                <i class="pi pi-clock" style="color: #718096; margin-right: 8px; font-size: 0.9rem;"></i>
-                                <span style="color: #4a5568;">Hora: #{cocina.pedidoSeleccionado.fechaPedidoCreacion}</span>
-                            </div>
-                            <h:panelGroup rendered="#{cocina.pedidoSeleccionado.mesa != null}">
-                                <div class="dato-row">
-                                    <i class="pi pi-table" style="color: #718096; margin-right: 8px; font-size: 0.9rem;"></i>
-                                    <span style="color: #4a5568;">Mesa: #{cocina.pedidoSeleccionado.mesa}</span>
-                                </div>
-                            </h:panelGroup>
-                        </div>
+                    <div class="card">
+                        <h5>Large Table</h5>
+                        <p:dataTable var="product" value="#{cocina.pedidosPendientes}" size="large">
+                            <p:column headerText="Cant.">
+                                <h:outputText value="#{pedidoController.cantidad}" />
+                            </p:column>
+
+                            <p:column headerText="Name">
+                                <h:outputText value="#{pedidoController.itemsDelPedido}" />
+                            </p:column>
+
+                            <p:column headerText="Observación">
+                                <h:outputText value="#{pedidoController.observacion}" />
+                            </p:column>
+                        </p:dataTable>
                     </div>
+<!--                    <div class="pedido-info-esencial">-->
+<!--                        <div class="orden-numero">-->
+<!--                            <i class="pi pi-hashtag" style="color: #d4af37; margin-right: 8px;"></i>-->
+<!--                            <strong style="font-size: 1.3rem; color: #2d3748;">ORD-#{cocina.pedidoSeleccionado.id}</strong>-->
+<!--                        </div>-->
+<!--                        <div class="pedido-datos">-->
+<!--                            <div class="dato-row">-->
+<!--                                <i class="pi pi-user" style="color: #718096; margin-right: 8px; font-size: 0.9rem;"></i>-->
+<!--                                <span style="color: #4a5568;">Mesero: #{cocina.pedidoSeleccionado.cliente != null ? cocina.pedidoSeleccionado.cliente.nombreCompleto : 'Sin asignar'}</span>-->
+<!--                            </div>-->
+<!--                            <div class="dato-row">-->
+<!--                                <i class="pi pi-clock" style="color: #718096; margin-right: 8px; font-size: 0.9rem;"></i>-->
+<!--                                <span style="color: #4a5568;">Hora: #{cocina.pedidoSeleccionado.fechaPedidoCreacion}</span>-->
+<!--                            </div>-->
+<!--                            <h:panelGroup rendered="#{cocina.pedidoSeleccionado.mesa != null}">-->
+<!--                                <div class="dato-row">-->
+<!--                                    <i class="pi pi-table" style="color: #718096; margin-right: 8px; font-size: 0.9rem;"></i>-->
+<!--                                    <span style="color: #4a5568;">Mesa: #{cocina.pedidoSeleccionado.mesa}</span>-->
+<!--                                </div>-->
+<!--                            </h:panelGroup>-->
+<!--                        </div>-->
+<!--                    </div>-->
 
                     <p:separator style="margin: 20px 0;"/>
 
@@ -175,5 +186,4 @@
         </p:dialog>
     </ui:define>
 </ui:composition>
-</html>
 </html>

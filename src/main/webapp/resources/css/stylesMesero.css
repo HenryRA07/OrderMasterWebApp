@@ -127,6 +127,7 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+    z-index: 1;
 }
 
 .product-grid .ui-datagrid {

@@ -18,21 +18,6 @@
 
     <ui:define name="sidebar">
         <ui:include src="/WEB-INF/templates/sidebar.xhtml">
-            <ui:param name="navigationItems" value="#{
-                [
-                    {
-                        label: 'Usuarios',
-                        url: 'usuario.xhtml',
-                        icon: 'pi pi-users',
-                        active: true
-                    },
-                    {
-                        label: 'Menú Diario',
-                        url: 'menuDiario.xhtml',
-                        icon: 'pi pi-calendar',
-                        active: false
-                    }
-                ]}"/>
         </ui:include>
     </ui:define>
 
@@ -51,15 +36,16 @@
                 <div class="ui-g ui-fluid">
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="Nombres" for="nom"/>
-                        <p:inputText id="nom" placeholder="Nombres" />
+                        <p:inputText id="nom" placeholder="Nombres" value="#{userHome.user.name}" />
                     </div>
-                    <div class="ui-g-12 ui-md-3">
-                        <p:outputLabel value="Apellidos" for="ape"/>
-                        <p:inputText id="ape" placeholder="Apellidos" />
-                    </div>
+<!--                    <div class="ui-g-12 ui-md-3">-->
+<!--                        <p:outputLabel value="Apellidos" for="ape"/>-->
+<!--                        <p:inputText id="ape" placeholder="Apellidos" />-->
+<!--                    </div>-->
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="Rol" for="rol"/>
-                        <p:selectOneMenu id="rol">
+                        <p:selectOneMenu id="rol" >
+                            <f:selectItem itemLabel="Administrador" itemValue="admin" />
                             <f:selectItem itemLabel="Mesero" itemValue="mesero" />
                             <f:selectItem itemLabel="Cocina" itemValue="cocina" />
                             <f:selectItem itemLabel="Caja" itemValue="caja" />
@@ -67,7 +53,7 @@
                     </div>
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="Correo" for="mail"/>
-                        <p:inputText id="mail" placeholder="correo@ejemplo.com" />
+                        <p:inputText id="mail" placeholder="correo@ejemplo.com" value="#{userHome.user.organization.email}"/>
                     </div>
                 </div>
 
@@ -86,13 +72,13 @@
             <p style="margin-top: 0; font-weight: bold; color: #4a5568;">Usuarios del Sistema</p>
             <p:dataTable var="user" value="" styleClass="ui-datatable-striped">
                 <p:column headerText="Nombre Completo">
-                    <h:outputText value="Carlos Rodríguez" />
+                    <h:inputText value="Carlos Rodríguez" />
                 </p:column>
                 <p:column headerText="Rol">
-                    <h:outputText value="Mesero" />
+                    <h:inputText value="Mesero" />
                 </p:column>
                 <p:column headerText="Correo">
-                    <h:outputText value="carlos@shamanblack.com" />
+                    <h:inputText value="carlos@shamanblack.com" />
                 </p:column>
                 <p:column headerText="Estado">
                     <span class="status-badge status-active">Activo</span>
@@ -102,6 +88,94 @@
                 </p:column>
             </p:dataTable>
         </div>
+
+        <p:separator/>
+
+
+<!--        Nuevo Cambio para probrar-->
+
+        <h:form id="userForm">
+            <div class="col-12">
+                <div class="card ui-fluid" >
+                    <h5>
+                        #{userHome.managed ? 'Editar' : 'Ćrear'} Usuario
+                    </h5>
+                    <p:messages skipDetailIfEqualsSummary="true" showDetail="true" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:panel header="Cuenta de usuario">
+                        <h:panelGrid columns="2" cellpadding="7">
+                            <p:outputLabel for="username" value="Nombre de usuario:" />
+                            <p:inputText id="username" value="#{userHome.user.name}" required="true"
+                                         disabled="#{userHome.managed}"/>
+                            <p:outputLabel for="password" value="Contraseña:" />
+                            <p:password id="password" value="#{userHome.user.password}" required="true"
+                                        toggleMask="true" redisplay="true" >
+                                <f:validateLength minimum="8" for="password"/>
+                                <p:clientValidator/>
+                            </p:password>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel header="Información Personal">
+                        <h:panelGrid columns="2" cellpadding="7">
+                            <p:outputLabel for="firstName" value="Nombres:" />
+                            <p:inputText id="firstName" value="#{userHome.user.organization.name}" required="true"/>
+
+                            <p:outputLabel for="identificationType" value="Tipo de identificación:"/>
+                            <p:selectOneMenu id="identificationType" value="#{userHome.user.organization.identificationType}">
+                                <f:selectItem itemLabel="-- Seleccione --" noSelectionOption="true"/>
+                                <f:selectItems value="#{factoryListApp.identificationTypeOptions}"
+                                               var="identificationType" itemValue="#{identificationType}"
+                                               itemLabel="#{identificationType == 'DNI' ? 'DNI' : (identificationType == 'RUC' ? 'RUC' : 'PASAPORTE')}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel for="identificationNumber" value="Número de identificación:" />
+                            <p:inputText id="identificationNumber" value="#{userHome.user.organization.identificationNumber}" required="true"/>
+
+                            <p:outputLabel for="birthDate" value="Fecha nacimiento:" />
+                            <p:datePicker id="birthDate" value="#{userHome.user.organization.creationDate}"
+                                          required="true"
+                                          title="Fecha de nacimiento" pattern="yyyy-MM-dd"
+                                          showIcon="true" showOnFocus="false"
+                                          yearNavigator="yes" monthNavigator="yes"/>
+                            <p:outputLabel for="email" value="Email:" />
+                            <p:inputText id="email" value="#{userHome.user.organization.email}"
+                                         placeholder="ejemplo@correo.com"
+                                         requiredMessage="Please enter your email address."
+                                         validatorMessage="Invalid email format"
+                                         required="true">
+                                <f:validateRegex pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
+                            </p:inputText>
+
+
+
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:dataTable id="roles" value="#{userHome.user.roles}" var="_role">
+                        <p:column headerText="Nombre del rol">
+                            #{_role.name}
+                        </p:column>
+
+                    </p:dataTable>
+                    <p:commandButton value="Crear" rendered="#{!userHome.managed}"
+                                     action="#{userHome.create()}"
+                                     icon="pi pi-user" validateClient="true" styleClass="mt-3"
+                                     update="@form" title="Guarda un usuario nuevo"/>
+                    <p:commandButton value="Guardar" rendered="#{userHome.managed}"
+                                     action="#{userHome.update()}"
+                                     icon="pi pi-user" validateClient="true" styleClass="mt-3"
+                                     update="@form" title="Guarda un usuario nuevo"/>
+
+                    <p:commandButton value="Cancelar"
+                                     action="userList?faces-redirect=true"
+                                     immediate="true"
+                                     icon="pi pi-times" styleClass="mt-3 ui-button-secondary"/>
+                </div>
+            </div>
+        </h:form>
+
+<!--        fin del cambio-->
+
+
     </ui:define>
 
     <ui:define name="scripts">

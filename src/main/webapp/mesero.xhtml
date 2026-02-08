@@ -18,14 +18,7 @@
 
     <ui:define name="sidebar">
         <ui:include src="/WEB-INF/templates/sidebar.xhtml">
-            <ui:param name="navigationItems" value="#{
-         [{
-             label: 'Menú Diario',
-             url: '#',
-             icon: 'pi pi-list',
-             active: true
-         }]
-     }"/>
+
         </ui:include>
     </ui:define>
 
@@ -66,15 +59,7 @@
                 </h2>
                 <p:separator/>
 
-<<<<<<< HEAD
-            <div class="summary-content">
-                <h:panelGroup id="panelResumen">
-                    <ui:repeat value="#{pedidoController.itemsMenuDelDia}" var="itemPedido" varStatus="status">
-                        <div class="summary-item">
-                            <div class="summary-item-info">
-                                <span>#{itemPedido.cantidad}x #{itemPedido.item.producto.nombre}</span>
-                                <span class="summary-item-price">#{pedidoController.formatPrecio(itemPedido.subtotal)}</span>
-=======
+
                 <div class="summary-content">
                     <h:panelGroup id="panelResumen">
                         <ui:repeat value="#{pedidoController.itemsDelPedido}" var="itemPedido" varStatus="status">
@@ -89,7 +74,6 @@
                                                  update=":formResumen panelResumen :formMenu:msgPanel"
                                                  title="Eliminar #{itemPedido.item.producto.nombre}"
                                                  process="@this"/>
->>>>>>> 67492e14c99167083f0ebc5f0e0633975027e3f5
                             </div>
                         </ui:repeat>
 
