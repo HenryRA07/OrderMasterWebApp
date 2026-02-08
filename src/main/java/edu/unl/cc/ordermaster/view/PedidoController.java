@@ -8,19 +8,14 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import org.primefaces.PrimeFaces;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.time.LocalDate;
+
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Named
 @ViewScoped
@@ -61,20 +56,19 @@ public class PedidoController implements Serializable {
 
     @PostConstruct
     public void init() {
-        inicilizarItems();
+        inicializarItems();
         inicializarValoresPorDefecto();
     }
 
     /**
      * Carga los items del menú del día desde la base de datos
      */
-    public void inicializarItems(){
+    public void inicializarItems() {
         try {
             itemsMenuDelDia = menuFacade.obtenerTodosLosItemsDelDia();
         } catch (Exception e) {
             facesUtil.addErrorMessage("Error al cargar el menú del día: " + e.getMessage());
             itemsMenuDelDia = List.of();
-            productosFiltrados = List.of();
         }
     }
 
@@ -193,13 +187,13 @@ public class PedidoController implements Serializable {
         facesUtil.addSuccessMessage("Pedido reiniciado");
     }
 
-    public void seleccionarItem(ItemMenu itemMenu){
+    public void seleccionarItem(ItemMenu itemMenu) {
         this.itemseleccionado = itemMenu;
         this.cantidad = 1;
         this.observacion = "";
     }
 
-    public void agregarItemPedido(){
+    public void agregarItemPedido() {
         try {
             // Validaciones básicas
             if (itemseleccionado == null) {
@@ -232,7 +226,7 @@ public class PedidoController implements Serializable {
             pedidoFacade.agregarItemPedido(item, pedidoactual);
 
             facesUtil.addSuccessMessage("Producto agregado al pedido: " +
-                itemseleccionado.getProducto().getNombre() + " (x" + cantidad + ")");
+                    itemseleccionado.getProducto().getNombre() + " (x" + cantidad + ")");
 
 
             limpiarSeleccion();
@@ -244,7 +238,7 @@ public class PedidoController implements Serializable {
 
     private void limpiarSeleccion() {
         this.itemseleccionado = null;
-        this.cantidad= 0;
+        this.cantidad = 0;
         this.observacion = "";
     }
 
@@ -368,3 +362,4 @@ public class PedidoController implements Serializable {
     public void setTipoSeleccionado(TipoMenu tipoSeleccionado) {
         this.tipoSeleccionado = tipoSeleccionado;
     }
+}

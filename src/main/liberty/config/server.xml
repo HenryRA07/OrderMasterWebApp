@@ -14,7 +14,7 @@
 
     <httpEndpoint host="*" httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint"/>
 
-    <webApplication contextRoot="/" location="orderMasterApp.war"/>
+    <webApplication  location="orderMasterApp.war" contextRoot="/" />
 
     <!-- Configuración de salidas de log del server -->
     <logging consoleFormat="SIMPLE" consoleLogLevel="INFO"/>

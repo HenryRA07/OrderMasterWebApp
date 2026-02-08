@@ -41,7 +41,7 @@
 
             <!-- Grid de productos del menú -->
             <div class="product-grid" id="productGrid">
-                <ui:repeat value="#{pedidoController.productosFiltrados}" var="item">
+                <ui:repeat value="#{pedidoController.itemsMenuDelDia}" var="item">
                     <p:commandLink update=":formModal"
                                    action="#{pedidoController.seleccionarItem(item)}"
                                    oncomplete="PF('dlgCantidad').show()">
@@ -70,7 +70,7 @@
 
             <div class="summary-content">
                 <h:panelGroup id="panelResumen">
-                    <ui:repeat value="#{pedidoController.itemsDelPedido}" var="itemPedido" varStatus="status">
+                    <ui:repeat value="#{pedidoController.itemsMenuDelDia}" var="itemPedido" varStatus="status">
                         <div class="summary-item">
                             <div class="summary-item-info">
                                 <span>#{itemPedido.cantidad}x #{itemPedido.item.producto.nombre}</span>

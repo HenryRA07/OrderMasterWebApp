@@ -1,7 +1,6 @@
 package edu.unl.cc.ordermaster.view;
 
 import edu.unl.cc.ordermaster.business.service.PedidoFacade;
-import edu.unl.cc.ordermaster.business.service.common.PedidoRepository;
 import edu.unl.cc.ordermaster.domain.EstadoPedido;
 import edu.unl.cc.ordermaster.domain.ItemPedido;
 import edu.unl.cc.ordermaster.domain.Pedido;
@@ -11,13 +10,14 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
 
 @Named("cocina")
 @RequestScoped
-public class ConcinaController {
+public class CocinaController implements Serializable {
 
     private static Logger logger = Logger.getLogger(AuthenticationController.class.getName());
 
