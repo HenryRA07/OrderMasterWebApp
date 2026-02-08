@@ -18,6 +18,7 @@ public class ConcinaController {
 
     private List<Pedido> pedidosPendientes;
     private LocalDate fechaConsulta;
+    private Pedido pedidoSeleccionado;
 
     @Inject
     PedidoRepository bdpedido;
@@ -49,5 +50,17 @@ public class ConcinaController {
 
     public void setPedidosPendientes(List<Pedido> pedidosPendientes) {
         this.pedidosPendientes = pedidosPendientes;
+    }
+
+    public void verDetallesPedido(Pedido pedido) {
+        this.pedidoSeleccionado = pedido;
+    }
+
+    public Pedido getPedidoSeleccionado() {
+        return pedidoSeleccionado;
+    }
+
+    public void setPedidoSeleccionado(Pedido pedidoSeleccionado) {
+        this.pedidoSeleccionado = pedidoSeleccionado;
     }
 }

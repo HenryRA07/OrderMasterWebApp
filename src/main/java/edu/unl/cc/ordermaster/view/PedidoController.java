@@ -155,7 +155,10 @@ public class PedidoController implements Serializable {
             ItemPedido item = new ItemPedido();
             item.setItem(itemseleccionado);
             item.setCantidad(cantidad);
-            item.setObservacion(observacion != null && !observacion.trim().isEmpty() ? observacion.trim() : "-");
+            String obsFinal = observacion != null && !observacion.trim().isEmpty() && !observacion.trim().equals("-") ? observacion.trim() : "";
+            System.out.println("DEBUG: Observación original: '" + observacion + "'");
+            System.out.println("DEBUG: Observación final: '" + obsFinal + "'");
+            item.setObservacion(obsFinal);
 
             // Agregar item al pedido temporal (sin persistir en BD)
             pedidoactual.agregarItem(item);
