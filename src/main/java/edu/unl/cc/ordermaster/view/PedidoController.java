@@ -11,6 +11,7 @@ import jakarta.inject.Named;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.primefaces.PrimeFaces;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -30,10 +31,10 @@ public class PedidoController implements Serializable {
     // Inyección de dependencias
     @Inject
     private MenuFacade menuFacade;
-    
+
     @Inject
     private PedidoFacade pedidoFacade;
-    
+
     @Inject
     private FacesUtil facesUtil;
 
@@ -67,7 +68,7 @@ public class PedidoController implements Serializable {
     /**
      * Carga los items del menú del día desde la base de datos
      */
-    public void inicilizarItems(){
+    public void inicializarItems(){
         try {
             itemsMenuDelDia = menuFacade.obtenerTodosLosItemsDelDia();
         } catch (Exception e) {
@@ -200,7 +201,7 @@ public class PedidoController implements Serializable {
 
     public void agregarItemPedido(){
         try {
-            // Validaciones
+            // Validaciones básicas
             if (itemseleccionado == null) {
                 facesUtil.addErrorMessage("Debe seleccionar un producto");
                 return;
@@ -209,42 +210,30 @@ public class PedidoController implements Serializable {
                 facesUtil.addErrorMessage("La cantidad debe ser mayor a 0");
                 return;
             }
-            if (mesa == null || mesa <= 0) {
-                facesUtil.addErrorMessage("El número de mesa debe ser válido");
-                return;
+
+            // Asegurar que el pedido esté inicializado
+            if (pedidoactual == null) {
+                inicializarPedido();
             }
 
-            // Crear cliente si es necesario
-            if (clientepedido == null) {
-                clientepedido = new Cliente();
-                clientepedido.setNombre(nombre != null ? nombre : "Cliente");
-                clientepedido.setApellido(apellido != null ? apellido : "");
-                clientepedido.setDni(dni != null ? dni : "N/A");
-                clientepedido.setTelefono(telefono != null ? telefono : "");
-                clientepedido.setEmail(email != null ? email : "");
-            }
-
-            // Crear item del pedido
+            // Crear item del pedido (solo en memoria)
             ItemPedido item = new ItemPedido();
             item.setItem(itemseleccionado);
             item.setCantidad(cantidad);
             item.setObservacion(observacion != null && !observacion.trim().isEmpty() ? observacion.trim() : "-");
 
-            // Configurar pedido
-            pedidoactual.setMesa(mesa);
-            pedidoactual.setCliente(clientepedido);
+            // Agregar item al pedido temporal (sin persistir en BD)
+            pedidoactual.agregarItem(item);
 
-            // Si el pedido es nuevo, crearlo primero
-            if (pedidoactual.getId() == null) {
-                pedidoactual = pedidoFacade.crearPedido(pedidoactual);
-                facesUtil.addSuccessMessage("Pedido creado exitosamente. ID: " + pedidoactual.getId());
-            }
+            facesUtil.addSuccessMessage("Producto agregado al pedido: " +
+                    itemseleccionado.getProducto().getNombre() + " (x" + cantidad + ")");
 
             // Agregar item al pedido
             pedidoFacade.agregarItemPedido(item, pedidoactual);
 
             facesUtil.addSuccessMessage("Producto agregado al pedido: " +
                 itemseleccionado.getProducto().getNombre() + " (x" + cantidad + ")");
+
 
             limpiarSeleccion();
 
@@ -379,4 +368,3 @@ public class PedidoController implements Serializable {
     public void setTipoSeleccionado(TipoMenu tipoSeleccionado) {
         this.tipoSeleccionado = tipoSeleccionado;
     }
-}

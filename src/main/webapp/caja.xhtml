@@ -62,12 +62,12 @@
         <h:form id="formPago">
             <div class="payment-modal-center">
                 <div class="payment-buttons-container">
-                    <p:commandButton value="Efectivo" icon="pi pi-money-bill" 
-                                   onclick="PF('dlgEfectivo').show(); PF('dlgPago').hide();" 
-                                   styleClass="payment-option-btn"/>
-                    <p:commandButton value="Tarjeta" icon="pi pi-credit-card" 
-                                   onclick="PF('dlgTarjeta').show(); PF('dlgPago').hide();" 
-                                   styleClass="payment-option-btn"/>
+                    <p:commandButton value="Efectivo" icon="pi pi-money-bill"
+                                     onclick="PF('dlgEfectivo').show(); PF('dlgPago').hide();"
+                                     styleClass="payment-option-btn"/>
+                    <p:commandButton value="Tarjeta" icon="pi pi-credit-card"
+                                     onclick="PF('dlgTarjeta').show(); PF('dlgPago').hide();"
+                                     styleClass="payment-option-btn"/>
                 </div>
             </div>
         </h:form>
@@ -78,12 +78,12 @@
         <h:form id="formEfectivo">
             <div class="payment-content">
                 <h3 style="text-align: center; color: #0a0a0a; margin-bottom: 25px;">Pago en Efectivo</h3>
-                
+
                 <div class="total-display">
                     <p:outputLabel value="Total a Pagar:" style="font-weight: 600; display: block; margin-bottom: 8px;"/>
                     <div class="total-amount">$23.50</div>
                 </div>
-                
+
                 <div class="efectivo-input" style="margin-top: 20px;">
                     <p:outputLabel value="Valor Recibido:" style="font-weight: 600; display: block; margin-bottom: 10px;"/>
                     <p:inputNumber id="efectivoRecibido" symbol="$" value="#{cajaBean.efectivoRecibido}"
@@ -104,14 +104,14 @@
                 </h:panelGroup>
 
                 <div class="action-buttons">
-                    <p:commandButton value="Cancelar" icon="pi pi-times" 
-                                   onclick="PF('dlgEfectivo').hide(); PF('dlgPago').show();" 
-                                   styleClass="btn-cancel"/>
-                    <p:commandButton value="Procesar Pago" icon="pi pi-check" 
-                                   action="#{cajaBean.confirmarPago}"
-                                   update="@form"
-                                   oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgEfectivo').hide(); PF('dlgExitoCaja').show(); }"
-                                   styleClass="btn-pay"/>
+                    <p:commandButton value="Cancelar" icon="pi pi-times"
+                                     onclick="PF('dlgEfectivo').hide(); PF('dlgPago').show();"
+                                     styleClass="btn-cancel"/>
+                    <p:commandButton value="Procesar Pago" icon="pi pi-check"
+                                     action="#{cajaBean.confirmarPago}"
+                                     update="@form"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgEfectivo').hide(); PF('dlgExitoCaja').show(); }"
+                                     styleClass="btn-pay"/>
                 </div>
             </div>
         </h:form>
@@ -122,21 +122,21 @@
         <h:form id="formTarjeta">
             <div class="payment-content">
                 <h3 style="text-align: center; color: #0a0a0a; margin-bottom: 25px;">Pago procesado con tarjeta</h3>
-                
+
                 <div class="tarjeta-message">
                     <i class="pi pi-credit-card" style="font-size: 3rem; color: #d4af37; margin-bottom: 15px;"></i>
                     <p style="margin: 0; color: #718096; font-size: 1rem;">Transacción completada exitosamente</p>
                 </div>
 
                 <div class="action-buttons">
-                    <p:commandButton value="Cancelar" icon="pi pi-times" 
-                                   onclick="PF('dlgTarjeta').hide(); PF('dlgPago').show();" 
-                                   styleClass="btn-cancel"/>
-                    <p:commandButton value="Procesar Pago" icon="pi pi-check" 
-                                   action="#{cajaBean.confirmarPago}"
-                                   update="@form"
-                                   oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgTarjeta').hide(); PF('dlgExitoCaja').show(); }"
-                                   styleClass="btn-pay"/>
+                    <p:commandButton value="Cancelar" icon="pi pi-times"
+                                     onclick="PF('dlgTarjeta').hide(); PF('dlgPago').show();"
+                                     styleClass="btn-cancel"/>
+                    <p:commandButton value="Procesar Pago" icon="pi pi-check"
+                                     action="#{cajaBean.confirmarPago}"
+                                     update="@form"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgTarjeta').hide(); PF('dlgExitoCaja').show(); }"
+                                     styleClass="btn-pay"/>
                 </div>
             </div>
         </h:form>

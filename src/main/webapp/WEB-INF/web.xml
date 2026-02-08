@@ -2,7 +2,6 @@
          xmlns="https://jakarta.ee/xml/ns/jakartaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
-
     <!-- Overring system levels default configuration usage of XML -->
 
     <context-param>
@@ -31,12 +30,10 @@
         <param-value>native</param-value>
     </context-param>
 
-    <!--
     <context-param>
         <param-name>jakarta.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
-    -->
 
     <!-- Deshabilitar la implementación de JSF de Liberty -->
     <!--
@@ -45,7 +42,6 @@
         <param-value>true</param-value>
     </context-param>
     -->
-
 
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
@@ -58,13 +54,10 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 
-    <!--
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/jakarta.faces.resource/*</url-pattern>
-        <url-pattern>/javax.faces.resource/*</url-pattern>
     </servlet-mapping>
-    -->
 
     <security-constraint>
         <web-resource-collection>

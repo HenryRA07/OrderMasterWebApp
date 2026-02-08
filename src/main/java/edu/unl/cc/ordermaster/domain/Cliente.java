@@ -1,8 +1,6 @@
 package edu.unl.cc.ordermaster.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,31 +18,26 @@ public class Cliente implements Serializable {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @NotEmpty
     private String nombre;
 
-    @NotNull @NotEmpty
     private String apellido;
 
-    @NotNull @NotEmpty
+    @Transient
     private String dni;
 
-    @NotNull @NotEmpty
+    @Transient
     private String telefono;
 
-    @NotNull @NotEmpty
-    @Email(message = "Formato de email incorrecto")
     private String email;
 
     public Cliente() {
     }
 
-    public Cliente(Long id, @NotNull @NotEmpty String nombre,
-                   @NotNull @NotEmpty String apellido,
-                   @NotNull @NotEmpty String dni,
-                   @NotNull @NotEmpty String telefono,
-                   @NotNull @NotEmpty String email) {
+    public Cliente(Long id, String nombre,
+                   String apellido,
+                   String dni,
+                   String telefono,
+                   String email) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -69,7 +62,7 @@ public class Cliente implements Serializable {
         return nombre;
     }
 
-    public void setNombre(@NotNull @NotEmpty String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
@@ -77,7 +70,7 @@ public class Cliente implements Serializable {
         return apellido;
     }
 
-    public void setApellido(@NotNull @NotEmpty String apellido) {
+    public void setApellido(String apellido) {
         this.apellido = apellido;
     }
 
@@ -85,7 +78,7 @@ public class Cliente implements Serializable {
         return dni;
     }
 
-    public void setDni(@NotNull @NotEmpty String dni) {
+    public void setDni(String dni) {
         this.dni = dni;
     }
 
@@ -93,7 +86,7 @@ public class Cliente implements Serializable {
         return telefono;
     }
 
-    public void setTelefono(@NotNull @NotEmpty String telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
@@ -101,7 +94,7 @@ public class Cliente implements Serializable {
         return email;
     }
 
-    public void setEmail(@NotNull @NotEmpty String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 

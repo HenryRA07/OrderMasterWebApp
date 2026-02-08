@@ -43,8 +43,8 @@ public class AuthorizationFilter implements Filter {
                 || requestPath.equals("/mesero.xhtml")
                 || requestPath.equals("/cocina.xhtml")
                 || requestPath.equals("/caja.xhtml")
-            //|| requestPath.contains("/jakarta.faces.resource/")  // Recursos de JSF
-            //|| requestPath.contains("/primefaces/")            // Recursos de PrimeFaces
+                || requestPath.contains("/jakarta.faces.resource/")  // Recursos de JSF
+                || requestPath.contains("/primefaces/")            // Recursos de PrimeFaces
         ) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
