@@ -66,28 +66,10 @@ public class UserSession implements java.io.Serializable{
         return roleNavigationService.getHomePageByRoles(user.getRoles());
     }
 
-    /**
-     * Métodos de utilidad para verificación de roles cambios provicionales
-     */
-    public boolean isAdministrador() {
-        return roleNavigationService.hasRole(user, "ADMIN");
-    }
-
-    public boolean isMesero() {
-        return roleNavigationService.hasRole(user, "MESERO");
-    }
-
-    public boolean isCocinero() {
-        return roleNavigationService.hasRole(user, "COCINERO");
-    }
-
-    public boolean isCajero() {
-        return roleNavigationService.hasRole(user, "CAJERO");
-    }
 
 
     public boolean hasPermissionForPage(String pagePath) {
-        return this.hasPermission(pagePath, ActionType.READ);
+        return this.hasPermission(pagePath, ActionType.ALL);
     }
 
     public boolean hasPermission(String resource, ActionType action) {

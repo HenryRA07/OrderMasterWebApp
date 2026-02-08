@@ -20,7 +20,7 @@ public class RoleNavigationService implements Serializable {
     private static final Map<String, String> ROLE_HOME_PAGES = Map.of(
             "ADMIN", "/menuDiario.xhtml",
             "MESERO", "/mesero.xhtml",
-            "COCINERO", "/cocina.xhtml",
+            "COCINA", "/cocina.xhtml",
             "CAJERO", "/caja.xhtml"
     );
 
@@ -28,7 +28,7 @@ public class RoleNavigationService implements Serializable {
     private static final List<String> ROLE_PRIORITY = List.of(
             "ADMIN",  // Mayor prioridad
             "CAJERO",
-            "COCINERO",
+            "COCINA",
             "MESERO"          // Menor prioridad
     );
 

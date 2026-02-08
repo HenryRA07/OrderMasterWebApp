@@ -62,7 +62,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Login Page</web-resource-name>
-            <url-pattern>/login.xhtml</url-pattern>
+            <url-pattern>/index.xhtml</url-pattern>
         </web-resource-collection>
     </security-constraint>
 
