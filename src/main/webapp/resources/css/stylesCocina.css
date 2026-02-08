@@ -89,10 +89,29 @@ body {
 .order-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
     border-bottom: 2px solid #e2e8f0;
+}
+
+.order-info {
+    flex: 1;
+}
+
+.order-id {
+    margin-bottom: 8px;
+}
+
+.order-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
 }
 
 .status-badge {
@@ -112,12 +131,57 @@ body {
     color: #c05621;
 }
 
-.item-row {
+.items-section {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 0;
+}
+
+.item-container {
+    padding: 12px 0;
+}
+
+.item-header {
+    display: flex;
     align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #f0f0f0;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.item-quantity {
+    background: #d4af37;
+    color: #0a0a0a;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    min-width: 30px;
+    text-align: center;
+}
+
+.item-name {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1rem;
+}
+
+.item-observation {
+    display: flex;
+    align-items: flex-start;
+    margin-left: 42px;
+    margin-top: 4px;
+}
+
+.observation-text {
+    color: #c53030;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+.item-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin-top: 12px;
 }
 
 .observation-box {

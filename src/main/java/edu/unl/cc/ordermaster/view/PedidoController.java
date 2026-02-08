@@ -472,16 +472,16 @@ public class PedidoController implements Serializable {
             // Crear y persistir el pedido con manejo específico de errores
             try {
                 pedidoactual = pedidoFacade.crearPedido(pedidoactual);
-                System.out.println("✅ Pedido CREADO y ENVIADO A COCINA - ID: " + pedidoactual.getId());
+                System.out.println("Pedido CREADO y ENVIADO A COCINA - ID: " + pedidoactual.getId());
             } catch (Exception persistenceError) {
-                System.out.println("❌ ERROR DE PERSISTENCIA: " + persistenceError.getMessage());
+                System.out.println("ERROR DE PERSISTENCIA: " + persistenceError.getMessage());
                 persistenceError.printStackTrace();
 
                 // Error más específico para el usuario
                 if (persistenceError.getMessage().contains("ConstraintViolation")) {
-                    facesUtil.addErrorMessage("❌ Error: Hay datos obligatorios que no se completaron correctamente. Verifique todos los campos marcados con *");
+                    facesUtil.addErrorMessage("Error: Hay datos obligatorios que no se completaron correctamente. Verifique todos los campos marcados con *");
                 } else {
-                    facesUtil.addErrorMessage("❌ Error al guardar el pedido: " + persistenceError.getMessage());
+                    facesUtil.addErrorMessage("Error al guardar el pedido: " + persistenceError.getMessage());
                 }
                 return null;
             }
@@ -489,7 +489,7 @@ public class PedidoController implements Serializable {
             System.out.println("Pedido CREADO y ENVIADO A COCINA - ID: " + pedidoactual.getId());
             System.out.println("Estado del pedido: " + pedidoactual.getEstado());
 
-            facesUtil.addSuccessMessage("✅ Pedido confirmado exitosamente! ID: " + pedidoactual.getId() + " - Enviado a cocina");
+            facesUtil.addSuccessMessage("Pedido confirmado exitosamente! ID: " + pedidoactual.getId() + " - Enviado a cocina");
 
             // Limpiar para nuevo pedido
             limpiarDatosCliente();
@@ -499,9 +499,9 @@ public class PedidoController implements Serializable {
             System.out.println("=== FIN: Pedido enviado a cocina exitosamente ===");
             return null;
         } catch (Exception e) {
-            System.out.println("❌ ERROR GENERAL: " + e.getMessage());
+            System.out.println("ERROR GENERAL: " + e.getMessage());
             e.printStackTrace();
-            facesUtil.addErrorMessage("❌ Error al procesar el pedido: " + e.getMessage());
+            facesUtil.addErrorMessage("Error al procesar el pedido: " + e.getMessage());
             return null;
         }
     }
