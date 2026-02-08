@@ -6,58 +6,58 @@ body {
     background-color: #f8f9fa;
 }
 
-.sidebar {
-    width: 260px;
-    height: 100vh;
-    background-color: #0a0a0a;
-    color: white;
-    padding: 20px;
-    position: fixed;
+/*.sidebar {*/
+/*    width: 260px;*/
+/*    height: 100vh;*/
+/*    background-color: #0a0a0a;*/
+/*    color: white;*/
+/*    padding: 20px;*/
+/*    position: fixed;*/
 
-    display: flex;
-    flex-direction: column;
-}
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*}*/
 
-.sidebar-logo {
-    color: #d4af37;
-    font-weight: bold;
-    font-size: 1.5rem;
-    margin-bottom: 30px;
+/*.sidebar-logo {*/
+/*    color: #d4af37;*/
+/*    font-weight: bold;*/
+/*    font-size: 1.5rem;*/
+/*    margin-bottom: 30px;*/
 
-    display: flex;
-    align-items: center;
-    gap: 10px;
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 10px;*/
 
-    white-space: nowrap;
-}
+/*    white-space: nowrap;*/
+/*}*/
 
-.sidebar-menu {
-    flex: 1;
-}
+/*.sidebar-menu {*/
+/*    flex: 1;*/
+/*}*/
 
-.nav-item {
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 5px;
-    cursor: pointer;
+/*.nav-item {*/
+/*    padding: 12px;*/
+/*    border-radius: 8px;*/
+/*    margin-bottom: 5px;*/
+/*    cursor: pointer;*/
 
-    display: flex;
-    align-items: center;
-    gap: 10px;
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 10px;*/
 
-    text-decoration: none;
-    color: #718096;
-}
+/*    text-decoration: none;*/
+/*    color: #718096;*/
+/*}*/
 
-.nav-item.active {
-    background-color: #d4af37;
-    color: #0a0a0a;
-    font-weight: bold;
-}
+/*.nav-item.active {*/
+/*    background-color: #d4af37;*/
+/*    color: #0a0a0a;*/
+/*    font-weight: bold;*/
+/*}*/
 
-.sidebar-footer {
-    margin-bottom: 20px;
-}
+/*.sidebar-footer {*/
+/*    margin-bottom: 20px;*/
+/*}*/
 
 .main-content {
     margin-left: 260px;
@@ -335,9 +335,9 @@ body {
         padding: 30px 25px;
     }
     
-    .sidebar {
-        width: 220px;
-    }
+    /*.sidebar {*/
+    /*    width: 220px;*/
+    /*}*/
     
     .orders-container {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -348,37 +348,37 @@ body {
         padding: 18px;
     }
     
-    .sidebar-logo {
-        font-size: 1.3rem;
-    }
+    /*.sidebar-logo {*/
+    /*    font-size: 1.3rem;*/
+    /*}*/
 }
 
 @media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        padding: 15px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
+    /*.sidebar {*/
+    /*    width: 100%;*/
+    /*    height: auto;*/
+    /*    position: relative;*/
+    /*    padding: 15px;*/
+    /*    display: flex;*/
+    /*    flex-direction: column;*/
+    /*    gap: 15px;*/
+    /*}*/
     
-    .sidebar-logo {
-        font-size: 1.2rem;
-        margin-bottom: 10px;
-    }
+    /*.sidebar-logo {*/
+    /*    font-size: 1.2rem;*/
+    /*    margin-bottom: 10px;*/
+    /*}*/
     
-    .sidebar-menu {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
+    /*.sidebar-menu {*/
+    /*    display: flex;*/
+    /*    flex-direction: column;*/
+    /*    gap: 5px;*/
+    /*}*/
     
-    .sidebar-footer {
-        margin-bottom: 0;
-        text-align: center;
-    }
+    /*.sidebar-footer {*/
+    /*    margin-bottom: 0;*/
+    /*    text-align: center;*/
+    /*}*/
     
     .main-content {
         margin-left: 0;

@@ -6,30 +6,36 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-<h:head>
-    <title>Caja y Facturación - OrderMaster</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="icon" href="images/logo_ShamanBlack.ico"/>
-    <link rel="stylesheet" href="resources/css/stylesCaja.css"/>
-</h:head>
-<h:body>
-    <div class="sidebar">
-        <div class="sidebar-logo"><i class="pi pi-fire"></i> OrderMaster</div>
-        <a href="#" class="nav-item active"><i class="pi pi-wallet"></i> Cobros</a>
-        <div style="position: absolute; bottom: 30px; width: calc(100% - 40px);">
-            <p:commandLink action="index?faces-redirect=true" styleClass="nav-item">
-                <i class="pi pi-sign-out"></i> Salir
-            </p:commandLink>
-        </div>
-    </div>
+<ui:composition template="/WEB-INF/templates/template.xhtml">
+    <ui:define name="title">
+        <title>Caja y Facturación - OrderMaster</title>
+    </ui:define>
 
-    <div class="main-content">
+    <ui:define name="styles">
+        <link rel="stylesheet" href="resources/css/template.css"/>
+        <link rel="stylesheet" href="resources/css/stylesCaja.css"/>
+    </ui:define>
+
+    <ui:define name="sidebar">
+        <ui:include src="/WEB-INF/templates/sidebar.xhtml">
+            <ui:param name="navigationItems" value="#{
+                [{
+                    label: 'Cobros',
+                    url: '#',
+                    icon: 'pi pi-wallet',
+                    active: true
+                }]
+            }"/>
+        </ui:include>
+    </ui:define>
+
+    <ui:define name="content">
         <h1 style="font-size: 1.8rem; font-weight: bold; margin-bottom: 30px;">Pedidos listos para Cobro</h1>
 
         <h:form id="formCaja">
             <!-- Poll para actualización automática cada 10 segundos -->
-            <p:poll interval="10000" update="formCaja" listener="#{cajaController.actualizarPedidos()}" />
-            
+            <p:poll interval="10000" update="formCaja" listener="#{cajaController.actualizarPedidos()}"/>
+
             <div class="orders-container">
                 <ui:repeat value="#{cajaController.pedidosListos}" var="pedido">
                     <div class="order-card">
@@ -65,7 +71,7 @@
                                          styleClass="btn-pay" style="margin-top: 20px;"/>
                     </div>
                 </ui:repeat>
-                
+
                 <h:panelGroup rendered="#{empty cajaController.pedidosListos}">
                     <div style="text-align: center; padding: 40px; color: #718096;">
                         <i class="pi pi-wallet" style="font-size: 2rem; margin-bottom: 10px;"></i>
@@ -74,10 +80,10 @@
                 </h:panelGroup>
             </div>
         </h:form>
-    </div>
 
-    <p:dialog header="Finalizar Pago - ORD-#{cajaController.pedidoSeleccionado != null ? cajaController.pedidoSeleccionado.id : ''}" 
-              widgetVar="dlgPago" modal="true" width="500" responsive="true">
+    <p:dialog
+            header="Finalizar Pago - ORD-#{cajaController.pedidoSeleccionado != null ? cajaController.pedidoSeleccionado.id : ''}"
+            widgetVar="dlgPago" modal="true" width="500" responsive="true">
         <h:form id="formPago">
             <div class="payment-modal-center">
                 <div class="payment-buttons-container">
@@ -99,15 +105,17 @@
                 <h3 style="text-align: center; color: #0a0a0a; margin-bottom: 25px;">Pago en Efectivo</h3>
 
                 <div class="total-display">
-                    <p:outputLabel value="Total a Pagar:" style="font-weight: 600; display: block; margin-bottom: 8px;"/>
+                    <p:outputLabel value="Total a Pagar:"
+                                   style="font-weight: 600; display: block; margin-bottom: 8px;"/>
                     <div class="total-amount">#{cajaController.pedidoSeleccionado != null ? cajaController.formatPrecio(cajaController.pedidoSeleccionado.precioTotal) : '$0'}</div>
                 </div>
 
                 <div class="efectivo-input" style="margin-top: 20px;">
-                    <p:outputLabel value="Valor Recibido:" style="font-weight: 600; display: block; margin-bottom: 10px;"/>
+                    <p:outputLabel value="Valor Recibido:"
+                                   style="font-weight: 600; display: block; margin-bottom: 10px;"/>
                     <p:inputNumber id="efectivoRecibido" symbol="$" value="#{cajaController.efectivoRecibido}"
                                    style="font-size: 1.3rem;" minValue="0" styleClass="efectivo-field">
-                        <p:ajax event="keyup" update="vueltoPanel" listener="#{cajaController.calcularVuelto}" />
+                        <p:ajax event="keyup" update="vueltoPanel" listener="#{cajaController.calcularVuelto}"/>
                     </p:inputNumber>
                 </div>
 
@@ -116,7 +124,7 @@
                         <small style="font-size: 0.85rem; color: #2d3748;">Vuelto (Cambio):</small><br/>
                         <strong style="font-size: 1.8rem; color: #2f855a;">
                             <h:outputText value="#{cajaController.vuelto}">
-                                <f:convertNumber type="currency" currencySymbol="$" />
+                                <f:convertNumber type="currency" currencySymbol="$"/>
                             </h:outputText>
                         </strong>
                     </div>
@@ -161,13 +169,15 @@
         </h:form>
     </p:dialog>
 
+    <!-- Diálogo de éxito -->
     <p:dialog widgetVar="dlgExitoCaja" modal="true" closable="false" showHeader="false" width="300">
         <div style="text-align: center; padding: 20px;">
             <i class="pi pi-check-circle" style="font-size: 3rem; color: #38a169;"></i>
             <h3>Pago Exitoso</h3>
             <p>El comprobante se ha enviado a impresión.</p>
-            <p:commandButton value="Cerrar" onclick="PF('dlgExitoCaja').hide()" styleClass="btn-pay" />
+            <p:commandButton value="Cerrar" onclick="PF('dlgExitoCaja').hide()" styleClass="btn-pay"/>
         </div>
     </p:dialog>
-</h:body>
-</html>
+</ui:define>
+</ui:composition>
+        </html>
