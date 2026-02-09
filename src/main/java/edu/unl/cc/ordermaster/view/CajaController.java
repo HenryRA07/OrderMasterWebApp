@@ -45,7 +45,7 @@ public class CajaController implements Serializable {
             LOGGER.info("Se cargaron " + pedidosListos.size() + " pedidos listos para cobrar");
         } catch (Exception e) {
             LOGGER.severe("Error al cargar pedidos listos: " + e.getMessage());
-            pedidosListos = List.of(); // Lista vacía en caso de error
+            pedidosListos = List.of();
         }
     }
 
@@ -76,13 +76,13 @@ public class CajaController implements Serializable {
             }
 
             LOGGER.info("Procesando pago en efectivo para pedido ID: " + pedidoSeleccionado.getId());
-            crudService.delete(Pedido.class, pedidoSeleccionado.getId());
+            pedidoFacade.cambiarEstadoPedido(pedidoSeleccionado, edu.unl.cc.ordermaster.domain.EstadoPedido.COMPLETADO);
             pedidoSeleccionado = null;
             efectivoRecibido = null;
             vuelto = null;
             cargarPedidosListos();
             
-            LOGGER.info("Pago procesado y pedido eliminado exitosamente");
+            LOGGER.info("Pago procesado y pedido marcado como completado exitosamente");
             
         } catch (Exception e) {
             LOGGER.severe("Error al procesar pago en efectivo: " + e.getMessage());
@@ -97,18 +97,29 @@ public class CajaController implements Serializable {
             }
 
             LOGGER.info("Procesando pago con tarjeta para pedido ID: " + pedidoSeleccionado.getId());
-            crudService.delete(Pedido.class, pedidoSeleccionado.getId());
+            pedidoFacade.cambiarEstadoPedido(pedidoSeleccionado, edu.unl.cc.ordermaster.domain.EstadoPedido.COMPLETADO);
             pedidoSeleccionado = null;
             efectivoRecibido = null;
             vuelto = null;
             cargarPedidosListos();
             
-            LOGGER.info("Pago con tarjeta procesado y pedido eliminado exitosamente");
+            LOGGER.info("Pago con tarjeta procesado y pedido marcado como completado exitosamente");
             
         } catch (Exception e) {
             LOGGER.severe("Error al procesar pago con tarjeta: " + e.getMessage());
             throw new RuntimeException("No se pudo procesar el pago: " + e.getMessage());
         }
+    }
+    /**
+     * Formatea un precio con separador de miles (ej: 12500 -> $12.500)
+     */
+    public String formatPrecio(BigDecimal precio) {
+        if (precio == null) return "$0";
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.GERMAN);
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+        DecimalFormat df = new DecimalFormat("#,##0", symbols);
+        return "$" + df.format(precio.longValue());
     }
 
     public List<Pedido> getPedidosListos() {
@@ -143,15 +154,4 @@ public class CajaController implements Serializable {
         this.vuelto = vuelto;
     }
 
-    /**
-     * Formatea un precio con separador de miles (ej: 12500 -> $12.500)
-     */
-    public String formatPrecio(BigDecimal precio) {
-        if (precio == null) return "$0";
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.GERMAN);
-        symbols.setGroupingSeparator('.');
-        symbols.setDecimalSeparator(',');
-        DecimalFormat df = new DecimalFormat("#,##0", symbols);
-        return "$" + df.format(precio.longValue());
-    }
 }

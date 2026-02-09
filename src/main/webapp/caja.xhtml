@@ -134,11 +134,11 @@
                     <p:commandButton value="Cancelar" icon="pi pi-times"
                                      onclick="PF('dlgEfectivo').hide(); PF('dlgPago').show();"
                                      styleClass="btn-cancel"/>
-                    <p:commandButton value="Procesar Pago" icon="pi pi-check"
-                                     action="#{cajaController.procesarPagoEfectivo}"
-                                     update=":formCaja @form"
-                                     oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgEfectivo').hide(); PF('dlgExitoCaja').show(); }"
-                                     styleClass="btn-pay"/>
+                     <p:commandButton value="Procesar Pago" icon="pi pi-check"
+                                      action="#{cajaController.procesarPagoEfectivo}"
+                                      update=":formCaja @form"
+                                      oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgEfectivo').hide(); }"
+                                      styleClass="btn-pay"/>
                 </div>
             </div>
         </h:form>
@@ -159,11 +159,11 @@
                     <p:commandButton value="Cancelar" icon="pi pi-times"
                                      onclick="PF('dlgTarjeta').hide(); PF('dlgPago').show();"
                                      styleClass="btn-cancel"/>
-                    <p:commandButton value="Procesar Pago" icon="pi pi-check"
-                                     action="#{cajaController.procesarPagoTarjeta}"
-                                     update=":formCaja @form"
-                                     oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgTarjeta').hide(); PF('dlgExitoCaja').show(); }"
-                                     styleClass="btn-pay"/>
+                     <p:commandButton value="Procesar Pago" icon="pi pi-check"
+                                      action="#{cajaController.procesarPagoTarjeta}"
+                                      update=":formCaja @form"
+                                      oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgTarjeta').hide(); }"
+                                      styleClass="btn-pay"/>
                 </div>
             </div>
         </h:form>
@@ -175,7 +175,7 @@
             <i class="pi pi-check-circle" style="font-size: 3rem; color: #38a169;"></i>
             <h3>Pago Exitoso</h3>
             <p>El comprobante se ha enviado a impresión.</p>
-            <p:commandButton value="Cerrar" onclick="PF('dlgExitoCaja').hide()" styleClass="btn-pay"/>
+            <p:commandButton value="Cerrar" onclick="PF('dlgExitoCaja').hide()" styleClass="btn-pay" style="display: none;"/>
         </div>
     </p:dialog>
 </ui:define>

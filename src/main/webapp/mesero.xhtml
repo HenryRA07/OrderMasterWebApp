@@ -105,10 +105,10 @@
                     </div>
                     <p:commandButton value="Confirmar Pedido"
                                      action="#{pedidoController.verificarYMostrarDialogoCliente()}"
-                                     update="@form"
+                                     update=":formResumen :formCliente:modalOrderSummary"
                                      disabled="#{pedidoController.cantidadItemsPedido == 0}"
                                      styleClass="btn-confirm"
-                                     oncomplete="if(args &amp;&amp; !args.validationFailed) { setTimeout(function() { PF('dlgCliente').show(); }, 100); }"/>
+                                     oncomplete="if(args &amp;&amp; !args.validationFailed) { PF('dlgCliente').show(); }"/>
                 </div>
 
                 <div class="summary-help">
@@ -146,7 +146,7 @@
             <h:form id="formCliente">
                 <div class="modal-content">
                     <!-- Resumen del pedido -->
-                    <div class="modal-order-summary">
+                    <h:panelGroup id="modalOrderSummary" class="modal-order-summary">
                         <h4>Resumen del Pedido</h4>
                         <p:separator/>
                         <ui:repeat value="#{pedidoController.itemsDelPedido}" var="itemPedido">
@@ -155,11 +155,11 @@
                                 <span class="modal-item-price">#{pedidoController.formatPrecio(itemPedido.subtotal)}</span>
                             </div>
                         </ui:repeat>
-                        <div class="modal-total-row">
-                            <strong>Total a pagar:</strong>
-                            <strong>#{pedidoController.precioTotalFormateado}</strong>
+                        <div class="summary-row summary-total">
+                            <span>Total a pagar</span>
+                            <span>#{pedidoController.precioTotalFormateado}</span>
                         </div>
-                    </div>
+                    </h:panelGroup>
 
                     <!-- Datos del cliente -->
                     <div class="modal-fields">
@@ -201,7 +201,7 @@
                 <i class="pi pi-check-circle success-icon"></i>
                 <h3>¡Pedido enviado a cocina!</h3>
                 <p style="color: #718096; margin: 10px 0;">Tu pedido ha sido confirmado y está siendo preparado</p>
-                <p:commandButton value="Nuevo Pedido" onclick="PF('dlgExito').hide()" styleClass="btn-confirm"/>
+                <p:commandButton value="Nuevo Pedido" action="#{pedidoController.reiniciarPedido()}" update=":formResumen:panelResumen" onclick="PF('dlgExito').hide()" styleClass="btn-confirm"/>
             </div>
         </p:dialog>
     </ui:define>

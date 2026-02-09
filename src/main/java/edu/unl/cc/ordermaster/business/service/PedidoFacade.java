@@ -239,17 +239,18 @@ public class PedidoFacade {
     }
     
     /**
-     * Elimina un pedido (soft delete: cambia estado a CANCELADO si existiera)
+     * Elimina un pedido (soft delete: cambia estado a COMPLETADO)
      * @param pedido Pedido a eliminar
      */
     @Transactional
     public void eliminarPedido(Pedido pedido) {
         try {
-            crudService.delete(Pedido.class, pedido.getId());
-            LOGGER.info("Pedido eliminado: ID=" + pedido.getId());
+            pedido.setEstado(edu.unl.cc.ordermaster.domain.EstadoPedido.COMPLETADO);
+            crudService.update(pedido);
+            LOGGER.info("Pedido marcado como completado: ID=" + pedido.getId());
         } catch (Exception e) {
-            LOGGER.severe("Error al eliminar pedido: " + e.getMessage());
-            throw new RuntimeException("No se pudo eliminar el pedido: " + e.getMessage());
+            LOGGER.severe("Error al marcar pedido como completado: " + e.getMessage());
+            throw new RuntimeException("No se pudo marcar el pedido como completado: " + e.getMessage());
         }
     }
     
