@@ -1,4 +1,10 @@
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
@@ -47,11 +53,12 @@ body {
 /* Layout Principal */
 .main-content {
     margin-left: 100px;
-    width: calc(100% - 250px);
+    width: calc(100% - 90px);
     padding: 40px;
 }
 
 .header-title {
+    width: 100%;
     font-size: 1.8rem;
     font-weight: bold;
     color: #1a202c;

@@ -17,21 +17,11 @@
 
         <!-- Menú de navegación -->
         <div class="sidebar-menu">
-            <ui:repeat value="#{navigationItems}" var="item">
-                <ui:fragment>
-                    <h:panelGroup rendered="#{item.commandLink}">
-                        <p:commandLink action="#{item.action}" 
-                                     styleClass="nav-item #{item.active ? 'active' : ''}"
-                                     rendered="#{item.action != null}">
-                            <i class="#{item.icon}"></i> #{item.label}
-                        </p:commandLink>
-                    </h:panelGroup>
-                    <h:panelGroup rendered="#{!item.commandLink}">
-                        <a href="#{item.url}" class="nav-item #{item.active ? 'active' : ''}">
-                            <i class="#{item.icon}"></i> #{item.label}
-                        </a>
-                    </h:panelGroup>
-                </ui:fragment>
+            <ui:repeat value="#{navigationController.getNavigationItems()}" var="item">
+                <a href="#{item.url}"
+                   class="nav-item #{item.active ? 'active' : ''}">
+                    <i class="#{item.icon}"></i> #{item.label}
+                </a>
             </ui:repeat>
         </div>
 

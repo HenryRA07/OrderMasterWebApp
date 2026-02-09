@@ -20,26 +20,10 @@
         <ui:define name="styles">
             <link rel="stylesheet" href="resources/css/template.css"/>
             <link rel="stylesheet" href="resources/css/stylesMenuDiario.css"/>
-        </ui:define>S
+        </ui:define>
 
         <ui:define name="sidebar">
-            <ui:include src="/WEB-INF/templates/sidebar.xhtml">
-                <ui:param name="navigationItems" value="#{
-                [
-                    {
-                        label: 'Usuarios',
-                        url: 'usuario.xhtml',
-                        icon: 'pi pi-users',
-                        active: false
-                    },
-                    {
-                        label: 'Menú Diario',
-                        url: 'menuDiario.xhtml',
-                        icon: 'pi pi-calendar',
-                        active: true
-                    }
-                ]}"/>
-            </ui:include>
+            <ui:include src="/WEB-INF/templates/sidebar.xhtml"/>
         </ui:define>
 
         <ui:define name="content">

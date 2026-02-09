@@ -1,4 +1,10 @@
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
@@ -63,7 +69,7 @@ body {
 /* Contenedor Principal */
 .main-content {
     margin-left: 250px;
-    width: calc(100% - 250px);
+    width: calc(100% - 90px);
     padding: 40px;
 }
 
