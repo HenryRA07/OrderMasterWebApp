@@ -5,6 +5,7 @@ package edu.unl.cc.ordermaster.domain.security;
 
 import edu.unl.cc.ordermaster.domain.common.Organization;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -32,6 +33,18 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull @NotEmpty
+    @Column(unique = true, nullable = false, length = 50)
+    private String firsname;
+
+    @NotNull @NotEmpty
+    @Column(unique = true, nullable = false, length = 50)
+    private String lastname;
+
+    @NotNull @NotEmpty @Email(message = "Formato email incorrecto")
+    @Column(unique = true, nullable = false, length = 50)
+    private String email;
 
     // Validaciones a nivel de vista y modelo
     @NotNull @NotEmpty @Size(min=5)
@@ -74,11 +87,15 @@ public class User implements Serializable {
         this.setPassword(password);
     }
 
-    public User(Long id,
+    public User(Long id,@NotNull @NotEmpty String firsname,
+                @NotNull @NotEmpty String lastname,
+                @NotNull @NotEmpty String email,
                 @NotNull @NotEmpty String name,
-                @NotNull @NotEmpty String password,
-                @NotNull Organization organization) {
+                @NotNull @NotEmpty String password,@NotNull Organization organization) {
         this(id, name, password);
+        this.firsname = firsname;
+        this.lastname = lastname;
+        this.email = email;
         this.organization = organization;
     }
 
@@ -133,8 +150,32 @@ public class User implements Serializable {
         return organization;
     }
 
-    public void setOrganization(Organization organization) {
+    public void setOrganization(@NotNull Organization organization) {
         this.organization = organization;
+    }
+
+    public String getFirsname() {
+        return firsname;
+    }
+
+    public void setFirsname(@NotNull @NotEmpty String firsname) {
+        this.firsname = firsname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(@NotNull @NotEmpty String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(@NotNull @Email(message = "Formato email incorrecto") String email) {
+        this.email = email;
     }
 
     @Override

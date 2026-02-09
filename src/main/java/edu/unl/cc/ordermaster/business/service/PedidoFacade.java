@@ -49,7 +49,7 @@ public class PedidoFacade {
                 pedido.setPrecioTotal(BigDecimal.ZERO);
             }
             if (pedido.getEstado() == null) {
-                pedido.setEstado(edu.unl.cc.ordermaster.domain.EstadoPedido.PENDIENTE);
+                pedido.setEstado(EstadoPedido.PENDIENTE);
             }
             
             Pedido pedidoCreado = crudService.create(pedido);
@@ -141,7 +141,7 @@ public class PedidoFacade {
      */
     public List<Pedido> obtenerPedidosPendientes() {
         try {
-            return pedidoRepository.findPedidosByEstado(edu.unl.cc.ordermaster.domain.EstadoPedido.PENDIENTE);
+            return pedidoRepository.findPedidosByEstado(EstadoPedido.PENDIENTE);
         } catch (Exception e) {
             LOGGER.severe("Error al obtener pedidos pendientes: " + e.getMessage());
             return Collections.emptyList();
@@ -154,7 +154,7 @@ public class PedidoFacade {
      */
     public List<Pedido> obtenerPedidosListos() {
         try {
-            return pedidoRepository.findPedidosByEstado(edu.unl.cc.ordermaster.domain.EstadoPedido.LISTO);
+            return pedidoRepository.findPedidosByEstado(EstadoPedido.LISTO);
         } catch (Exception e) {
             LOGGER.severe("Error al obtener pedidos listos: " + e.getMessage());
             return Collections.emptyList();

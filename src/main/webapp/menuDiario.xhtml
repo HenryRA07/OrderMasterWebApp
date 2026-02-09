@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="primefaces">
 
 <h:head>
     <title>Menú Diario - OrderMaster</title>
@@ -69,16 +69,6 @@
                                              required="true"
                                              requiredMessage="El nombre del menú es obligatorio"/>
                             </div>
-                            <!--                    <div style="margin-bottom: 15px;">-->
-                            <!--                        <p:outputLabel value="Tipo de Menú"/>-->
-                            <!--                        <p:selectOneMenu value="#{menuController.tipoMenu}"-->
-                            <!--                                         required="true"-->
-                            <!--                                         requiredMessage="Seleccione el tipo de menú">-->
-                            <!--                            <f:selectItem itemLabel="Desayuno" itemValue="DESAYUNO"/>-->
-                            <!--                            <f:selectItem itemLabel="Almuerzo" itemValue="ALMUERZO"/>-->
-                            <!--                            <f:selectItem itemLabel="Merienda" itemValue="MERIENDA"/>-->
-                            <!--                        </p:selectOneMenu>-->
-                            <!--                    </div>-->
 
                             <p:separator/>
 
@@ -114,7 +104,7 @@
                                 </div>
                             </div>
                             <p:commandButton value="Agregar Producto al Menú"
-                                             action="#{menuController.agregarProductoMenu()}"
+                                             action="#{menuController.agregarItemMenu()}"
                                              update=":formMenu :formCrear :formCatalogo :msgPanel"
                                              process="@form"
                                              styleClass="btn-black"/>
@@ -161,7 +151,7 @@
                         <h:form id="formCatalogo">
                             <div class="catalog-container">
                                 <ui:repeat value="#{menuController.productosExistentes}" var="prod">
-                                    <p:commandButton value="#{prod.nombre}"
+                                    <p:commandButton value="#{prod.producto.nombre}"
                                                      styleClass="chip-item"
                                                      action="#{menuController.prepararAgregarDelCatalogo(prod)}"
                                                      oncomplete="PF('dlgPrecioCatalogo').show()"
@@ -181,10 +171,10 @@
                 <h:form id="formPrecioCatalogo">
                     <div class="ui-fluid">
                         <p:outputLabel value="Producto:"/>
-                        <h:outputText value="#{menuController.productoSeleccionado.nombre}" style="font-weight:bold; display:block; margin-bottom:15px;"/>
+                        <h:outputText value="#{menuController.productoSeleccionado.producto.nombre}" style="font-weight:bold; display:block; margin-bottom:15px;"/>
                         <div style="margin-bottom: 15px;">
                             <p:outputLabel value="Precio para este menú"/>
-                            <p:inputNumber value="#{menuController.precioProductoCatalogo}"
+                            <p:inputNumber value="#{menuController.precioItemCatalogo}"
                                            symbol="$"
                                            minValue="0.01"
                                            decimalPlaces="2"

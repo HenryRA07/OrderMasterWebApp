@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="primefaces">
 
 <ui:composition template="/WEB-INF/templates/template.xhtml">
     <ui:define name="title">
@@ -18,14 +18,7 @@
 
     <ui:define name="sidebar">
         <ui:include src="/WEB-INF/templates/sidebar.xhtml">
-            <ui:param name="navigationItems" value="#{
-         [{
-             label: 'Menú Diario',
-             url: '#',
-             icon: 'pi pi-list',
-             active: true
-         }]
-     }"/>
+
         </ui:include>
     </ui:define>
 
@@ -66,15 +59,7 @@
                 </h2>
                 <p:separator/>
 
-<<<<<<< HEAD
-            <div class="summary-content">
-                <h:panelGroup id="panelResumen">
-                    <ui:repeat value="#{pedidoController.itemsMenuDelDia}" var="itemPedido" varStatus="status">
-                        <div class="summary-item">
-                            <div class="summary-item-info">
-                                <span>#{itemPedido.cantidad}x #{itemPedido.item.producto.nombre}</span>
-                                <span class="summary-item-price">#{pedidoController.formatPrecio(itemPedido.subtotal)}</span>
-=======
+
                 <div class="summary-content">
                     <h:panelGroup id="panelResumen">
                         <ui:repeat value="#{pedidoController.itemsDelPedido}" var="itemPedido" varStatus="status">
@@ -89,7 +74,6 @@
                                                  update=":formResumen panelResumen :formMenu:msgPanel"
                                                  title="Eliminar #{itemPedido.item.producto.nombre}"
                                                  process="@this"/>
->>>>>>> 67492e14c99167083f0ebc5f0e0633975027e3f5
                             </div>
                         </ui:repeat>
 
@@ -114,7 +98,7 @@
                         <span>#{pedidoController.precioTotalFormateado}</span>
                     </div>
                     <p:commandButton value="Confirmar Pedido"
-                                     action="#{pedidoController.verificarYMostrarDialogoCliente()}"
+                                     action="#{pedidoController.confirmarPedido()}"
                                      update="@form"
                                      disabled="#{pedidoController.cantidadItemsPedido == 0}"
                                      styleClass="btn-confirm"
@@ -187,12 +171,10 @@
                                      style="width: 100%; margin-bottom: 10px;"/>
                         <p:inputText value="#{pedidoController.dni}" placeholder="DNI"
                                      style="width: 100%; margin-bottom: 10px;"/>
-                        <p:inputTextarea value="#{pedidoController.observacion}" placeholder="Observaciones del pedido"
-                                         rows="3" style="width: 100%; margin-bottom: 10px;"/>
                     </div>
                     <div class="modal-actions">
                         <p:commandButton value="Enviar a Cocina"
-                                         action="#{pedidoController.confirmarPedidoConDatos()}"
+                                         action="#{pedidoController.confirmarPedido()}"
                                          update=":formResumen:panelResumen :formMenu:msgPanel formCliente"
                                          oncomplete="if(args &amp;&amp; !args.validationFailed) { PF('dlgCliente').hide(); PF('dlgExito').show(); }"
                                          styleClass="btn-confirm"

@@ -2,6 +2,7 @@ package edu.unl.cc.ordermaster.view;
 
 import edu.unl.cc.ordermaster.business.service.PedidoFacade;
 import edu.unl.cc.ordermaster.domain.EstadoPedido;
+import edu.unl.cc.ordermaster.domain.ItemMenu;
 import edu.unl.cc.ordermaster.domain.ItemPedido;
 import edu.unl.cc.ordermaster.domain.Pedido;
 import edu.unl.cc.ordermaster.faces.FacesUtil;
@@ -23,7 +24,8 @@ public class CocinaController implements Serializable {
 
     private List<Pedido> pedidosPendientes;
     private LocalDate fechaConsulta;
-    private List<String> detallesPedido;
+    private List<ItemPedido> detallesPedido;
+    private Pedido pedidoSeleccionado;
 
     @Inject
     FacesUtil faces;
@@ -43,18 +45,17 @@ public class CocinaController implements Serializable {
     }
 
     public void marcarPedidoListo(Pedido pedido){
+        pedidoSeleccionado = pedido;
         pedido.setEstado(EstadoPedido.LISTO);
-        Pedido acrualizado = dbpedido.actualizarPedido(pedido);
-        if(!acrualizado.getEstado().estadoPedido().equals(pedido.getEstado())){
-            faces.addSuccessMessage("Se cambio el estado a LISTO");
-        }
+        dbpedido.actualizarPedido(pedido);
         caragarPedidosPendientes();
     }
 
     public void verDetalles(Pedido pedido){
+        pedidoSeleccionado=pedido;
         Pedido detalles = dbpedido.buscarPedido(pedido.getId());
         for(ItemPedido detallesitem : detalles.getItemPedido()){
-            detallesPedido.add(detallesitem.getObservacion());
+            detallesPedido.add(detallesitem);
         }
     }
 
@@ -66,11 +67,27 @@ public class CocinaController implements Serializable {
         this.pedidosPendientes = pedidosPendientes;
     }
 
-    public List<String> getDetallesPedido() {
+    public List<ItemPedido> getDetallesPedido() {
         return detallesPedido;
     }
 
-    public void setDetallesPedido(List<String> detallesPedido) {
+    public void setDetallesPedido(List<ItemPedido> detallesPedido) {
         this.detallesPedido = detallesPedido;
+    }
+
+    public LocalDate getFechaConsulta() {
+        return fechaConsulta;
+    }
+
+    public void setFechaConsulta(LocalDate fechaConsulta) {
+        this.fechaConsulta = fechaConsulta;
+    }
+
+    public Pedido getPedidoSeleccionado() {
+        return pedidoSeleccionado;
+    }
+
+    public void setPedidoSeleccionado(Pedido pedidoSeleccionado) {
+        this.pedidoSeleccionado = pedidoSeleccionado;
     }
 }

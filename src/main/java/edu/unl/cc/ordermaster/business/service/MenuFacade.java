@@ -124,9 +124,9 @@ public class MenuFacade {
      * @return Lista de productos (Platillos y Bebidas)
      */
     @SuppressWarnings("unchecked")
-    public List<Producto> obtenerTodosLosProductos() {
+    public List<ItemMenu> obtenerTodosLosItemMenu() {
         try {
-            return crudService.findWithQuery("SELECT p FROM Producto p ORDER BY p.nombre");
+            return crudService.findWithQuery("SELECT p FROM ItemMenu p ORDER BY p.nombre");
         } catch (Exception e) {
             LOGGER.severe("Error al obtener productos: " + e.getMessage());
             return Collections.emptyList();

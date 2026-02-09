@@ -7,8 +7,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -48,7 +46,8 @@ public class MenuController implements Serializable {
 
     /** Producto seleccionado del catálogo para agregar con precio */
     private Producto productoSeleccionado;
-    private BigDecimal precioProductoCatalogo;
+    private BigDecimal precioItemCatalogo;
+    private ItemMenu itemDelCatalogo;
 
     @PostConstruct
     public void init(){
@@ -71,7 +70,7 @@ public class MenuController implements Serializable {
         if(menu == null){
             menu = new Menu();
         }
-        menu.setTipoMenu(tipoMenu);
+        menu.setTipoMenu(TipoMenu.MIXTO);
         menu.setNombreMenu(nombreMenu);
 
     }
@@ -80,7 +79,7 @@ public class MenuController implements Serializable {
      * Agrega un producto nuevo al menú. El producto se persiste inmediatamente para
      * que aparezca en el catálogo. No se permiten productos duplicados por nombre.
      */
-    public void agregarProductoMenu(){
+    public void agregarItemMenu(){
         try {
             if (nombre == null || nombre.trim().isEmpty()) {
                 facesUtil.addErrorMessage("El nombre del producto es obligatorio");
@@ -116,8 +115,6 @@ public class MenuController implements Serializable {
             productoitem.setDescripcion(descripcion.trim());
             productoitem.setNombre(nombre.trim());
 
-            menuFacade.guardarProducto(productoitem);
-
             ItemMenu itemMenu = new ItemMenu();
             itemMenu.setPrecio(precio);
             itemMenu.setProducto(productoitem);
@@ -127,7 +124,6 @@ public class MenuController implements Serializable {
 
             facesUtil.addSuccessMessage("Producto agregado al menú: " + nombre);
             reiniciarParametros();
-
         } catch (Exception e) {
             facesUtil.addErrorMessage("Error al agregar producto: " + e.getMessage());
         }
@@ -139,11 +135,11 @@ public class MenuController implements Serializable {
      */
     public void agregarProductoDelCatalogo(){
         try {
-            if (productoSeleccionado == null) {
+            if (itemDelCatalogo == null) {
                 facesUtil.addErrorMessage("Seleccione un producto del catálogo");
                 return;
             }
-            if (precioProductoCatalogo == null || precioProductoCatalogo.compareTo(BigDecimal.ZERO) <= 0) {
+            if (precioItemCatalogo == null || precioItemCatalogo.compareTo(BigDecimal.ZERO) <= 0) {
                 facesUtil.addErrorMessage("El precio debe ser mayor a 0");
                 return;
             }
@@ -160,21 +156,19 @@ public class MenuController implements Serializable {
                 inicializarMenu();
             }
 
-            if (productoYaEnMenu(productoSeleccionado.getNombre())) {
-                facesUtil.addErrorMessage("El producto '" + productoSeleccionado.getNombre() + "' ya está en el menú actual.");
+            if (productoYaEnMenu(itemDelCatalogo.getProducto().getNombre())) {
+                facesUtil.addErrorMessage("El producto '" + itemDelCatalogo.getProducto().getNombre() + "' ya está en el menú actual.");
                 return;
             }
 
-            ItemMenu itemMenu = new ItemMenu();
-            itemMenu.setPrecio(precioProductoCatalogo);
-            itemMenu.setProducto(productoSeleccionado);
-            itemMenu.setDisponibilidad(true);
+            itemDelCatalogo.setPrecio(precioItemCatalogo);
+            itemDelCatalogo.setDisponibilidad(true);
 
-            menu.agregar(itemMenu);
+            menu.agregar(itemDelCatalogo);
 
-            facesUtil.addSuccessMessage("Producto agregado al menú: " + productoSeleccionado.getNombre());
-            productoSeleccionado = null;
-            precioProductoCatalogo = BigDecimal.ZERO;
+            facesUtil.addSuccessMessage("Producto agregado al menú: " + itemDelCatalogo.getProducto().getNombre());
+            itemDelCatalogo = null;
+            precioItemCatalogo = BigDecimal.ZERO;
 
         } catch (Exception e) {
             facesUtil.addErrorMessage("Error al agregar producto: " + e.getMessage());
@@ -203,9 +197,9 @@ public class MenuController implements Serializable {
     /**
      * Prepara la selección de un producto del catálogo para agregarlo.
      */
-    public void prepararAgregarDelCatalogo(Producto producto) {
-        this.productoSeleccionado = producto;
-        this.precioProductoCatalogo = BigDecimal.ZERO;
+    public void prepararAgregarDelCatalogo(ItemMenu itemMenu) {
+        this.itemDelCatalogo = itemMenu;
+        this.precioItemCatalogo = BigDecimal.ZERO;
     }
 
     private Producto producto(String tipo){
@@ -300,8 +294,8 @@ public class MenuController implements Serializable {
         return menu.getItemMenu();
     }
 
-    public List<Producto> getProductosExistentes() {
-        return menuFacade.obtenerTodosLosProductos();
+    public List<ItemMenu> getProductosExistentes() {
+        return menuFacade.obtenerTodosLosItemMenu();
     }
 
     public String getTipoProductoSeleccionado() {
@@ -312,24 +306,28 @@ public class MenuController implements Serializable {
         this.tipoProductoSeleccionado = tipoProductoSeleccionado;
     }
 
-    public Producto getProductoSeleccionado() {
-        return productoSeleccionado;
+    public ItemMenu getProductoSeleccionado() {
+        return itemDelCatalogo;
     }
 
-    public void setProductoSeleccionado(Producto productoSeleccionado) {
-        this.productoSeleccionado = productoSeleccionado;
+    public void setProductoSeleccionado(ItemMenu itemDelCatalogo) {
+        this.itemDelCatalogo = itemDelCatalogo;
     }
 
-    public BigDecimal getPrecioProductoCatalogo() {
-        return precioProductoCatalogo;
+    public BigDecimal getPrecioItemCatalogo() {
+        return precioItemCatalogo;
     }
 
-    public void setPrecioProductoCatalogo(BigDecimal precioProductoCatalogo) {
-        this.precioProductoCatalogo = precioProductoCatalogo;
+    public void setPrecioItemCatalogo(BigDecimal precioItemCatalogo) {
+        this.precioItemCatalogo = precioItemCatalogo;
     }
 
     public String getFechaActualFormateada() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, dd/MM/yyyy"));
+    }
+
+    public void setItemDelCatalogo(ItemMenu itemDelCatalogo) {
+        this.itemDelCatalogo = itemDelCatalogo;
     }
 
     public Menu getMenu() {
