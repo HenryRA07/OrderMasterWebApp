@@ -32,8 +32,7 @@ public class NavigationController implements Serializable {
                     Map.of("label", "Gestión Usuarios", "url", "/usuario.xhtml", "icon", "pi pi-users", "commandLink", false)
             ),
             "MESERO", List.of(
-                    Map.of("label", "Toma de Pedidos", "url", "/mesero.xhtml", "icon", "pi pi-pencil", "commandLink", false),
-                    Map.of("label", "Menú del Día", "url", "/menuDiario.xhtml", "icon", "pi pi-book", "commandLink", false)
+                    Map.of("label", "Toma de Pedidos", "url", "/mesero.xhtml", "icon", "pi pi-pencil", "commandLink", false)
             ),
             "COCINA", List.of(
                     Map.of("label", "Pedidos Pendientes", "url", "/cocina.xhtml", "icon", "pi pi-clock", "commandLink", false)

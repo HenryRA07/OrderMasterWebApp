@@ -1,117 +1,204 @@
 package edu.unl.cc.ordermaster.view;
 
 import edu.unl.cc.ordermaster.business.service.PedidoFacade;
-import edu.unl.cc.ordermaster.domain.*;
+import edu.unl.cc.ordermaster.business.service.CrudGenericService;
+import edu.unl.cc.ordermaster.domain.Pedido;
+import edu.unl.cc.ordermaster.domain.ItemPedido;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Collections;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
+import java.util.logging.Logger;
 
-@Named
+@Named("cajaController")
 @ViewScoped
 public class CajaController implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = Logger.getLogger(CajaController.class.getName());
+
+    private List<Pedido> pedidosListos;
+    private Pedido pedidoSeleccionado;
+    private Double efectivoRecibido;
+    private Double vuelto;
+
     @Inject
-    PedidoFacade pedido;
+    private PedidoFacade pedidoFacade;
 
-    private List<Pedido> pedidoslistos;
-    private Pedido pedidocobrar;
-    private MetodoPago pago;
-    private LocalDate pedidosdia;
-    private BigDecimal entregado;
-    private String banco;
-    private String numerocomprobante;
-    private ComprobanteVenta comprobanteVenta;
+    @Inject
+    private CrudGenericService crudService;
 
+    @PostConstruct
     public void init() {
-        pedidoslistos = pedido.obtenerPedidosPorFechayEstado(pedidosdia.now(), EstadoPedido.LISTO);
+        LOGGER.info("CajaController initialized");
+        cargarPedidosListos();
     }
 
-    public void asignar(Pedido pedido) {
-        pedidocobrar = pedido;
+    public void actualizarPedidos() {
+        cargarPedidosListos();
     }
 
-    public void cobrarefrectivo() {
-        pago = new Efectivo(entregado, pedidocobrar);
-        resetear();
+    public void cargarPedidosListos() {
+        try {
+            pedidosListos = pedidoFacade.obtenerPedidosListos();
+            LOGGER.info("Se cargaron " + pedidosListos.size() + " pedidos listos para cobrar");
+
+            for (Pedido p : pedidosListos) {
+                LOGGER.info("Pedido ID: " + p.getId() +
+                        ", Mesa: " + p.getMesa() +
+                        ", PrecioTotal ANTES: " + p.getPrecioTotal() +
+                        ", Items: " + (p.getItemPedido() != null ? p.getItemPedido().size() : 0));
+                p.calcularTotal();
+                LOGGER.info("PrecioTotal DESPUÉS: " + p.getPrecioTotal());
+
+                if (p.getItemPedido() != null) {
+                    for (int i = 0; i < p.getItemPedido().size(); i++) {
+                        ItemPedido item = p.getItemPedido().get(i);
+                        LOGGER.info("  Item " + i + ": " + item.getSubtotal());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.severe("Error al cargar pedidos listos: " + e.getMessage());
+            pedidosListos = List.of();
+        }
     }
 
-    public void cobrartransferencia() {
-        pago = new Transferencia(entregado, banco, numerocomprobante, pedidocobrar);
-        resetear();
+    public void seleccionarPedido(Pedido pedido) {
+        LOGGER.info("=== INICIO seleccionarPedido ===");
+        LOGGER.info("Pedido recibido: " + (pedido != null ? "ID=" + pedido.getId() + ", Precio=" + pedido.getPrecioTotal() : "NULL"));
+
+        this.pedidoSeleccionado = pedido;
+        this.efectivoRecibido = null;
+        this.vuelto = null;
+
+        // FORZAR recálculo del total
+        if (this.pedidoSeleccionado != null) {
+            this.pedidoSeleccionado.calcularTotal();
+            LOGGER.info("Después de calcularTotal: " + this.pedidoSeleccionado.getPrecioTotal());
+        }
+
+        LOGGER.info("Pedido asignado: " + (this.pedidoSeleccionado != null ? "ID=" + this.pedidoSeleccionado.getId() + ", Precio=" + this.pedidoSeleccionado.getPrecioTotal() : "NULL"));
+        LOGGER.info("=== FIN seleccionarPedido ===");
     }
 
-    public void resetear(){
-        pago = null;
-        entregado = BigDecimal.ZERO;
-        banco = "";
-        numerocomprobante = "";
-        pedidocobrar = null;
+    public void calcularVuelto() {
+        if (efectivoRecibido != null && pedidoSeleccionado != null) {
+            BigDecimal total = pedidoSeleccionado.getPrecioTotal();
+            vuelto = efectivoRecibido - total.doubleValue();
+            if (vuelto < 0) {
+                vuelto = 0.0;
+            }
+        }
     }
 
-//    public void generalComprobante(){
-//        comprobanteVenta = new ComprobanteVenta(pedidocobrar,pago);
-//
-//    }
+    public void procesarPagoEfectivo() {
+        try {
+            if (pedidoSeleccionado == null) {
+                throw new IllegalArgumentException("No hay pedido seleccionado");
+            }
 
-    public List<Pedido> getPedidoslistos() {
-        return pedidoslistos;
+            LOGGER.info("Procesando pago en efectivo para pedido ID: " + pedidoSeleccionado.getId());
+            pedidoFacade.cambiarEstadoPedido(pedidoSeleccionado, edu.unl.cc.ordermaster.domain.EstadoPedido.COMPLETADO);
+            pedidoSeleccionado = null;
+            efectivoRecibido = null;
+            vuelto = null;
+            cargarPedidosListos();
+
+            LOGGER.info("Pago procesado y pedido marcado como completado exitosamente");
+
+        } catch (Exception e) {
+            LOGGER.severe("Error al procesar pago en efectivo: " + e.getMessage());
+            throw new RuntimeException("No se pudo procesar el pago: " + e.getMessage());
+        }
     }
 
-    public void setPedidoslistos(List<Pedido> pedidoslistos) {
-        this.pedidoslistos = pedidoslistos;
+    public void procesarPagoTarjeta() {
+        try {
+            if (pedidoSeleccionado == null) {
+                throw new IllegalArgumentException("No hay pedido seleccionado");
+            }
+
+            LOGGER.info("Procesando pago con tarjeta para pedido ID: " + pedidoSeleccionado.getId());
+            pedidoFacade.cambiarEstadoPedido(pedidoSeleccionado, edu.unl.cc.ordermaster.domain.EstadoPedido.COMPLETADO);
+            pedidoSeleccionado = null;
+            efectivoRecibido = null;
+            vuelto = null;
+            cargarPedidosListos();
+
+            LOGGER.info("Pago con tarjeta procesado y pedido marcado como completado exitosamente");
+
+        } catch (Exception e) {
+            LOGGER.severe("Error al procesar pago con tarjeta: " + e.getMessage());
+            throw new RuntimeException("No se pudo procesar el pago: " + e.getMessage());
+        }
+    }
+    /**
+     * Formatea un precio con separador de miles (ej: 12500 -> $12.500)
+     */
+    public String formatPrecio(BigDecimal precio) {
+        LOGGER.info("formatPrecio llamado con: " + precio);
+        if (precio == null) {
+            LOGGER.warning("precio es NULL");
+            return "$0";
+        }
+        try {
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.GERMAN);
+            symbols.setGroupingSeparator('.');
+            symbols.setDecimalSeparator(',');
+            DecimalFormat df = new DecimalFormat("#,##0", symbols);
+            String resultado = "$" + df.format(precio.longValue());
+            LOGGER.info("Resultado formateado: " + resultado);
+            return resultado;
+        } catch (Exception e) {
+            LOGGER.severe("Error formateando precio: " + e.getMessage());
+            return "$" + precio.toString();
+        }
     }
 
-    public Pedido getPedidocobrar() {
-        return pedidocobrar;
+    public List<Pedido> getPedidosListos() {
+        return pedidosListos;
     }
 
-    public void setPedidocobrar(Pedido pedidocobrar) {
-        this.pedidocobrar = pedidocobrar;
+    public void setPedidosListos(List<Pedido> pedidosListos) {
+        this.pedidosListos = pedidosListos;
     }
 
-    public MetodoPago getPago() {
-        return pago;
+    public Pedido getPedidoSeleccionado() {
+        LOGGER.info("getPedidoSeleccionado llamado: " + (pedidoSeleccionado != null ? "ID=" + pedidoSeleccionado.getId() + ", Precio=" + pedidoSeleccionado.getPrecioTotal() : "NULL"));
+        return pedidoSeleccionado;
     }
 
-    public void setPago(MetodoPago pago) {
-        this.pago = pago;
+    public void setPedidoSeleccionado(Pedido pedidoSeleccionado) {
+        this.pedidoSeleccionado = pedidoSeleccionado;
+        if (pedidoSeleccionado != null) {
+            LOGGER.info("Pedido seleccionado: ID=" + pedidoSeleccionado.getId() +
+                    ", PrecioTotal=" + pedidoSeleccionado.getPrecioTotal() +
+                    ", Mesa=" + pedidoSeleccionado.getMesa());
+        }
     }
 
-    public LocalDate getPedidosdia() {
-        return pedidosdia;
+    public Double getEfectivoRecibido() {
+        return efectivoRecibido;
     }
 
-    public void setPedidosdia(LocalDate pedidosdia) {
-        this.pedidosdia = pedidosdia;
+    public void setEfectivoRecibido(Double efectivoRecibido) {
+        this.efectivoRecibido = efectivoRecibido;
     }
 
-    public BigDecimal getEntregado() {
-        return entregado;
+    public Double getVuelto() {
+        return vuelto;
     }
 
-    public void setEntregado(BigDecimal entregado) {
-        this.entregado = entregado;
+    public void setVuelto(Double vuelto) {
+        this.vuelto = vuelto;
     }
 
-    public String getBanco() {
-        return banco;
-    }
-
-    public void setBanco(String banco) {
-        this.banco = banco;
-    }
-
-    public String getNumerocomprobante() {
-        return numerocomprobante;
-    }
-
-    public void setNumerocomprobante(String numerocomprobante) {
-        this.numerocomprobante = numerocomprobante;
-    }
 }

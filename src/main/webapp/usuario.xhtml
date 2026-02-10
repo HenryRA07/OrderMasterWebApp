@@ -38,12 +38,16 @@
                 <div class="ui-g ui-fluid">
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="Nombres" for="nom"/>
-                        <p:inputText id="nom" placeholder="Nombres" value="#{userHome.user.name}" required="true"/>
+                        <p:inputText id="nom" placeholder="Nombres" value="#{userHome.user.name}" required="true">
+                        <f:validateLength minimum="3"/>
+                        </p:inputText>
                     </div>
 
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="Apellidos" for="ape"/>
-                        <p:inputText id="ape" placeholder="Apellidos"  required="true"/>
+                        <p:inputText id="ape" placeholder="Apellidos"  required="true">
+                        <f:validateLength minimum="3"/>
+                        </p:inputText>
                     </div>
 
                     <div class="ui-g-12 ui-md-3">
@@ -59,17 +63,25 @@
 
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="DNI" for="dni"/>
-                        <p:inputText id="dni" placeholder="DNI" value="#{userHome.user.organization.identificationNumber}" required="true"/>
+                        <p:inputText id="dni" placeholder="DNI" value="#{userHome.user.organization.identificationNumber}" required="true">
+                        <f:validateLength minimum="3"/>
+                        </p:inputText>
                     </div>
 
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="Correo" for="mail"/>
-                        <p:inputText id="mail" placeholder="correo@ejemplo.com" value="#{userHome.user.organization.email}" required="true"/>
+                        <p:inputText id="mail" placeholder="correo@ejemplo.com" value="#{userHome.user.organization.email}" requiredMessage="Por favor ingrese su Correo Electrónico."
+                                     validatorMessage="Invalid email format"
+                                     required="true">
+                            <f:validateRegex pattern="^[a-zA-Z0-9._%+-]+[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
+                        </p:inputText>
                     </div>
 
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="Password" for="pass" rendered="#{!userHome.managed}"/>
-                        <p:password id="pass" value="#{userHome.user.password}" rendered="#{!userHome.managed}" toggleMask="true"/>
+                        <p:password id="pass" value="#{userHome.user.password}" rendered="#{!userHome.managed}" toggleMask="true">
+                        <f:validateLength minimum="5" for="pass"/>
+                        </p:password>
                     </div>
 
                 </div>

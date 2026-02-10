@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core"
-      xmlns:ui="jakarta.faces.facelets"
-      xmlns:p="primefaces">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <ui:composition template="/WEB-INF/templates/template.xhtml">
     <ui:define name="title">
         <title>Caja y Facturación - OrderMaster</title>
     </ui:define>
-    
+
     <ui:define name="styles">
         <link rel="stylesheet" href="resources/css/template.css"/>
         <link rel="stylesheet" href="resources/css/stylesCaja.css"/>
@@ -23,40 +23,63 @@
     <ui:define name="content">
         <h1 style="font-size: 1.8rem; font-weight: bold; margin-bottom: 30px;">Pedidos listos para Cobro</h1>
 
-        <div class="orders-container">
-            <div class="order-card">
-                <div class="order-header">
-                    <div>
-                        <strong>ORD-001</strong> <br/>
-                        <small>Mesero: Juan Pérez</small>
-                    </div>
-                    <span style="color: #38a169; font-weight: bold; font-size: 0.8rem;">COMPLETADO</span>
-                </div>
+        <h:form id="formCaja">
+            <!-- Poll para actualización automática cada 10 segundos -->
+            <p:poll interval="10000" update="formCaja" listener="#{cajaController.actualizarPedidos()}"/>
 
-                <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <span>2x Pollo a la plancha</span>
-                        <span>$17.00</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <span>1x Ensalada César</span>
-                        <span>$6.50</span>
-                    </div>
-                </div>
+            <div class="orders-container">
+                <ui:repeat value="#{cajaController.pedidosListos}" var="pedido">
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <strong>ORD-#{pedido.id}</strong> <br/>
+                                <small>Mesero: #{pedido.cliente.nombreCompleto}</small>
+                                <h:panelGroup rendered="#{pedido.mesa != null}">
+                                    <br/>
+                                    <small>Mesa: #{pedido.mesa}</small>
+                                </h:panelGroup>
+                            </div>
+                            <span style="color: #38a169; font-weight: bold; font-size: 0.8rem;">LISTO</span>
+                        </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #cbd5e0; padding-top: 15px;">
-                    <span>Total a Pagar:</span>
-                    <span class="total-badge">$23.50</span>
-                </div>
+                        <div style="margin-bottom: 20px;">
+                            <ui:repeat value="#{pedido.itemPedido}" var="item">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span>#{item.cantidad}x #{item.item.producto.nombre}</span>
+                                    <span>#{cajaController.formatPrecio(item.subtotal)}</span>
+                                </div>
+                            </ui:repeat>
+                        </div>
 
-                <p:commandButton value="Cobrar Ahora" icon="pi pi-money-bill"
-                                 oncomplete="PF('dlgPago').show()"
-                                 styleClass="btn-pay" style="margin-top: 20px;"/>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #cbd5e0; padding-top: 15px;">
+                            <span>Total a Pagar:</span>
+                            <span class="total-badge">#{cajaController.formatPrecio(pedido.precioTotal)}</span>
+                        </div>
+
+                        <p:commandButton value="Cobrar Ahora" icon="pi pi-money-bill"
+                                         action="#{cajaController.seleccionarPedido(pedido)}"
+                                         oncomplete="PF('dlgPago').show();"
+                                         update=":dlgPago :dlgEfectivo"
+                                         styleClass="btn-pay" style="margin-top: 20px;">
+                            <f:attribute name="pedidoId" value="#{pedido.id}"/>
+                        </p:commandButton>
+                    </div>
+                </ui:repeat>
+
+                <h:panelGroup rendered="#{empty cajaController.pedidosListos}">
+                    <div style="text-align: center; padding: 40px; color: #718096;">
+                        <i class="pi pi-wallet" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>No hay pedidos listos para cobrar</p>
+                    </div>
+                </h:panelGroup>
+
+
             </div>
-        </div>
+        </h:form>
 
-        <!-- Diálogo: Selección de Pago -->
-        <p:dialog header="Finalizar Pago - ORD-001" widgetVar="dlgPago" modal="true" width="500" responsive="true">
+        <p:dialog id="dlgPago"
+                  header="Finalizar Pago - ORD-#{cajaController.pedidoSeleccionado.id}"
+                  widgetVar="dlgPago" modal="true" width="500" responsive="true">
             <h:form id="formPago">
                 <div class="payment-modal-center">
                     <div class="payment-buttons-container">
@@ -72,21 +95,23 @@
         </p:dialog>
 
         <!-- Modal de Pago en Efectivo -->
-        <p:dialog header="Pago en Efectivo" widgetVar="dlgEfectivo" modal="true" width="500" responsive="true">
+        <p:dialog id="dlgEfectivo" header="Pago en Efectivo" widgetVar="dlgEfectivo" modal="true" width="500" responsive="true">
             <h:form id="formEfectivo">
                 <div class="payment-content">
                     <h3 style="text-align: center; color: #0a0a0a; margin-bottom: 25px;">Pago en Efectivo</h3>
 
                     <div class="total-display">
-                        <p:outputLabel value="Total a Pagar:" style="font-weight: 600; display: block; margin-bottom: 8px;"/>
-                        <div class="total-amount">$23.50</div>
+                        <p:outputLabel value="Total a Pagar:"
+                                       style="font-weight: 600; display: block; margin-bottom: 8px;"/>
+                        <div class="total-amount">#{cajaController.formatPrecio(cajaController.pedidoSeleccionado.precioTotal)}</div>
                     </div>
 
                     <div class="efectivo-input" style="margin-top: 20px;">
-                        <p:outputLabel value="Valor Recibido:" style="font-weight: 600; display: block; margin-bottom: 10px;"/>
-                        <p:inputNumber id="efectivoRecibido" symbol="$" value="#{cajaBean.efectivoRecibido}"
+                        <p:outputLabel value="Valor Recibido:"
+                                       style="font-weight: 600; display: block; margin-bottom: 10px;"/>
+                        <p:inputNumber id="efectivoRecibido" symbol="$" value="#{cajaController.efectivoRecibido}"
                                        style="font-size: 1.3rem;" minValue="0" styleClass="efectivo-field">
-                            <p:ajax event="keyup" update="vueltoPanel" listener="#{cajaBean.calcularVuelto}" />
+                            <p:ajax event="keyup" update="vueltoPanel" listener="#{cajaController.calcularVuelto}"/>
                         </p:inputNumber>
                     </div>
 
@@ -94,8 +119,8 @@
                         <div class="vuelto-container">
                             <small style="font-size: 0.85rem; color: #2d3748;">Vuelto (Cambio):</small><br/>
                             <strong style="font-size: 1.8rem; color: #2f855a;">
-                                <h:outputText value="#{cajaBean.vuelto}">
-                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                <h:outputText value="#{cajaController.vuelto}">
+                                    <f:convertNumber type="currency" currencySymbol="$"/>
                                 </h:outputText>
                             </strong>
                         </div>
@@ -106,9 +131,9 @@
                                          onclick="PF('dlgEfectivo').hide(); PF('dlgPago').show();"
                                          styleClass="btn-cancel"/>
                         <p:commandButton value="Procesar Pago" icon="pi pi-check"
-                                         action="#{cajaBean.confirmarPago}"
-                                         update="@form"
-                                         oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgEfectivo').hide(); PF('dlgExitoCaja').show(); }"
+                                         action="#{cajaController.procesarPagoEfectivo}"
+                                         update=":formCaja @form"
+                                         oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgEfectivo').hide(); }"
                                          styleClass="btn-pay"/>
                     </div>
                 </div>
@@ -131,9 +156,9 @@
                                          onclick="PF('dlgTarjeta').hide(); PF('dlgPago').show();"
                                          styleClass="btn-cancel"/>
                         <p:commandButton value="Procesar Pago" icon="pi pi-check"
-                                         action="#{cajaBean.confirmarPago}"
-                                         update="@form"
-                                         oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgTarjeta').hide(); PF('dlgExitoCaja').show(); }"
+                                         action="#{cajaController.procesarPagoTarjeta}"
+                                         update=":formCaja @form"
+                                         oncomplete="if (args &amp;&amp; !args.validationFailed) { PF('dlgTarjeta').hide(); }"
                                          styleClass="btn-pay"/>
                     </div>
                 </div>
@@ -146,7 +171,7 @@
                 <i class="pi pi-check-circle" style="font-size: 3rem; color: #38a169;"></i>
                 <h3>Pago Exitoso</h3>
                 <p>El comprobante se ha enviado a impresión.</p>
-                <p:commandButton value="Cerrar" onclick="PF('dlgExitoCaja').hide()" styleClass="btn-pay" />
+                <p:commandButton value="Cerrar" onclick="PF('dlgExitoCaja').hide()" styleClass="btn-pay" style="display: none;"/>
             </div>
         </p:dialog>
     </ui:define>

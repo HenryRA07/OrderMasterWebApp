@@ -159,6 +159,7 @@ public class MenuFacade {
     public Producto guardarProducto(Producto producto) {
         if (producto == null) throw new IllegalArgumentException("El producto no puede ser nulo");
         try {
+
             return crudService.create(producto);
         } catch (Exception e) {
             LOGGER.severe("Error al guardar producto: " + e.getMessage());
