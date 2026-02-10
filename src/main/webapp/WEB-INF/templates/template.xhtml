@@ -28,9 +28,11 @@
                     <span class="sidebar-subtitle">Asadero ShamanBlack</span>
                 </div>
                 <div class="sidebar-footer">
-                    <p:commandLink action="inde.xhtmlx?faces-redirect=true" styleClass="nav-item nav-item-exit">
-                        <i class="pi pi-arrow-right"></i> Salir
-                    </p:commandLink>
+                    <p:button value="Salir"
+                            outcome="/index.xhtml"
+                              ajax="false"
+                              styleClass="button-exit nav-item-exit">
+                    </p:button>
                 </div>
             </div>
         </ui:insert>

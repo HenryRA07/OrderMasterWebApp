@@ -12,6 +12,20 @@ body {
     overflow-x: hidden;
 }
 
+body .ui-button {
+    background: none;
+    color: #0a0a0a;
+    border: 1px solid #d4af37;
+}
+
+body .ui-button:hover {
+    border-color: #d4af37;
+    background-color: #d4af37;
+    color: #0a0a0a;
+    transform: translateX(0.5px);
+    transition: 0.5s ease;
+}
+
 /* Contenedor principal de la aplicación */
 .app-container {
     display: flex;
@@ -105,14 +119,7 @@ body {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.nav-item-exit {
-    color: #718096 !important;
-}
 
-.nav-item-exit:hover {
-    background-color: rgba(239, 68, 68, 0.1) !important;
-    color: #ef4444 !important;
-}
 
 /* --- CONTENIDO PRINCIPAL BASE --- */
 .main-content {
@@ -261,6 +268,33 @@ body {
     font-weight: bold;
     font-size: 1rem;
 }
+
+/* Estilos específicos para botón de logout en PrimeFaces */
+button.ui-button.nav-item-exit {
+    padding: 14px 16px !important;
+    border-radius: 8px !important;
+    margin-bottom: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    text-decoration: none !important;
+    color: #718096 !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+    border: none !important;
+    background: none !important;
+    width: 100% !important;
+    text-align: left !important;
+    font-family: inherit !important;
+    font-size: 0.95rem !important;
+}
+
+button.ui-button.nav-item-exit:hover {
+    background-color: rgba(212, 175, 55, 0.1) !important;
+    color: #d4af37 !important;
+    transform: translateX(2px);
+}
+
 
 /* Tablets medianas */
 @media (max-width: 1024px) {

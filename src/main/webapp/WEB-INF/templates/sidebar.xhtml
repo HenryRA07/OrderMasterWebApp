@@ -27,9 +27,11 @@
 
         <!-- Footer del sidebar -->
         <div class="sidebar-footer">
-            <p:commandLink action="index.xhtml?faces-redirect=true" styleClass="nav-item nav-item-exit">
-                <i class="pi pi-arrow-right"></i>Salir
-            </p:commandLink>
+            <p:button value="Salir"
+                      outcome="/index.xhtml"
+                      ajax="false"
+                      styleClass="button-exit nav-item-exit">
+            </p:button>
         </div>
     </div>
 </ui:composition>
