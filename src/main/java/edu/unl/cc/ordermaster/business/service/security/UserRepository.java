@@ -23,11 +23,7 @@ public class UserRepository {
     private EntityManager em;
 
     public User save(User user){
-        if (user.getId() == null){
             return crudService.create(user);
-        } else {
-            return crudService.update(user);
-        }
     }
 
     public User find(@NotNull Long id) throws EntityNotFoundException {

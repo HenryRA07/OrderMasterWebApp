@@ -21,7 +21,7 @@ public class Role implements java.io.Serializable{
     // Validaciones a nivel de vista y modelo
     @NotNull
     @NotEmpty
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(name = "name", length = 50)
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -71,18 +71,6 @@ public class Role implements java.io.Serializable{
 
     public void setPermissions(Set<Permission> permissions) {
         this.permissions = permissions;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return Objects.equals(getId(), role.getId()) && Objects.equals(getName(), role.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName());
     }
 
     @Override

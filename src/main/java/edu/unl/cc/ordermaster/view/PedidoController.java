@@ -196,12 +196,15 @@ public class PedidoController implements Serializable {
      * Formatea un precio con separador de miles
      */
     public String formatPrecio(BigDecimal precio) {
-        if (precio == null) return "$0";
+        if (precio == null) return "$0,00"; // Valor por defecto con decimales
+
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.GERMAN);
         symbols.setGroupingSeparator('.');
         symbols.setDecimalSeparator(',');
-        DecimalFormat df = new DecimalFormat("#,##0", symbols);
-        return "$" + df.format(precio.longValue());
+
+        DecimalFormat df = new DecimalFormat("#,##0.00", symbols);
+
+        return "$" + df.format(precio);
     }
 
     /**

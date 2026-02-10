@@ -26,7 +26,7 @@ public class ItemPedido implements Serializable {
 
     private String observacion;
     //relaciones
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     @JoinColumn(name = "itemMenu_id")
     private ItemMenu item;
     

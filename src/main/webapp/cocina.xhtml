@@ -33,22 +33,22 @@
                                 <div class="order-id">
                                     <strong style="font-size: 1.2rem; color: #2d3748;">ORD-#{pedido.id}</strong>
                                 </div>
-                                <div class="order-details">
-                                    <div class="detail-row">
-                                        <i class="pi pi-user" style="color: #718096; margin-right: 5px; font-size: 0.8rem;"></i>
-                                        <small style="color: #4a5568;">Cliente: #{pedido.cliente.nombreCompleto}</small>
-                                    </div>
-                                    <h:panelGroup rendered="#{pedido.mesa != null}">
-                                        <div class="detail-row">
-                                            <i class="pi pi-table" style="color: #718096; margin-right: 5px; font-size: 0.8rem;"></i>
-                                            <small style="color: #4a5568;">Mesa: #{pedido.mesa}</small>
-                                        </div>
-                                    </h:panelGroup>
-                                    <div class="detail-row">
-                                        <i class="pi pi-clock" style="color: #718096; margin-right: 5px; font-size: 0.8rem;"></i>
-                                        <small style="color: #4a5568;">Fecha: #{pedido.fechaPedidoCreacion}</small>
-                                    </div>
-                                </div>
+<!--                                <div class="order-details">-->
+<!--                                    <div class="detail-row">-->
+<!--                                        <i class="pi pi-user" style="color: #718096; margin-right: 5px; font-size: 0.8rem;"></i>-->
+<!--                                        <small style="color: #4a5568;">Cliente: #{pedido.cliente.nombreCompleto}</small>-->
+<!--                                    </div>-->
+<!--                                    <h:panelGroup rendered="#{pedido.mesa != null}">-->
+<!--                                        <div class="detail-row">-->
+<!--                                            <i class="pi pi-table" style="color: #718096; margin-right: 5px; font-size: 0.8rem;"></i>-->
+<!--                                            <small style="color: #4a5568;">Mesa: #{pedido.mesa}</small>-->
+<!--                                        </div>-->
+<!--                                    </h:panelGroup>-->
+<!--                                    <div class="detail-row">-->
+<!--                                        <i class="pi pi-clock" style="color: #718096; margin-right: 5px; font-size: 0.8rem;"></i>-->
+<!--                                        <small style="color: #4a5568;">Fecha: #{pedido.fechaPedidoCreacion}</small>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                             </div>
                             <span class="status-badge status-pending">#{pedido.estado}</span>
                         </div>
@@ -61,12 +61,12 @@
                                             <span class="item-quantity">#{item.cantidad}x</span>
                                             <span class="item-name">#{item.item.producto.nombre}</span>
                                         </div>
-                                        <h:panelGroup rendered="#{item.observacion != null and !item.observacion.trim().isEmpty() and item.observacion != '-'}">
-                                            <div class="item-observation">
-                                                <i class="pi pi-info-circle" style="color: #e53e3e; margin-right: 5px; font-size: 0.7rem;"></i>
-                                                <span class="observation-text">Obs: #{item.observacion}</span>
-                                            </div>
-                                        </h:panelGroup>
+<!--                                        <h:panelGroup rendered="#{item.observacion != null and !item.observacion.trim().isEmpty() and item.observacion != '-'}">-->
+<!--                                            <div class="item-observation">-->
+<!--                                                <i class="pi pi-info-circle" style="color: #e53e3e; margin-right: 5px; font-size: 0.7rem;"></i>-->
+<!--                                                <span class="observation-text">Obs: #{item.observacion}</span>-->
+<!--                                            </div>-->
+<!--                                        </h:panelGroup>-->
                                         <h:panelGroup rendered="#{status.last != true}">
                                             <div class="item-divider"></div>
                                         </h:panelGroup>
@@ -113,7 +113,7 @@
                         <div class="pedido-datos">
                             <div class="dato-row">
                                 <i class="pi pi-user" style="color: #718096; margin-right: 8px; font-size: 0.9rem;"></i>
-                                <span style="color: #4a5568;">Mesero: #{cocina.pedidoSeleccionado.cliente != null ? cocina.pedidoSeleccionado.cliente.nombreCompleto : 'Sin asignar'}</span>
+                                <span style="color: #4a5568;">Cliente: #{cocina.pedidoSeleccionado.cliente != null ? cocina.pedidoSeleccionado.cliente.nombreCompleto : 'Sin asignar'}</span>
                             </div>
                             <div class="dato-row">
                                 <i class="pi pi-clock" style="color: #718096; margin-right: 8px; font-size: 0.9rem;"></i>

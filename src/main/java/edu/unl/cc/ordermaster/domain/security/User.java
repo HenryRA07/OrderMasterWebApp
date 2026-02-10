@@ -35,7 +35,7 @@ public class User implements Serializable {
 
     // Validaciones a nivel de vista y modelo
     @NotNull @NotEmpty @Size(min=5)
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @NotNull @NotEmpty
@@ -145,17 +145,17 @@ public class User implements Serializable {
         this.organization = organization;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(getId(), user.getId()) && Objects.equals(getName(), user.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName());
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        User user = (User) o;
+//        return Objects.equals(getId(), user.getId()) && Objects.equals(getName(), user.getName());
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(getId(), getName());
+//    }
 
     @Override
     public String toString() {
