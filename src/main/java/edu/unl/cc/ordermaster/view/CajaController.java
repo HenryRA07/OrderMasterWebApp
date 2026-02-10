@@ -3,6 +3,7 @@ package edu.unl.cc.ordermaster.view;
 import edu.unl.cc.ordermaster.business.service.PedidoFacade;
 import edu.unl.cc.ordermaster.business.service.CrudGenericService;
 import edu.unl.cc.ordermaster.domain.Pedido;
+import edu.unl.cc.ordermaster.domain.ItemPedido;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -36,6 +37,11 @@ public class CajaController implements Serializable {
 
     @PostConstruct
     public void init() {
+        LOGGER.info("CajaController initialized");
+        cargarPedidosListos();
+    }
+    
+    public void actualizarPedidos() {
         cargarPedidosListos();
     }
 
@@ -43,20 +49,44 @@ public class CajaController implements Serializable {
         try {
             pedidosListos = pedidoFacade.obtenerPedidosListos();
             LOGGER.info("Se cargaron " + pedidosListos.size() + " pedidos listos para cobrar");
+
+            for (Pedido p : pedidosListos) {
+                LOGGER.info("Pedido ID: " + p.getId() + 
+                           ", Mesa: " + p.getMesa() + 
+                           ", PrecioTotal ANTES: " + p.getPrecioTotal() +
+                           ", Items: " + (p.getItemPedido() != null ? p.getItemPedido().size() : 0));
+                p.calcularTotal();
+                LOGGER.info("PrecioTotal DESPUÉS: " + p.getPrecioTotal());
+                
+                if (p.getItemPedido() != null) {
+                    for (int i = 0; i < p.getItemPedido().size(); i++) {
+                        ItemPedido item = p.getItemPedido().get(i);
+                        LOGGER.info("  Item " + i + ": " + item.getSubtotal());
+                    }
+                }
+            }
         } catch (Exception e) {
             LOGGER.severe("Error al cargar pedidos listos: " + e.getMessage());
             pedidosListos = List.of();
         }
     }
 
-    public void actualizarPedidos() {
-        cargarPedidosListos();
-    }
-
     public void seleccionarPedido(Pedido pedido) {
+        LOGGER.info("=== INICIO seleccionarPedido ===");
+        LOGGER.info("Pedido recibido: " + (pedido != null ? "ID=" + pedido.getId() + ", Precio=" + pedido.getPrecioTotal() : "NULL"));
+        
         this.pedidoSeleccionado = pedido;
         this.efectivoRecibido = null;
         this.vuelto = null;
+        
+        // FORZAR recálculo del total
+        if (this.pedidoSeleccionado != null) {
+            this.pedidoSeleccionado.calcularTotal();
+            LOGGER.info("Después de calcularTotal: " + this.pedidoSeleccionado.getPrecioTotal());
+        }
+        
+        LOGGER.info("Pedido asignado: " + (this.pedidoSeleccionado != null ? "ID=" + this.pedidoSeleccionado.getId() + ", Precio=" + this.pedidoSeleccionado.getPrecioTotal() : "NULL"));
+        LOGGER.info("=== FIN seleccionarPedido ===");
     }
 
     public void calcularVuelto() {
@@ -114,12 +144,23 @@ public class CajaController implements Serializable {
      * Formatea un precio con separador de miles (ej: 12500 -> $12.500)
      */
     public String formatPrecio(BigDecimal precio) {
-        if (precio == null) return "$0";
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.GERMAN);
-        symbols.setGroupingSeparator('.');
-        symbols.setDecimalSeparator(',');
-        DecimalFormat df = new DecimalFormat("#,##0", symbols);
-        return "$" + df.format(precio.longValue());
+        LOGGER.info("formatPrecio llamado con: " + precio);
+        if (precio == null) {
+            LOGGER.warning("precio es NULL");
+            return "$0";
+        }
+        try {
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.GERMAN);
+            symbols.setGroupingSeparator('.');
+            symbols.setDecimalSeparator(',');
+            DecimalFormat df = new DecimalFormat("#,##0", symbols);
+            String resultado = "$" + df.format(precio.longValue());
+            LOGGER.info("Resultado formateado: " + resultado);
+            return resultado;
+        } catch (Exception e) {
+            LOGGER.severe("Error formateando precio: " + e.getMessage());
+            return "$" + precio.toString();
+        }
     }
 
     public List<Pedido> getPedidosListos() {
@@ -131,11 +172,17 @@ public class CajaController implements Serializable {
     }
 
     public Pedido getPedidoSeleccionado() {
+        LOGGER.info("getPedidoSeleccionado llamado: " + (pedidoSeleccionado != null ? "ID=" + pedidoSeleccionado.getId() + ", Precio=" + pedidoSeleccionado.getPrecioTotal() : "NULL"));
         return pedidoSeleccionado;
     }
 
     public void setPedidoSeleccionado(Pedido pedidoSeleccionado) {
         this.pedidoSeleccionado = pedidoSeleccionado;
+        if (pedidoSeleccionado != null) {
+            LOGGER.info("Pedido seleccionado: ID=" + pedidoSeleccionado.getId() + 
+                       ", PrecioTotal=" + pedidoSeleccionado.getPrecioTotal() +
+                       ", Mesa=" + pedidoSeleccionado.getMesa());
+        }
     }
 
     public Double getEfectivoRecibido() {

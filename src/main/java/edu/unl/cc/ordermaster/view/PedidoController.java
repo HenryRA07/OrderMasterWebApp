@@ -230,30 +230,6 @@ public class PedidoController implements Serializable {
     }
 
     /**
-     * Confirma y finaliza el pedido actual
-     */
-    public String confirmarPedido() {
-        try {
-            if (pedidoactual == null || pedidoactual.getItemPedido() == null || pedidoactual.getItemPedido().isEmpty()) {
-                facesUtil.addErrorMessage("El pedido está vacío. Agregue productos antes de confirmar.");
-                return null;
-            }
-
-            pedidoFacade.actualizarPedido(pedidoactual);
-
-            facesUtil.addSuccessMessage("Pedido confirmado exitosamente! ID: " + pedidoactual.getId());
-
-            pedidoactual = null;
-            inicializarPedido();
-
-            return null; // Permanecer en la misma página
-        } catch (Exception e) {
-            facesUtil.addErrorMessage("Error al confirmar el pedido: " + e.getMessage());
-            return null;
-        }
-    }
-
-    /**
      * Confirma el pedido con los datos del cliente
      */
     public String confirmarPedidoConDatos() {

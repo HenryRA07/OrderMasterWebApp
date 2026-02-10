@@ -125,6 +125,8 @@
                         <h3>#{pedidoController.itemseleccionado != null ? pedidoController.itemseleccionado.producto.nombre : ''}</h3>
                         <p:spinner value="#{pedidoController.cantidad}" min="1" max="20"/>
                         <p class="modal-price">Precio unitario: #{pedidoController.itemseleccionado != null ? pedidoController.formatPrecio(pedidoController.itemseleccionado.precio) : '$0'}</p>
+                        <p:inputText value="#{pedidoController.observacion}" placeholder="Observación"
+                                     style="width: 100%; margin-bottom: 10px;"/>
                     </div>
 
                     <div class="modal-actions">
@@ -177,8 +179,6 @@
                                      style="width: 100%; margin-bottom: 10px;"/>
                         <p:inputText value="#{pedidoController.dni}" placeholder="DNI"
                                      style="width: 100%; margin-bottom: 10px;"/>
-                        <p:inputTextarea value="#{pedidoController.observacion}" placeholder="Observaciones del pedido"
-                                         rows="3" style="width: 100%; margin-bottom: 10px;"/>
                     </div>
                     <div class="modal-actions">
                         <p:commandButton value="Enviar a Cocina"

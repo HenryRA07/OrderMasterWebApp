@@ -18,14 +18,6 @@
 
     <ui:define name="sidebar">
         <ui:include src="/WEB-INF/templates/sidebar.xhtml">
-            <ui:param name="navigationItems" value="#{
-                [{
-                    label: 'Cobros',
-                    url: '#',
-                    icon: 'pi pi-wallet',
-                    active: true
-                }]
-            }"/>
         </ui:include>
     </ui:define>
 
@@ -67,8 +59,11 @@
 
                         <p:commandButton value="Cobrar Ahora" icon="pi pi-money-bill"
                                          action="#{cajaController.seleccionarPedido(pedido)}"
-                                         oncomplete="PF('dlgPago').show()"
-                                         styleClass="btn-pay" style="margin-top: 20px;"/>
+                                         oncomplete="PF('dlgPago').show();"
+                                         update=":dlgPago :dlgEfectivo"
+                                         styleClass="btn-pay" style="margin-top: 20px;">
+                            <f:attribute name="pedidoId" value="#{pedido.id}"/>
+                        </p:commandButton>
                     </div>
                 </ui:repeat>
 
@@ -78,11 +73,13 @@
                         <p>No hay pedidos listos para cobrar</p>
                     </div>
                 </h:panelGroup>
+
+
             </div>
         </h:form>
 
-    <p:dialog
-            header="Finalizar Pago - ORD-#{cajaController.pedidoSeleccionado != null ? cajaController.pedidoSeleccionado.id : ''}"
+    <p:dialog id="dlgPago"
+            header="Finalizar Pago - ORD-#{cajaController.pedidoSeleccionado.id}"
             widgetVar="dlgPago" modal="true" width="500" responsive="true">
         <h:form id="formPago">
             <div class="payment-modal-center">
@@ -99,7 +96,7 @@
     </p:dialog>
 
     <!-- Modal de Pago en Efectivo -->
-    <p:dialog header="Pago en Efectivo" widgetVar="dlgEfectivo" modal="true" width="500" responsive="true">
+    <p:dialog id="dlgEfectivo" header="Pago en Efectivo" widgetVar="dlgEfectivo" modal="true" width="500" responsive="true">
         <h:form id="formEfectivo">
             <div class="payment-content">
                 <h3 style="text-align: center; color: #0a0a0a; margin-bottom: 25px;">Pago en Efectivo</h3>
@@ -107,7 +104,7 @@
                 <div class="total-display">
                     <p:outputLabel value="Total a Pagar:"
                                    style="font-weight: 600; display: block; margin-bottom: 8px;"/>
-                    <div class="total-amount">#{cajaController.pedidoSeleccionado != null ? cajaController.formatPrecio(cajaController.pedidoSeleccionado.precioTotal) : '$0'}</div>
+                    <div class="total-amount">#{cajaController.formatPrecio(cajaController.pedidoSeleccionado.precioTotal)}</div>
                 </div>
 
                 <div class="efectivo-input" style="margin-top: 20px;">
