@@ -15,10 +15,6 @@
         <link rel="stylesheet" href="resources/css/stylesUsuario.css"/>
     </ui:define>
 
-    <ui:define name="sidebar">
-        <ui:include src="/WEB-INF/templates/sidebar.xhtml"/>
-    </ui:define>
-
     <ui:define name="content">
         <p:growl id="msgs" showDetail="true"/>
 
@@ -32,55 +28,61 @@
         <h:form id="formRegistro">
             <div class="card-custom">
                 <p style="margin-top: 0; font-weight: bold; color: #4a5568;">
-                    #{userHome.managed ? 'Editando Usuario: '.concat(userHome.user.name) : 'Registrar Nuevo Usuario'}
+                    Registrar Nuevo Usuario
                 </p>
 
                 <div class="ui-g ui-fluid">
+
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="Nombres" for="nom"/>
-                        <p:inputText id="nom" placeholder="Nombres" value="#{userHome.user.name}" required="true">
+                        <p:inputText id="nom" placeholder="Nombres" value="#{userHome.firstname}" required="true">
+                        <f:validateLength minimum="3"/>
+                        </p:inputText>
+                    </div>
+
+
+                    <div class="ui-g-12 ui-md-3">
+                        <p:outputLabel value="Apellidos" for="ape"/>
+                        <p:inputText id="ape" placeholder="Apellidos"  value="#{userHome.lastname}" required="true">
                         <f:validateLength minimum="3"/>
                         </p:inputText>
                     </div>
 
                     <div class="ui-g-12 ui-md-3">
-                        <p:outputLabel value="Apellidos" for="ape"/>
-                        <p:inputText id="ape" placeholder="Apellidos"  required="true">
+                        <p:outputLabel value="Nombre Usuario" for="user"/>
+                        <p:inputText id="user" placeholder="Nombres usuario" value="#{userHome.user.name}" required="true">
                         <f:validateLength minimum="3"/>
                         </p:inputText>
                     </div>
 
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="Rol" for="rol"/>
-                        <p:selectOneMenu id="rol" value="#{usuarioBean.rolSeleccionado}">
-                            <f:selectItem itemLabel="Seleccione un rol" itemValue="#{null}" noSelectionOption="true" />
-                            <f:selectItem itemLabel="Administrador" itemValue="admin" />
-                            <f:selectItem itemLabel="Mesero" itemValue="mesero" />
-                            <f:selectItem itemLabel="Cocinero" itemValue="cocinero" />
-                            <f:selectItem itemLabel="Caja" itemValue="caja" />
+                        <p:selectOneMenu id="rol" value="#{userHome.rol}">
+                            <f:selectItem itemLabel="Administrador" itemValue="ADMIN" />
+                            <f:selectItem itemLabel="Mesero" itemValue="MESERO" />
+                            <f:selectItem itemLabel="Cocinero" itemValue="COCINERO" />
+                            <f:selectItem itemLabel="Caja" itemValue="CAJERO" />
                         </p:selectOneMenu>
                     </div>
 
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="DNI" for="dni"/>
-                        <p:inputText id="dni" placeholder="DNI" value="#{userHome.user.organization.identificationNumber}" required="true">
-                        <f:validateLength minimum="3"/>
+                        <p:inputText id="dni" placeholder="DNI" value="#{userHome.DNI}" required="true">
+                        <f:validateLength minimum="8"/>
                         </p:inputText>
                     </div>
 
                     <div class="ui-g-12 ui-md-3">
                         <p:outputLabel value="Correo" for="mail"/>
-                        <p:inputText id="mail" placeholder="correo@ejemplo.com" value="#{userHome.user.organization.email}" requiredMessage="Por favor ingrese su Correo Electrónico."
-                                     validatorMessage="Invalid email format"
-                                     required="true">
-                            <f:validateRegex pattern="^[a-zA-Z0-9._%+-]+[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
+                        <p:inputText id="mail" placeholder="correo@ejemplo.com" value="#{userHome.email}" required="true">
+                        <f:validateLength  />
                         </p:inputText>
                     </div>
 
                     <div class="ui-g-12 ui-md-3">
-                        <p:outputLabel value="Password" for="pass" rendered="#{!userHome.managed}"/>
-                        <p:password id="pass" value="#{userHome.user.password}" rendered="#{!userHome.managed}" toggleMask="true">
-                        <f:validateLength minimum="5" for="pass"/>
+                        <p:outputLabel value="Password" for="pass" />
+                        <p:password id="pass" value="#{userHome.user.password}" toggleMask="true">
+                        <f:validateLength minimum="6" for="pass"/>
                         </p:password>
                     </div>
 
@@ -89,21 +91,13 @@
 
                 <div style="display: flex; gap: 15px; margin-top: 20px; align-items: flex-end;">
                     <p:commandButton value="Guardar Nuevo"
-                                     actionListener="#{userHome.create()}"
-                                     rendered="#{!userHome.managed}"
-                                     update="@form :formTabla:tablaUsers :msgs"
-                                     icon="pi pi-save"
-                                     styleClass="btn-gold" />
-
-                    <p:commandButton value="Actualizar Cambios"
-                                     actionListener="#{userHome.update()}"
-                                     rendered="#{userHome.managed}"
+                                     action="#{userHome.create()}"
                                      update="@form :formTabla:tablaUsers :msgs"
                                      icon="pi pi-save"
                                      styleClass="btn-gold" />
 
                     <p:commandButton value="Limpiar/Nuevo"
-                                     actionListener="#{userHome.reset()}"
+                                     action="#{userHome.reiniciarParametros()}"
                                      update="@form"
                                      process="@this"
                                      icon="pi pi-refresh"
@@ -118,8 +112,6 @@
                 <div style="margin: 0 10px;">
                     <span style="color: #51575f;"> #{userList.users.size()} encontrados</span>
                 </div>
-
-
                 <p:dataTable id="tablaUsers" var="_user" value="#{userList.users}"
                              styleClass="ui-datatable-striped"
                              emptyMessage="No Existen usuarios"
@@ -132,23 +124,8 @@
                         <h:outputText value="#{_user.name}" />
                     </p:column>
                     <p:column headerText="Rol">
-                        <h:outputText value="#{_user.roles}" />
+                        <h:outputText value="#{_user.primerRol.name}" />
                     </p:column>
-
-<!--                    <p:column>-->
-<!--                        <p:commandButton id="_status"-->
-<!--                                         icon="#{_user.activo ? 'pi pi-check-circle' : 'pi pi-times-circle'}"-->
-<!--                                         styleClass="rounded-button #{_user.activo ? 'ui-button-success' : 'ui-button-danger'}"-->
-<!--                                         title="#{_user.activo ? 'Desactivar usuario' : 'Activar usuario'}"-->
-<!--                                         action="#{userList.toggleStatus(_user)}"-->
-<!--                                         update="@this"-->
-<!--                                         process="@this">-->
-<!--                            <p:confirm header="Confirmación"-->
-<!--                                       message="¿Estás seguro de cambiar el estado de este usuario?"-->
-<!--                                       icon="pi pi-exclamation-triangle" />-->
-<!--                        </p:commandButton>-->
-<!--                    </p:column>-->
-
                 </p:dataTable>
             </div>
         </h:form>

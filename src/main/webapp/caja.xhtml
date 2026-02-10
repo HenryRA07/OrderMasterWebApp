@@ -25,7 +25,7 @@
 
         <h:form id="formCaja">
             <!-- Poll para actualización automática cada 10 segundos -->
-            <p:poll interval="10000" update="formCaja" listener="#{cajaController.actualizarPedidos()}"/>
+            <p:poll interval="3000" update="formCaja" listener="#{cajaController.actualizarPedidos()}"/>
 
             <div class="orders-container">
                 <ui:repeat value="#{cajaController.pedidosListos}" var="pedido">

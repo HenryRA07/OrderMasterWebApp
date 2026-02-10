@@ -42,7 +42,7 @@ public class User implements Serializable {
     private String password;
 
     // Relationships
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name="user_id"),
             inverseJoinColumns = @JoinColumn(name="role_id")
@@ -95,6 +95,14 @@ public class User implements Serializable {
         if (name.trim().length() < 5){
             throw new IllegalArgumentException("Valor debe superar los 5 caracteres");
         }
+    }
+
+    /**
+     * Regresa primer rol del ususario
+     * @return Role
+     */
+    public Role getPrimerRol() {
+        return roles.stream().findFirst().orElse(null);
     }
 
     public Long getId() {

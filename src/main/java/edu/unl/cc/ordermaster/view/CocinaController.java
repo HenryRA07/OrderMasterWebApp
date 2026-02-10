@@ -8,6 +8,7 @@ import edu.unl.cc.ordermaster.domain.Pedido;
 import edu.unl.cc.ordermaster.faces.FacesUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Named("cocina")
-@RequestScoped
+@ViewScoped
 public class CocinaController implements Serializable {
 
     private static Logger logger = Logger.getLogger(AuthenticationController.class.getName());

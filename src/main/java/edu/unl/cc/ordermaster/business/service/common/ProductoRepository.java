@@ -18,7 +18,7 @@ public class ProductoRepository {
     private EntityManager em;
     public List<Producto> findAll(Long id,String nombre, String descripcion) {
         String Jpql = "SELECT p FROM Producto p " +
-                "LEFT JOIN FETCH p.id i" +
+                "LEFT JOIN FETCH p.id i " +
                 "WHERE p.nombre = :nombre AND p.descripcion = :descripcion ";
         TypedQuery<Producto> query = em.createQuery(Jpql, Producto.class);
         query.setParameter("nombre", nombre);

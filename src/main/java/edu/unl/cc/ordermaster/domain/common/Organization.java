@@ -70,7 +70,7 @@ public abstract class Organization implements java.io.Serializable{
         return name;
     }
 
-    protected void setName(@NotNull @NotEmpty String name){
+    public void setName(@NotNull @NotEmpty String name){
         this.name = name.trim();
     }
 
