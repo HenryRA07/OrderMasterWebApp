@@ -73,6 +73,24 @@ public class PedidoFacade {
             throw new RuntimeException("No se pudo crear el pedido: " + e.getMessage());
         }
     }
+
+    /**
+     * Actualiza un pedido existente
+     * @param pedido Pedido a actualizar
+     * @return Pedido actualizado
+     */
+    public Pedido inicializarPedido(Pedido pedido) {
+        try {
+
+            pedido.calcularTotal();
+            Pedido pedidoActualizado = crudService.create(pedido);
+            LOGGER.info("Pedido creado exitosamente: ID=" + pedidoActualizado.getId());
+            return pedidoActualizado;
+        } catch (Exception e) {
+            LOGGER.severe("Error al crear pedido: " + e.getMessage());
+            throw new RuntimeException("No se pudo actualizar el pedido: " + e.getMessage());
+        }
+    }
     
     /**
      * Actualiza un pedido existente

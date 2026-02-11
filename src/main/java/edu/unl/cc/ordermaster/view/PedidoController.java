@@ -85,7 +85,11 @@ public class PedidoController implements Serializable {
         if (pedidoactual == null) {
             pedidoactual = new Pedido();
             pedidoactual.setEstado(EstadoPedido.PENDIENTE);
+
             // La fecha de creación se establece automáticamente en el constructor de Pedido
+        }
+        if (clientepedido == null) {
+            clientepedido = new Cliente();
         }
     }
 
@@ -153,14 +157,22 @@ public class PedidoController implements Serializable {
                 return null;
             }
 
+            clientepedido.setTelefono(telefono);
+            clientepedido.setDni(dni);
+            clientepedido.setNombre(nombre);
+            clientepedido.setEmail(email);
+            clientepedido.setApellido(apellido);
+            pedidoactual.setCliente(clientepedido);
+
             // Actualizar el pedido para asegurar que esté guardado
-            pedidoFacade.actualizarPedido(pedidoactual);
+            pedidoFacade.inicializarPedido(pedidoactual);
 
             facesUtil.addSuccessMessage("Pedido confirmado exitosamente! ID: " + pedidoactual.getId());
 
             // Limpiar para nuevo pedido
             pedidoactual = null;
-            inicializarPedido();
+
+            reiniciarPedido();
 
             return null; // Permanecer en la misma página
         } catch (Exception e) {
@@ -189,6 +201,7 @@ public class PedidoController implements Serializable {
      */
     public void reiniciarPedido() {
         pedidoactual = null;
+        clientepedido = null;
         inicializarPedido();
         facesUtil.addSuccessMessage("Pedido reiniciado");
     }
@@ -227,13 +240,6 @@ public class PedidoController implements Serializable {
 
             facesUtil.addSuccessMessage("Producto agregado al pedido: " +
                     itemseleccionado.getProducto().getNombre() + " (x" + cantidad + ")");
-
-            // Agregar item al pedido
-            pedidoFacade.agregarItemPedido(item, pedidoactual);
-
-            facesUtil.addSuccessMessage("Producto agregado al pedido: " +
-                    itemseleccionado.getProducto().getNombre() + " (x" + cantidad + ")");
-
 
             limpiarSeleccion();
 

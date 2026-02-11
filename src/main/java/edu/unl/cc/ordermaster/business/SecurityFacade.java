@@ -30,13 +30,8 @@ public class SecurityFacade implements Serializable {
     public User createUser(User user) throws EncryptorException, AlreadyEntityException {
         String pwdEncripted = EncryptorManager.encrypt(user.getPassword());
         user.setPassword(pwdEncripted);
-        try {
-            userRepository.find(user.getName());
-        } catch (EntityNotFoundException e) {
-            User userPersisted = userRepository.save(user);
-            return userPersisted;
-        }
-        throw new AlreadyEntityException("Usuario ya existe");
+        User userPersisted = userRepository.save(user);
+        return userPersisted;
     }
 
     public User updateUser(User user) throws AlreadyEntityException, EncryptorException {

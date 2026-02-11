@@ -14,10 +14,10 @@ import java.time.LocalDate;
 @Entity
 public class Person extends Organization{
 
-    @NotNull @NotEmpty
+    @NotNull() @NotEmpty
     private String firstName;
 
-    @NotNull @NotEmpty
+    @NotNull() @NotEmpty
     private String lastName;
 
     @Enumerated(EnumType.STRING)
@@ -37,19 +37,10 @@ public class Person extends Organization{
                   String identificationNumber, String email
     ) {
         super(id, null, creationDate, identificationType, identificationNumber, email);
-        //validateObligatoryField(firstName);
-        //validateObligatoryField(lastName);
         setFirstName(firstName);
         setLastName(lastName);
         setName(getFullName());
         this.gender = gender;
-    }
-
-    @Deprecated
-    private void validateObligatoryField(String text){
-        if (text == null || text.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private String getFullName() {

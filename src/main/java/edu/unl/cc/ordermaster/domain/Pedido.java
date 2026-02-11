@@ -53,7 +53,6 @@ public class Pedido implements Serializable {
         }
         if(!itemPedido.contains(item)){
             itemPedido.add(item);
-            item.setPedido(this); // Establecer relación bidireccional
         }
         calcularTotal();
     }

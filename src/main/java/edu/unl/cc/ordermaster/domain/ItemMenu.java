@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Positive;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 public class ItemMenu implements Serializable {
@@ -90,6 +91,18 @@ public class ItemMenu implements Serializable {
 
     public void setMenu(Menu menu) {
         this.menu = menu;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemMenu itemMenu = (ItemMenu) o;
+        return disponibilidad == itemMenu.disponibilidad && Objects.equals(id, itemMenu.id) && Objects.equals(precio, itemMenu.precio) && Objects.equals(producto, itemMenu.producto) && Objects.equals(menu, itemMenu.menu);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, precio, disponibilidad, producto, menu);
     }
 
     @Override

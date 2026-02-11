@@ -18,16 +18,19 @@ public class Cliente implements Serializable {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String nombre;
 
+    @NotNull
     private String apellido;
 
-    @Transient
+    @NotNull
     private String dni;
 
-    @Transient
+    @NotNull
     private String telefono;
 
+    @NotNull
     private String email;
 
     public Cliente() {

@@ -40,9 +40,11 @@ public class AuthorizationFilter implements Filter {
                 || requestPath.equals("/index.xhtml")
                 || requestPath.equals("/usuario.xhtml")
                 || requestPath.equals("/cocina.xhtml")
-                || requestPath.equals("/menuDiario.xhtml")
-                || requestPath.equals("/mesero.xhtml")
                 || requestPath.equals("/caja.xhtml")
+                || requestPath.equals("/mesero.xhtml")
+                || requestPath.equals("/menuDiario.xhtml")
+                || requestPath.equals("/security/userList.xhtml")
+                || requestPath.equals("/security/userEdit.xhtml")
                 || requestPath.contains("/jakarta.faces.resource/")  // Recursos de JSF
                 || requestPath.contains("/primefaces/")            // Recursos de PrimeFaces
         ) {
@@ -56,7 +58,7 @@ public class AuthorizationFilter implements Filter {
 
         // 3. Redirigir si no está autenticado
         if (user == null) {
-            ((HttpServletResponse) servletResponse).sendRedirect(httpReq.getContextPath() + "/login.xhtml");
+            ((HttpServletResponse) servletResponse).sendRedirect(httpReq.getContextPath() + "/index.xhtml");
             return;
         }
 

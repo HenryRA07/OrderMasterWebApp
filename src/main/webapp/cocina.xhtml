@@ -110,17 +110,17 @@
                     <!-- Información esencial del pedido -->
                     <div class="card">
                         <h5>Large Table</h5>
-                        <p:dataTable var="product" value="#{cocina.pedidosPendientes}" size="large">
+                        <p:dataTable var="product" value="#{cocina.detallesPedido}" size="large">
                             <p:column headerText="Cant.">
-                                <h:outputText value="#{pedidoController.cantidad}" />
+                                <h:outputText value="#{product.cantidad}" />
                             </p:column>
 
                             <p:column headerText="Name">
-                                <h:outputText value="#{pedidoController.itemsDelPedido}" />
+                                <h:outputText value="#{product.item.producto.nombre}" />
                             </p:column>
 
                             <p:column headerText="Observación">
-                                <h:outputText value="#{pedidoController.observacion}" />
+                                <h:outputText value="#{product.item.disponibilidad}" />
                             </p:column>
                         </p:dataTable>
                     </div>

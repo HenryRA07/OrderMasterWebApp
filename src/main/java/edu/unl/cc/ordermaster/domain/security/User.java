@@ -1,15 +1,13 @@
 /**
- * @author FrancisEngine(Francisco Chamba)
+ * @autor: wduck (Wilman Chamba Z)
  */
 package edu.unl.cc.ordermaster.domain.security;
 
 import edu.unl.cc.ordermaster.domain.common.Organization;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -19,43 +17,27 @@ import java.util.Set;
 @Entity
 @Table(name = "user_")
 @NamedQueries({
-        @NamedQuery(name = "User.findLikeName", query = "SELECT o FROM User o WHERE LOWER(o.name) LIKE lower(:name)"),
-        @NamedQuery(name = "User.findById", query = "SELECT o FROM User o WHERE o.id = :id"),
-        //query provicionar por tiempo
-        @NamedQuery(name = "User.findWithRoles",
-        query = "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles r WHERE u.name = :username"
-),
+      @NamedQuery(name = "User.findLikeName", query = "SELECT o FROM User o WHERE LOWER(o.name) LIKE lower(:name)"),
+      @NamedQuery(name = "User.findById", query = "SELECT o FROM User o WHERE o.id = :id")
 })
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull @NotEmpty
-    @Column(unique = true, nullable = false, length = 50)
-    private String firsname;
-
-    @NotNull @NotEmpty
-    @Column(unique = true, nullable = false, length = 50)
-    private String lastname;
-
-    @NotNull @NotEmpty @Email(message = "Formato email incorrecto")
-    @Column(unique = true, nullable = false, length = 50)
-    private String email;
 
     // Validaciones a nivel de vista y modelo
     @NotNull @NotEmpty @Size(min=5)
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @NotNull @NotEmpty
     private String password;
 
     // Relationships
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name="user_id"),
             inverseJoinColumns = @JoinColumn(name="role_id")
@@ -87,15 +69,11 @@ public class User implements Serializable {
         this.setPassword(password);
     }
 
-    public User(Long id,@NotNull @NotEmpty String firsname,
-                @NotNull @NotEmpty String lastname,
-                @NotNull @NotEmpty String email,
+    public User(Long id,
                 @NotNull @NotEmpty String name,
-                @NotNull @NotEmpty String password,@NotNull Organization organization) {
+                @NotNull @NotEmpty String password,
+                @NotNull Organization organization) {
         this(id, name, password);
-        this.firsname = firsname;
-        this.lastname = lastname;
-        this.email = email;
         this.organization = organization;
     }
 
@@ -112,6 +90,14 @@ public class User implements Serializable {
         if (name.trim().length() < 5){
             throw new IllegalArgumentException("Valor debe superar los 5 caracteres");
         }
+    }
+
+    /**
+     * Regresa primer rol del ususario
+     * @return Role
+     */
+    public Role getPrimerRol() {
+        return roles.stream().findFirst().orElse(null);
     }
 
     public Long getId() {
@@ -150,32 +136,8 @@ public class User implements Serializable {
         return organization;
     }
 
-    public void setOrganization(@NotNull Organization organization) {
+    public void setOrganization(Organization organization) {
         this.organization = organization;
-    }
-
-    public String getFirsname() {
-        return firsname;
-    }
-
-    public void setFirsname(@NotNull @NotEmpty String firsname) {
-        this.firsname = firsname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(@NotNull @NotEmpty String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(@NotNull @Email(message = "Formato email incorrecto") String email) {
-        this.email = email;
     }
 
     @Override
@@ -200,4 +162,3 @@ public class User implements Serializable {
         return sb.toString();
     }
 }
-

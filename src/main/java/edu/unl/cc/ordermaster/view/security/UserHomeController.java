@@ -1,19 +1,22 @@
-/**
- * @author FrancisEngine(Francisco Chamba)
- */
 package edu.unl.cc.ordermaster.view.security;
 
 import edu.unl.cc.ordermaster.business.SecurityFacade;
+import edu.unl.cc.ordermaster.domain.common.GenderType;
+import edu.unl.cc.ordermaster.domain.common.Organization;
 import edu.unl.cc.ordermaster.domain.common.Person;
+import edu.unl.cc.ordermaster.domain.security.Role;
 import edu.unl.cc.ordermaster.domain.security.User;
 import edu.unl.cc.ordermaster.exception.EntityNotFoundException;
 import edu.unl.cc.ordermaster.faces.FacesUtil;
 import edu.unl.cc.ordermaster.util.EncryptorManager;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serial;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 @Named(value = "userHome")
@@ -28,6 +31,11 @@ public class UserHomeController implements java.io.Serializable{
     private Long selectedUserId;
 
     private User user;
+    private String firstname;
+    private String lastname;
+    private String rol;
+    private String email;
+    private String DNI;
 
     @Inject
     SecurityFacade securityFacade;
@@ -35,70 +43,74 @@ public class UserHomeController implements java.io.Serializable{
     @Inject
     FacesUtil facesUtil;
 
+    Person person;
+    Role role;
+
     public UserHomeController() {
     }
 
-    public void loadUser() {
-        logger.info("Loading user with id: " + selectedUserId);
-        if (selectedUserId != null) {
-            try {
-                user = securityFacade.findUser(selectedUserId);
-            } catch (EntityNotFoundException e) {
-                facesUtil.addErrorMessage("No se pudo encontrar el usuario con id: " + selectedUserId);
-                user = new User();
-            }
-        } else {
-            user = new User();
-        }
-        // Provisional, debe recuperarse desde la BD
-        if (user.getOrganization() == null) {
-            user.setOrganization(new Person());
-        }
-        decryptPassword(user);
+    @PostConstruct
+    public void init() throws EntityNotFoundException {
+        person = new Person();
+        user = new User();
+        user.setOrganization(person);
+        role = new Role();
     }
 
-    private void decryptPassword(User user){
-        String pwdDecrypted = null;
+
+    public void create() {
         try {
-            if (user.getPassword() != null && !user.getPassword().isEmpty()){
-                logger.info("Password no nulo y no vacio: " + user.getPassword());
-                pwdDecrypted = EncryptorManager.decrypt(user.getPassword());
-                user.setPassword(pwdDecrypted);
+            if (person instanceof Person p) {
+                p.setFirstName(firstname);
+                p.setLastName(lastname);
+                p.setGender(GenderType.FEMALE);
             }
+            person.setIdentificationNumber(DNI);
+            person.setEmail(email);
+            person.setName(firstname +" "+ lastname);
+            person.setId(10L);
+            user.setOrganization(person);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            facesUtil.addErrorMessage(e.getMessage(), "Invconveniente al decifrar la clave: " + e.getMessage());
-        }
-
-    }
-
-    public String create() {
-        try {
-            user = securityFacade.createUser(user);
+            role.setName(rol);
+            role.setId(10L);
+            user.setRoles(new HashSet<>(Set.of(role)));
+            user.setId(10L);
+            securityFacade.createUser(user);
             //decryptPassword(user);
             facesUtil.addSuccessMessageAndKeep("Usuario creado correctamente");
-            return "userList?faces-redirect=true";
+            reiniciarParametros();
         } catch (Exception e) {
             facesUtil.addErrorMessage("Inconveniente al crear usuario: " + e.getMessage());
-            return null;
         }
+
     }
 
-    public String update() {
+    public void update() {
         try {
             securityFacade.updateUser(user);
             //decryptPassword(user);
             facesUtil.addSuccessMessageAndKeep("Usuario actualizado correctamente");
-            return "userList?faces-redirect=true";
         } catch (Exception e) {
             facesUtil.addErrorMessage("Inconveniente al actualizar usuario: " + e.getMessage());
-            return null;
         }
     }
 
     public boolean isManaged(){
-        return this.user.getId() != null;
+        if (this.user == null || this.user.getId() == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public void reiniciarParametros(){
+        this.user = new User();
+        this.person = new Person();
+        this.user.setOrganization(person);
+        this.role = new Role();
+        this.firstname = "";
+        this.lastname = "";
+        this.email = "";
+        this.rol = null;
     }
 
     public Long getSelectedUserId() {
@@ -115,6 +127,46 @@ public class UserHomeController implements java.io.Serializable{
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getDNI() {
+        return DNI;
+    }
+
+    public void setDNI(String DNI) {
+        this.DNI = DNI;
     }
 }
 

@@ -12,7 +12,7 @@
 
     <keyStore id="defaultKeyStore" password="password"/>
 
-    <httpEndpoint host="*" httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint"/>
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080" httpsPort="9443"/>
 
     <webApplication  location="orderMasterApp.war" contextRoot="/" />
 
@@ -25,7 +25,10 @@
     <!-- Configuración del datasource para comunicación de bd-->
     <dataSource jndiName="jdbc/ordermasterDS">
         <jdbcDriver id="postgres-driver" libraryRef="jdbcLib"/>
-        <properties.postgresql databaseName="ordermasterv1" password="orderMasterUser2026" portNumber="${db.port.number}" serverName="${db.server.name}" user="ordermasterv1user"/>
+        <properties.postgresql databaseName="ordermasterv1"
+                               password="orderMasterUser2026"
+                               portNumber="${db.port.number}"
+                               serverName="${db.server.name}" user="ordermasterv1user"/>
     </dataSource>
 
     <!-- Referencia al driver JDBC de Postgres -->

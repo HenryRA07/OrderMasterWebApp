@@ -54,9 +54,7 @@ public class CocinaController implements Serializable {
     public void verDetalles(Pedido pedido){
         pedidoSeleccionado=pedido;
         Pedido detalles = dbpedido.buscarPedido(pedido.getId());
-        for(ItemPedido detallesitem : detalles.getItemPedido()){
-            detallesPedido.add(detallesitem);
-        }
+        detallesPedido.addAll(detalles.getItemPedido());
     }
 
     public List<Pedido> getPedidosPendientes() {

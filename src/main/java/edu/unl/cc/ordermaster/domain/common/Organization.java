@@ -31,7 +31,6 @@ public abstract class Organization implements java.io.Serializable{
     @Enumerated(EnumType.STRING)
     private IdentificationType identificationType;
 
-    @NotNull @NotEmpty
     @Column(unique = true)
     private String identificationNumber;
 
@@ -70,7 +69,7 @@ public abstract class Organization implements java.io.Serializable{
         return name;
     }
 
-    protected void setName(@NotNull @NotEmpty String name){
+    public void setName(@NotNull @NotEmpty String name){
         this.name = name.trim();
     }
 
@@ -94,7 +93,7 @@ public abstract class Organization implements java.io.Serializable{
         return identificationNumber;
     }
 
-    public void setIdentificationNumber(@NotNull @NotEmpty String identificationNumber) {
+    public void setIdentificationNumber( String identificationNumber) {
         this.identificationNumber = identificationNumber.trim();
     }
 

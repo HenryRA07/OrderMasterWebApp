@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Positive;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 public class ItemPedido implements Serializable {
@@ -26,7 +27,7 @@ public class ItemPedido implements Serializable {
 
     private String observacion;
     //relaciones
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne()
     @JoinColumn(name = "itemMenu_id")
     private ItemMenu item;
     
@@ -106,38 +107,17 @@ public class ItemPedido implements Serializable {
         this.pedido = pedido;
     }
 
+
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        
-        ItemPedido that = (ItemPedido) obj;
-        
-        // Si ambos tienen ID, comparar por ID
-        if (id != null && that.id != null) {
-            return id.equals(that.id);
-        }
-        
-        // Si no tienen ID, comparar por item y cantidad (productos iguales)
-        if (item != null && that.item != null) {
-            return item.equals(that.item) && 
-                   cantidad != null && cantidad.equals(that.cantidad);
-        }
-        
-        return false;
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemPedido that = (ItemPedido) o;
+        return Objects.equals(id, that.id) && Objects.equals(cantidad, that.cantidad) && Objects.equals(subtotal, that.subtotal) && Objects.equals(observacion, that.observacion) && Objects.equals(item, that.item) && Objects.equals(pedido, that.pedido);
     }
-    
+
     @Override
     public int hashCode() {
-        // Si tiene ID, usar ID
-        if (id != null) {
-            return id.hashCode();
-        }
-        
-        // Si no tiene ID, usar combinación de item y cantidad
-        int result = item != null ? item.hashCode() : 0;
-        result = 31 * result + (cantidad != null ? cantidad.hashCode() : 0);
-        return result;
+        return Objects.hash(id, cantidad, subtotal, observacion, item, pedido);
     }
 
     @Override
